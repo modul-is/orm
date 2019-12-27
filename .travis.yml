@@ -10,16 +10,12 @@ before_script:
   # Update Composer
   - travis_retry composer self-update
 
-  # Install Nette Tester
+  # Install Nette Tester & Coding Standard
   - travis_retry composer install --no-interaction --prefer-source
 
 script:
   - vendor/bin/tester tests -s -p php -c tests/php.ini $NTESTER_FLAGS
-
-after_script:
-  # Coveralls
-  - if [ "$TRAVIS_PHP_VERSION" == "5.6" ]; then composer require satooshi/php-coveralls; fi
-  - if [ "$TRAVIS_PHP_VERSION" == "5.6" ]; then php vendor/bin/coveralls -c tests/.coveralls.yml -v; fi
+  - vendor/modul-is/coding-standard/ecs check src --fix
 
 after_failure:
   # Print *.actual content
