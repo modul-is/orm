@@ -1,0 +1,35 @@
+{
+    "name": "modul-is/orm",
+    "type": "library",
+    "description": "Simple lightweight ORM",
+    "keywords": ["php", "nette", "orm", "database"],
+    "homepage": "https://github.com/modul-is/orm",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/modul-is/orm/issues"
+    },
+
+    "require": {
+        "php": ">=7.0.0",
+        "nette/utils": "^2.4",
+        "nette/database": "^2.4",
+        "nette/reflection": "^2.3"
+    },
+
+    "require-dev": {
+        "tracy/tracy": "^2.4",
+        "nette/tester": "^2.0",
+        "nette/caching": "^2.5",
+        "nette/robot-loader": "^3",
+
+        "modul-is/coding-standard": "v0.0.1.x-dev"
+    },
+
+    "autoload": {
+        "classmap": ["src/"]
+    },
+
+    "scripts": {
+        "test": "tester tests/ -C"
+    }
+}
