@@ -65,7 +65,7 @@ class AnnotationProperty extends EntityProperty
 	}
 
 	
-	public function checkType(mixed $value, bool $need = true): bool
+	public function checkType($value, bool $need = true): bool
 	{
 		if ($value === null) {
 			if (!$this->nullable) {

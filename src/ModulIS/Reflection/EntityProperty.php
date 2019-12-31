@@ -39,7 +39,7 @@ abstract class EntityProperty
 	abstract public function getValue(Entity $entity);
 
 
-	abstract public function setValue(Entity $entity, mixed $value): void;
+	abstract public function setValue(Entity $entity, $value): void;
 
 
 	public function getEntityReflection(): EntityType

@@ -49,6 +49,28 @@ abstract class Repository
 		return new $class($row);
 	}
 
+	  public function fetchPairs($key, $value, array $criteria = [], $order = NULL, $separator = " ")
+    {               
+        if(is_array($value))
+        {
+            $valueColumn = 'CONCAT_WS("' . $separator . '", ' . implode(',', $value) . ') AS custom_column';            
+            $value = 'custom_column';
+        }
+        else
+        {
+            $valueColumn = $value;
+        }
+        
+        $table = $this->getTable()->select($key . ',' . $valueColumn)->where($criteria);
+        
+        if($order)
+        {
+            $table->order($order);
+        }
+               
+        return $table->fetchPairs($key, $value);                
+    }
+	
 
 	/**
 	 * @param  mixed $id
@@ -79,12 +101,47 @@ abstract class Repository
 		return $this->createCollection($selection);
 	}
 
-
+	/**
+	 * @deprecated Use findBy instead
+	 */
 	public function findAll(): EntityCollection
 	{
 		return $this->findBy([]);
 	}
 
+	/**
+     * Save single instance from database
+     * 
+     * @param \Core\Entity $entity
+     * 
+     * @return bool
+     */
+    public function save(\Core\Entity $entity)
+    {
+        return $this->persist($entity);
+    }
+	
+	/**
+     * Save collection by transaction
+     * @note Array or Arrash hash must have entity inside
+     * 
+     * @param array|\Nette\Utils\ArrayHash|\YetORM\EntityCollection $collection
+     * 
+     * @return mixed
+     */
+    public function saveCollection($collection)
+    {
+        if($collection)
+        {
+            return $this->transaction(function() use ($collection)
+            {
+                foreach($collection as $entity)
+                {
+                    $this->persist($entity);
+                }
+            });
+        }
+    }
 
 	/**
 	 * @param  NSelection $selection
@@ -131,7 +188,7 @@ abstract class Repository
 			}
 
 			$record->setRow($inserted);
-			return TRUE;
+			return true;
 
 		});
 	}
@@ -296,4 +353,33 @@ abstract class Repository
 	protected function handleException(\Exception $e): void
 	{}
 
+	/**
+     * Return ResultSet by custom SQL           
+     */
+    public function query(string $sql, ...$params): Nette\Database\ResultSet
+    {        
+        return $this->database->query($sql, ...$params);
+    }
+	
+	/**
+     * Remove collection by transaction
+     * @note Array or Arrash hash must have entity inside
+     *
+     * @param array|\Nette\Utils\ArrayHash|\YetORM\EntityCollection $collection
+     *
+     * @return mixed
+     */
+    public function removeCollection($collection) :vid
+    {
+        if($collection)
+        {
+            return $this->transaction(function() use ($collection)
+            {
+                foreach($collection as $entity)
+                {
+                    $this->delete($entity);
+                }
+            });
+        }
+    }
 }
