@@ -9,3 +9,4 @@ require_once __DIR__ . '/ModulIS/Repository.php';
 require_once __DIR__ . '/ModulIS/EntityCollection.php';
 require_once __DIR__ . '/ModulIS/Record.php';
 require_once __DIR__ . '/ModulIS/Entity.php';
+require_once __DIR__ . '/ModulIS/MySqlDriver.php';
