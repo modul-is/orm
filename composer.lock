@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92b7f9607d5db728e1f2c8c2967cb77f",
+    "content-hash": "b1cfa22b29573539a15d726dacf1f9f8",
     "packages": [
         {
             "name": "nette/caching",
@@ -663,16 +663,16 @@
         },
         {
             "name": "modul-is/coding-standard",
-            "version": "v0.0.1",
+            "version": "v0.0.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/modul-is/coding-standard.git",
-                "reference": "29333a5ebc3f1794ecf8caf07c0baee2b7fc3a27"
+                "reference": "618f54148a83bfe038dfa9cf1a694ee640dfd0df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/modul-is/coding-standard/zipball/29333a5ebc3f1794ecf8caf07c0baee2b7fc3a27",
-                "reference": "29333a5ebc3f1794ecf8caf07c0baee2b7fc3a27",
+                "url": "https://api.github.com/repos/modul-is/coding-standard/zipball/618f54148a83bfe038dfa9cf1a694ee640dfd0df",
+                "reference": "618f54148a83bfe038dfa9cf1a694ee640dfd0df",
                 "shasum": ""
             },
             "require": {
@@ -701,7 +701,7 @@
                 "nette",
                 "php"
             ],
-            "time": "2019-12-27T14:23:16+00:00"
+            "time": "2020-01-02T12:18:55+00:00"
         },
         {
             "name": "nette/robot-loader",
@@ -3189,7 +3189,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "modul-is/coding-standard": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
