@@ -23,7 +23,7 @@
 		"nette/tester": "^2.2",
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^3.0",
-		"modul-is/coding-standard": "v0.0.1.x-dev"
+		"modul-is/coding-standard": "0.0.1"
 	},
 
 	"autoload":
@@ -37,5 +37,5 @@
 	}
 }
 
-	
+
 
