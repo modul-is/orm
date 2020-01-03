@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ModulIS;
 
@@ -8,7 +9,6 @@ use Nette\Database\Table\ActiveRow as NActiveRow;
 
 abstract class Entity
 {
-
 	/** @var Record */
 	protected $record;
 
@@ -17,7 +17,7 @@ abstract class Entity
 
 
 	/** @param  NActiveRow|Record $row */
-	public function __construct($row = NULL)
+	public function __construct($row = null)
 	{
 		$this->record = Record::create($row);
 	}
@@ -29,18 +29,17 @@ abstract class Entity
 	}
 
 
-	/**
-	 * @param  string $name
-	 * @param  array $args
-	 */
 	public function __call($name, $args): void
 	{
 		// events support
 		$ref = static::getReflection();
-		if (preg_match('#^on[A-Z]#', $name) && $ref->hasProperty($name)) {
+		if(preg_match('#^on[A-Z]#', $name) && $ref->hasProperty($name))
+		{
 			$prop = $ref->getProperty($name);
-			if ($prop->isPublic() && !$prop->isStatic() && (is_array($this->$name) || $this->$name instanceof \Traversable)) {
-				foreach ($this->$name as $cb) {
+			if($prop->isPublic() && !$prop->isStatic() && (is_array($this->$name) || $this->$name instanceof \Traversable))
+			{
+				foreach($this->$name as $cb)
+				{
 					$cb($args);
 				}
 
@@ -53,17 +52,15 @@ abstract class Entity
 	}
 
 
-	/**
-	 * @param  string $name
-	 */
-	public function & __get($name)
+	public function &__get($name)
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if ($prop instanceof AnnotationProperty) {
+		if($prop instanceof AnnotationProperty)
+		{
 			$value = $prop->getValue($this);
-			
+
 			if($prop->getType() == 'json')
 			{
 				if($value !== null)
@@ -71,25 +68,23 @@ abstract class Entity
 					$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
 				}
 			}
-			
+
 			return $value;
-		}				
+		}
 
 		throw new Exception\MemberAccessException("Cannot read an undeclared property {$ref->getName()}::\$$name.");
 	}
 
 
-	/**
-	 * @param  string $name
-	 * @param  mixed $value
-	 */
 	public function __set($name, $value): void
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if ($prop instanceof AnnotationProperty) {
-			
+		if($prop instanceof AnnotationProperty)
+
+		{
+
 			if($prop->getType() == 'json')
 			{
 				if(is_array($value))
@@ -97,9 +92,9 @@ abstract class Entity
 					$value = \Nette\Utils\Json::encode($value);
 				}
 			}
-			
+
 			$prop->setValue($this, $value);
-			
+
 			return ;
 		}
 
@@ -107,23 +102,20 @@ abstract class Entity
 	}
 
 
-	/**
-	 * @param  string $name
-	 */
 	public function __isset($name): bool
 	{
 		$prop = static::getReflection()->getEntityProperty($name);
 
-		if ($prop instanceof AnnotationProperty) {
-			return $prop->getValue($this) !== NULL;
+		if($prop instanceof AnnotationProperty)
+		{
+			return $prop->getValue($this) !== null;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 
 	/**
-	 * @param  string $name
 	 * @throws Exception\NotSupportedException
 	 */
 	public function __unset($name): void
@@ -135,67 +127,66 @@ abstract class Entity
 	public static function getReflection(): Reflection\EntityType
 	{
 		$class = get_called_class();
-		if (!isset(self::$reflections[$class])) {
+		if(!isset(self::$reflections[$class]))
+		{
 			self::$reflections[$class] = new Reflection\EntityType($class);
 		}
 
 		return self::$reflections[$class];
 	}
-	
-		    
-    public function getModifiedArray(): array
-    {
-        return $this->record->getModified();
-    }
 
-		
-    public function toArray(array $excludedProperties = []): array
-    {
-        if(!$excludedProperties instanceof \Nette\Utils\ArrayHash && !is_array($excludedProperties))
-        {
-            throw new \Exception('Excluded properties should be Array or \Nette\Utils\ArrayHash');
-        }
 
-        $ref = static::getReflection();
-	$values = [];
-
-	foreach ($ref->getEntityProperties() as $name => $property)
-        {
-            if(array_search($name, $excludedProperties) === FALSE && $name != 'modifiedArray')
-            {
-                if($property instanceof \YetORM\Reflection\MethodProperty)
-                {
-                    $value = $this->{'get' . $name}();
-                }
-                else
-                {
-                    $value = (!empty($this->$name) || $this->$name === 0) ? $this->$name : NULL;
-                }
-
-                if(!($value instanceof \YetORM\EntityCollection || $value instanceof \YetORM\Entity))
-                {
-                    $values[$name] = $value;
-                }
-            }
+	public function getModifiedArray(): array
+	{
+		return $this->record->getModified();
 	}
 
-        return $values;
-    }
-	
-	
-	/**
-     * Fill entity from array or ArrayHash
-     *
-     * @param array|\Nette\Utils\ArrayHash     
-     */
-    public function fillFromArray($values): void
-    {
-        $ref = static::getReflection();
 
-        foreach($ref->getEntityProperties() as $name => $property)
-        {
-            if(!$property->isReadonly())
-            {
+	public function toArray(array $excludedProperties = []): array
+	{
+		if(!$excludedProperties instanceof \Nette\Utils\ArrayHash && !is_array($excludedProperties))
+		{
+			throw new \Exception('Excluded properties should be Array or \Nette\Utils\ArrayHash');
+		}
+
+		$ref = static::getReflection();
+	$values = [];
+
+	foreach($ref->getEntityProperties() as $name => $property)
+		{
+			if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
+			{
+				if($property instanceof \YetORM\Reflection\MethodProperty)
+				{
+					$value = $this->{'get' . $name}();
+				}
+				else
+				{
+					$value = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
+				}
+
+				if(!($value instanceof \YetORM\EntityCollection || $value instanceof \YetORM\Entity))
+				{
+					$values[$name] = $value;
+				}
+			}
+	}
+
+		return $values;
+	}
+
+
+	/**
+	 * Fill entity from array or ArrayHash
+	 */
+	public function fillFromArray($values): void
+	{
+		$ref = static::getReflection();
+
+		foreach($ref->getEntityProperties() as $name => $property)
+		{
+			if(!$property->isReadonly())
+			{
 				/**
 				 * Set NULL for nullable properties without value
 				 * Skip if property not set and is not nullable
@@ -235,10 +226,10 @@ abstract class Entity
 				else
 				{
 					$this->$name = $values[$name];
-                    }
-                
-            }
-        }
-    }
-	
+					}
+
+			}
+		}
+	}
+
 }

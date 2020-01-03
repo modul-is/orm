@@ -1,13 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace ModulIS;
 
-use Nette\Utils\Callback as NCallback;
 use Nette\Database\Table\Selection as NSelection;
+use Nette\Utils\Callback as NCallback;
 
 
 class EntityCollection implements \Iterator, \Countable
 {
+	public const ASC = false;
+
+	public const DESC = true;
 
 	/** @var NSelection */
 	protected $selection;
@@ -22,36 +26,29 @@ class EntityCollection implements \Iterator, \Countable
 	protected $refColumn;
 
 	/** @var Entity[]|NULL */
-	protected $data = NULL;
+	protected $data;
 
 	/** @var int|NULL */
-	private $count = NULL;
+	private $count;
 
 	/** @var array */
 	private $keys;
 
 
-	const ASC = FALSE;
-	const DESC = TRUE;
-
-
-	/**
-	 * @param  NSelection $selection
-	 * @param  string|callable $entity
-	 * @param  string $refTable
-	 * @param  string $refColumn
-	 */
-	public function __construct(NSelection $selection, $entity, $refTable = NULL, $refColumn = NULL)
+	public function __construct(NSelection $selection, $entity, $refTable = null, $refColumn = null)
 	{
 		$this->selection = $selection;
 		$this->refTable = $refTable;
 		$this->refColumn = $refColumn;
 
-		try {
+		try
+		{
 			NCallback::check($entity);
 			$this->entity = NCallback::closure($entity);
 
-		} catch (\Exception $e) {
+		}
+		catch(\Exception $e)
+		{
 			$this->entity = $entity;
 		}
 	}
@@ -59,20 +56,26 @@ class EntityCollection implements \Iterator, \Countable
 
 	private function loadData(): void
 	{
-		if ($this->data === NULL) {
-			if ($this->entity instanceof \Closure) {
+		if($this->data === null)
+		{
+			if($this->entity instanceof \Closure)
+			{
 				$factory = $this->entity;
 
-			} else {
+			}
+			else
+			{
 				$class = $this->entity;
-				$factory = function ($record) use ($class) {
+				$factory = function ($record) use($class)
+				{
 					return new $class($record);
 				};
 			}
 
 			$this->data = [];
-			foreach ($this->selection as $row) {
-				$record = $this->refTable === NULL ? $row : $row->ref($this->refTable, $this->refColumn);
+			foreach($this->selection as $row)
+			{
+				$record = $this->refTable === null ? $row : $row->ref($this->refTable, $this->refColumn);
 				$this->data[] = $factory($record);
 			}
 		}
@@ -96,19 +99,20 @@ class EntityCollection implements \Iterator, \Countable
 	 *	'second' => EntityCollection::DESC,
 	 * ); // ORDER BY [first], [second] DESC
 	 * </code>
-	 *
-	 * @param  string|array $column
-	 * @param  bool $dir
 	 */
-	public function orderBy($column, $dir = NULL): EntityCollection
+	public function orderBy($column, $dir = null): self
 	{
-		if (is_array($column)) {
-			foreach ($column as $col => $d) {
+		if(is_array($column))
+		{
+			foreach($column as $col => $d)
+			{
 				$this->orderBy($col, $d);
 			}
 
-		} else {
-			$dir === NULL && ($dir = static::ASC);
+		}
+		else
+		{
+			$dir === null && ($dir = static::ASC);
 			$this->selection->order($column . ($dir === static::DESC ? ' DESC' : ''));
 		}
 
@@ -117,11 +121,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	/**
-	 * @param  int $limit
-	 * @param  int $offset
-	 */
-	public function limit($limit, $offset = NULL): EntityCollection
+	public function limit($limit, $offset = null): self
 	{
 		$this->selection->limit($limit, $offset);
 		$this->invalidate();
@@ -131,7 +131,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	private function invalidate(): void
 	{
-		$this->data = NULL;
+		$this->data = null;
 	}
 
 
@@ -148,7 +148,7 @@ class EntityCollection implements \Iterator, \Countable
 	public function current(): Entity
 	{
 		$key = current($this->keys);
-		return $key === FALSE ? FALSE : $this->data[$key];
+		return $key === false ? false : $this->data[$key];
 	}
 
 
@@ -166,26 +166,27 @@ class EntityCollection implements \Iterator, \Countable
 
 	public function valid(): bool
 	{
-		return current($this->keys) !== FALSE;
+		return current($this->keys) !== false;
 	}
 
 
 	// === \Countable INTERFACE ======================================
 
-	/**
-	 * @param  string $column
-	 */
-	public function count($column = NULL): int
+
+	public function count($column = null): int
 	{
-		if ($column !== NULL) {
+		if($column !== null)
+		{
 			return $this->selection->count($column);
 		}
 
-		if ($this->data !== NULL) {
+		if($this->data !== null)
+		{
 			return count($this->data);
 		}
 
-		if ($this->count === NULL) {
+		if($this->count === null)
+		{
 			$this->count = $this->selection->count('*');
 		}
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ModulIS;
 
@@ -7,7 +8,6 @@ use Nette\Database\Connection as NdbConnection;
 
 class Transaction
 {
-
 	/** @var NdbConnection */
 	private $connection;
 
@@ -20,25 +20,26 @@ class Transaction
 	{
 		$this->connection = $connection;
 
-		if (!isset(self::$transactionCounter[$dsn = $this->getDsnKey()])) {
+		if(!isset(self::$transactionCounter[$dsn = $this->getDsnKey()]))
+		{
 			self::$transactionCounter[$dsn] = 0;
 		}
 	}
 
 
-	/**
-	 * @param  \Closure $callback
-	 */
 	public function transaction(\Closure $callback)
 	{
-		try {
+		try
+		{
 			$this->begin();
 				$return = $callback();
 			$this->commit();
 
 			return $return;
 
-		} catch (\Exception $e) {
+		}
+		catch(\Exception $e)
+		{
 			$this->rollback();
 			throw $e;
 		}
@@ -47,7 +48,8 @@ class Transaction
 
 	public function begin(): void
 	{
-		if (self::$transactionCounter[$this->getDsnKey()]++ === 0) {
+		if(self::$transactionCounter[$this->getDsnKey()]++ === 0)
+		{
 			$this->connection->beginTransaction();
 		}
 	}
@@ -55,11 +57,13 @@ class Transaction
 
 	public function commit(): void
 	{
-		if (self::$transactionCounter[$dsn = $this->getDsnKey()] === 0) {
+		if(self::$transactionCounter[$dsn = $this->getDsnKey()] === 0)
+		{
 			throw new Exception\InvalidStateException('No transaction started.');
 		}
 
-		if (--self::$transactionCounter[$dsn] === 0) {
+		if(--self::$transactionCounter[$dsn] === 0)
+		{
 			$this->connection->commit();
 		}
 	}
@@ -67,7 +71,8 @@ class Transaction
 
 	public function rollback(): void
 	{
-		if (self::$transactionCounter[$dsn = $this->getDsnKey()] !== 0) {
+		if(self::$transactionCounter[$dsn = $this->getDsnKey()] !== 0)
+		{
 			$this->connection->rollBack();
 		}
 

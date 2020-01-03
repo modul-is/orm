@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ModulIS\Reflection;
 
@@ -26,7 +27,7 @@ abstract class EntityProperty
 	 */
 	private $type;
 
-	
+
 	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type)
 	{
 		$this->name = $name;
@@ -64,16 +65,16 @@ abstract class EntityProperty
 	{
 		return $this->type;
 	}
-	
+
 
 	public function isOfNativeType(): bool
 	{
 		return self::isNativeType($this->type);
 	}
 
-	
+
 	public static function isNativeType(string $type): bool
 	{
-		return $type !== null && in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array']);
+		return $type !== null && in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array'], true);
 	}
 }

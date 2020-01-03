@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace ModulIS\Reflection;
 
@@ -7,7 +8,6 @@ use ModulIS\Exception;
 
 class AnnotationProperty extends EntityProperty
 {
-
 	/**
 	 * @var string
 	 */
@@ -17,6 +17,7 @@ class AnnotationProperty extends EntityProperty
 	 * @var bool
 	 */
 	private $nullable;
+
 
 	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type, string $column, bool $nullable)
 	{
@@ -64,26 +65,35 @@ class AnnotationProperty extends EntityProperty
 		return $this->nullable;
 	}
 
-	
+
 	public function checkType($value, bool $need = true): bool
 	{
-		if ($value === null) {
-			if (!$this->nullable) {
+		if($value === null)
+		{
+			if(!$this->nullable)
+			{
 				$entity = $this->getEntityReflection()->getName();
 				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be NULL.");
 			}
 
-		} elseif (!$this->isOfNativeType()) {
+		}
+		elseif(!$this->isOfNativeType())
+		{
 			$class = $this->getType();
-			if (!($value instanceof $class)) {
+			if(!($value instanceof $class))
+			{
 				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
 						. (($valtype = gettype($value)) === 'object' ? get_class($value) : $valtype) . "' given.");
 			}
 
-		} elseif ($need && !call_user_func('is_' . $this->getType(), $value)) {
+		}
+		elseif($need && !call_user_func('is_' . $this->getType(), $value))
+		{
 			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . gettype($value) . "' given.");
 
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 
@@ -91,12 +101,9 @@ class AnnotationProperty extends EntityProperty
 	}
 
 
-	/**
-	 * @param  mixed $value
-	 */
 	public function setType($value)
 	{
-		if (!$this->checkType($value, true)) { // type casting needed
+		if(!$this->checkType($value, true)){ // type casting needed
 			settype($value, $this->getType());
 		}
 
