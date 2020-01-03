@@ -26,8 +26,7 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Verify MySQL connection
-        run: |
-          sudo apt-get install -y mysql-client
+        run: sudo apt-get install -y mysql-client
           mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
 
     - name: Run Nette Tester
