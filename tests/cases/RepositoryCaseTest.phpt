@@ -24,7 +24,7 @@ class RepositoryCaseTest extends \Tester\TestCase
         $a = 8 - 4;
 
         Assert::same(4, $a);
-        Assert::notSame(12, $a * $a);
+        Assert::same(12, $a * $a);
     }
 
     public function testNull()
