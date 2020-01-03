@@ -1,4 +1,4 @@
-name: PHP Composer & CS
+name: PHP Composer, Nette Tester & CS
 
 on: [push]
 
@@ -15,6 +15,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run Nette Tester
+      run: vendor/bin/tester.bat -c tests/models/ini/php.ini tests/cases
 
     - name: Run Coding Standard
       run: vendor/modul-is/coding-standard/ecs check src --fix
