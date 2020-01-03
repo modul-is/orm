@@ -13,7 +13,9 @@ class EntityCaseTest extends \Tester\TestCase
 
     public function setUp()
     {
-        $this->cache = new Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp');
+        $path = join(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'temp']);
+
+        $this->cache = new Nette\Caching\Storages\FileStorage($path);
         $this->cache->clean([\Nette\Caching\Cache::ALL]);
     }
 

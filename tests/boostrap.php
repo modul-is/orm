@@ -6,4 +6,11 @@ require __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set('UTC');
 
-\Tester\Environment::lock('core', __DIR__ . '/../temp');
+$path = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'temp']);
+
+if(!file_exists($path))
+{
+    mkdir($path);
+}
+
+\Tester\Environment::lock('core', $path);
