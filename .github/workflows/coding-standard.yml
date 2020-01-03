@@ -11,7 +11,7 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ROOT_PASSWORD: 1234
+          MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -29,7 +29,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y mysql-client
-        mysql --host mysql -uroot -ppassword -e "SHOW DATABASES"
+        mysql --host 127.0.0.1 -uroot -ppassword -e "SHOW DATABASES"
 
     - name: Run Nette Tester
       run: vendor/bin/tester -C tests/cases
