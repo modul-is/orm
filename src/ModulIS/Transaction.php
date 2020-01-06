@@ -3,20 +3,23 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use Nette\Database\Connection as NdbConnection;
+use Nette\Database\Connection;
 
 
 class Transaction
 {
-	/** @var NdbConnection */
+	/**
+	 * @var Connection
+	 */
 	private $connection;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private static $transactionCounter = [];
 
 
-	/** @param  NdbConnection $connection */
-	public function __construct(NdbConnection $connection)
+	public function __construct(Connection $connection): void
 	{
 		$this->connection = $connection;
 
