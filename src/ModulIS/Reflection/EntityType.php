@@ -4,8 +4,9 @@ declare(strict_types=1);
 namespace ModulIS\Reflection;
 
 use ModulIS;
-use Nette\Utils\Reflection as NReflection;
-use Nette\Utils\Strings as NStrings;
+use Nette\Utils\Reflection;
+use Nette\Utils\Strings;
+use ModulIS\Exception;
 
 class EntityType extends \ReflectionClass
 {
@@ -81,12 +82,12 @@ class EntityType extends \ReflectionClass
 	 */
 	public static function parseAnnotation(\Reflector $ref, string $name): ?string
 	{
-		if(!NReflection::areCommentsAvailable())
+		if(!Reflection::areCommentsAvailable())
 		{
 			throw new Nette\InvalidStateException('You have to enable phpDoc comments in opcode cache.');
 		}
 		$re = '#[\s*]@' . preg_quote($name, '#') . '(?=\s|$)(?:[ \t]+([^@\s]\S*))?#';
-		if($ref->getDocComment() && $m = NStrings::match(trim($ref->getDocComment(), '/*'), $re))
+		if($ref->getDocComment() && $m = Strings::match(trim($ref->getDocComment(), '/*'), $re))
 
 		{
 
@@ -97,89 +98,70 @@ class EntityType extends \ReflectionClass
 
 
 	private static function loadAnnotationProperties(string $class): void
-	{
+	{				
 		if(!isset(self::$annProps[$class]))
 		{
 			self::$annProps[$class] = [];
 
-			$matches = NStrings::matchAll(($class::getReflection())->getDocComment(), '/@(\S+) (\S+) ((?:(?!\*\/)\S(?: -> \S)*)*) ?((?:(?!\*\/).)*)/', PREG_SET_ORDER);
+			$matches = Strings::matchAll(($class::getReflection())->getDocComment(), '/@(\S+) (\S+) (\S+)/', PREG_SET_ORDER);
 
 			/**
 			 * 0 - @property-read int $id desc
 			 * 1 - property-read
-			 * 2 - int
+			 * 2 - int|NULL
 			 * 3 - $id			 
 			 */
 			foreach($matches as $match)
-
 			{
-
-				if($match[1] === 'property' || $match[1] === 'property-read')
-				{
-					if(!(isset($match[3]) && strlen($match[3])) || !(isset($match[2]) && strlen($match[2])))
+				[$result, $property, $type, $name] = $match;
+				
+				if($property === 'property' || $property === 'property-read')
+				{														
+					if(!Strings::startsWith($name, '$'))
 					{
-						throw new ModulIS\Exception\InvalidPropertyDefinitionException('"@property[-read] <type> $<property> [-> <column>][ <description>]" expected, "' . trim($match[0]) . '" given.');
+						throw new Exception\InvalidPropertyDefinitionException('Missing "$" in property name in "' . $name . '" in string "' .  $result . '"');
 					}
 
-					if(!NStrings::startsWith($match[3], '$'))
+					if(Strings::contains($type, '|'))
 					{
-						throw new ModulIS\Exception\InvalidPropertyDefinitionException('Missing "$" in property name in "' . trim($match[0]) . '"');
-					}
+						$kind = Strings::before($type, '|');
+						$null = Strings::after($type, '|');
+						
+						if($kind === 'null')
+						{
+							throw new Exception\InvalidPropertyDefinitionException('Use null as second parameter like "string|null".');
+						}
+						else
+						{
+							$type = $kind;
+						}
 
-					$nullable = false;
-					$type = $match[2];
-
-					$types = explode('|', $type, 2);
-					if(count($types) === 2)
-					{
-						if(strcasecmp($types[0], 'NULL') === 0)
+						if($null === 'null')
 						{
 							$nullable = true;
-							$type = $types[1];
-						}
-
-						if(strcasecmp($types[1], 'NULL') === 0)
+						}	
+						else
 						{
-							if($nullable)
-							{
-								throw new ModulIS\Exception\InvalidPropertyDefinitionException('Only one NULL is allowed, "' . $match[2] . '" given.');
-							}
-
-							$nullable = true;
-							$type = $types[0];
-						}
-
-						if(!$nullable)
-						{
-							throw new ModulIS\Exception\InvalidPropertyDefinitionException('Multiple non-NULL types detected.');
+							throw new Exception\InvalidPropertyDefinitionException('Use "null" instead of "' . $null . '". Multiple non-null types detected.');
 						}
 					}
-
-					if($type === 'boolean')
+					else
 					{
-						$type = 'bool';
+						$nullable = false;
+					}					
 
-					}
-					elseif($type === 'integer')
-					{
-						$type = 'int';
-					}
+					//if(!EntityProperty::isNativeType($type))
+					//{
+					//	$type = Reflection::expandClassName($type, $class::getReflection());
+					//}
 
-					if(!EntityProperty::isNativeType($type))
-					{
-						$type = NReflection::expandClassName($type, $class::getReflection());
-					}
-
-					$readonly = $match[1] === 'property-read';
-					$name = trim(substr(NStrings::contains($match[3], '->') ? NStrings::before($match[3], '->') : $match[3], 1));
-					$column = trim(substr(NStrings::contains($match[3], '->') ? NStrings::after($match[3], '->') : $match[3], 1));
-
-					self::$annProps[$class][$name] = new AnnotationProperty(
+					$column = Strings::after($name, '$');
+					
+					self::$annProps[$class][$column] = new AnnotationProperty(
 							$class::getReflection(),
-							$name,
-							$readonly,
-							$type,
 							$column,
+							$property === 'property-read',
+							$type,							
 							$nullable
 					);
 

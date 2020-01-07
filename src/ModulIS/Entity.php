@@ -23,7 +23,7 @@ abstract class Entity
 	/**
 	 * @param  ActiveRow|Record $row
 	 */
-	public function __construct($row = null): void
+	public function __construct($row = null)
 	{
 		$this->record = Record::create($row);
 	}
@@ -60,9 +60,10 @@ abstract class Entity
 
 	public function &__get($name)
 	{
+		
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
-
+		
 		if($prop instanceof AnnotationProperty)
 		{
 			$value = $prop->getValue($this);
@@ -73,6 +74,10 @@ abstract class Entity
 				{
 					$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
 				}
+			}
+			elseif($prop->getType() == 'date')
+			{				
+				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
 			}
 
 			return $value;
@@ -89,12 +94,17 @@ abstract class Entity
 
 		if($prop instanceof AnnotationProperty)
 		{
+			
 			if($prop->getType() == 'json')
 			{
 				if(is_array($value))
 				{
 					$value = \Nette\Utils\Json::encode($value);
 				}
+			}
+			elseif($prop->getType() == 'date')
+			{
+				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
 			}
 
 			$prop->setValue($this, $value);

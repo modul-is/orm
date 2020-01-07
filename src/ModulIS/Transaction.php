@@ -19,7 +19,7 @@ class Transaction
 	private static $transactionCounter = [];
 
 
-	public function __construct(Connection $connection): void
+	public function __construct(Connection $connection)
 	{
 		$this->connection = $connection;
 

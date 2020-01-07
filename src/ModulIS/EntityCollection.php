@@ -24,17 +24,17 @@ class EntityCollection implements \Iterator, \Countable
 	protected $entity;
 
 	/**
-	 * @var string|NULL
+	 * @var string|null
 	 */
 	protected $refTable;
 
 	/**
-	 * @var string|NULL
+	 * @var string|null
 	 */
 	protected $refColumn;
 
 	/**
-	 * @var Entity[]|NULL
+	 * @var Entity[]|null
 	 */
 	protected $data;
 

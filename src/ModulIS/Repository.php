@@ -6,7 +6,7 @@ namespace ModulIS;
 use ModulIS\Exception\InvalidArgumentException;
 use ModulIS\Reflection\EntityType;
 use Nette;
-use Nette\Database\Context as NdbContext;
+use Nette\Database\Context as Context;
 use Nette\Database\IRow as NIRow;
 use Nette\Database\Table\Selection as NSelection;
 use Nette\Utils\Reflection as NReflection;
@@ -21,10 +21,10 @@ abstract class Repository
 	/** @var NdbContext */
 	protected $database;
 
-	/** @var string|NULL */
+	/** @var string|null */
 	protected $table;
 
-	/** @var string|NULL */
+	/** @var string|null */
 	protected $entity;
 
 	/** @var Transaction */
@@ -32,7 +32,7 @@ abstract class Repository
 
 
 	/** @param  NdbContext $database */
-	public function __construct(NdbContext $database)
+	public function __construct(Context $database)
 	{
 		$this->database = $database;
 		$this->transaction = new Transaction($database->getConnection());
@@ -102,7 +102,7 @@ abstract class Repository
 	/**
 	 * Save single instance from database
 	 */
-	public function save(\Core\Entity $entity)
+	public function save(Entity $entity)
 	{
 		return $this->persist($entity);
 	}

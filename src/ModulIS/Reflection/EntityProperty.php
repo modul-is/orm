@@ -86,7 +86,7 @@ abstract class EntityProperty
 	
 	public static function isExtraType(string $type): bool
 	{
-		return $type !== null && $type === 'json';
+		return $type !== null && ($type === 'json' || $type == 'date');
 	}
 	
 }

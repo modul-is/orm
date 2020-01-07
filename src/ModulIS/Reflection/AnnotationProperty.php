@@ -19,11 +19,11 @@ class AnnotationProperty extends EntityProperty
 	private $nullable;
 
 
-	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type, string $column, bool $nullable)
+	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type, bool $nullable)
 	{
 		parent::__construct($reflection, $name, $readonly, $type);
 
-		$this->column = $column;
+		$this->column = $name;
 		$this->nullable = $nullable;
 	}
 
@@ -73,13 +73,18 @@ class AnnotationProperty extends EntityProperty
 			if(!$this->nullable)
 			{
 				$entity = $this->getEntityReflection()->getName();
-				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be NULL.");
+				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 
 		}
-		elseif(!$this->isOfNativeType() && !$this->isOfExtraType())
+		elseif($this->isOfExtraType())
+		{
+			return true;
+		}
+		elseif(!$this->isOfNativeType())
 		{
 			$class = $this->getType();
+
 			if(!($value instanceof $class))
 			{
 				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
@@ -89,6 +94,7 @@ class AnnotationProperty extends EntityProperty
 		}
 		elseif($need && !call_user_func('is_' . $this->getType(), $value))
 		{
+			bdump("X");
 			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . gettype($value) . "' given.");
 
 		}
@@ -102,7 +108,7 @@ class AnnotationProperty extends EntityProperty
 
 
 	public function setType($value)
-	{
+	{		
 		if(!$this->checkType($value, true)){ // type casting needed
 			settype($value, $this->getType());
 		}
