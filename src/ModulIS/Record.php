@@ -3,24 +3,29 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use Nette\Database\Table\ActiveRow as NActiveRow;
-use Nette\Database\Table\GroupedSelection as NGroupedSelection;
+use Nette\Database\Table\ActiveRow;
+use Nette\Database\Table\GroupedSelection;
 
 
 class Record
 {
-	/** @var NActiveRow */
+	/**
+	 * @var ActiveRow
+	 */
 	private $row;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $values = [];
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $modified = [];
 
 
-	/** @param  NActiveRow $row */
-	public function __construct(NActiveRow $row = null)
+	public function __construct(ActiveRow $row = null)
 	{
 		$this->row = $row;
 	}
@@ -28,7 +33,7 @@ class Record
 
 	public static function create($row = null): self
 	{
-		if($row === null || $row instanceof NActiveRow)
+		if($row === null || $row instanceof ActiveRow)
 		{
 			return new static($row);
 
@@ -41,8 +46,8 @@ class Record
 		else
 		{
 			throw new Exception\InvalidArgumentException("Instance of 'Nette\Database\Table\ActiveRow' or 'ModulIS\Record' expected, '"
-					. (is_object($row) ? get_class($row) : gettype($row))
-					. "' given.");
+				. (is_object($row) ? get_class($row) : gettype($row))
+				. "' given.");
 		}
 	}
 
@@ -53,13 +58,13 @@ class Record
 	}
 
 
-	public function getRow(): ?NActiveRow
+	public function getRow(): ?ActiveRow
 	{
 		return $this->row;
 	}
 
 
-	public function setRow(NActiveRow $row): self
+	public function setRow(ActiveRow $row): self
 	{
 		$this->reload($row);
 		return $this;
@@ -70,11 +75,11 @@ class Record
 	{
 		$this->checkRow();
 		$native = $this->row->ref($key, $throughColumn);
-		return $native instanceof NActiveRow ? new static($native) : null;
+		return $native instanceof ActiveRow ? new static($native) : null;
 	}
 
 
-	public function related($key, $throughColumn = null): NGroupedSelection
+	public function related($key, $throughColumn = null): GroupedSelection
 	{
 		$this->checkRow();
 		return $this->row->related($key, $throughColumn);
@@ -120,7 +125,7 @@ class Record
 		}
 
 		$native = $this->row->$name;
-		$value = $this->values[$name] = $native instanceof NActiveRow ? new static($native) : $native;
+		$value = $this->values[$name] = $native instanceof ActiveRow ? new static($native) : $native;
 
 		return $value;
 	}
@@ -134,9 +139,7 @@ class Record
 
 	public function __isset($name): bool
 	{
-		return isset($this->modified[$name])
-			|| isset($this->values[$name])
-			|| isset($this->row->$name);
+		return isset($this->modified[$name]) || isset($this->values[$name]) || isset($this->row->$name);
 	}
 
 
@@ -155,7 +158,7 @@ class Record
 	}
 
 
-	private function reload(NActiveRow $row): void
+	private function reload(ActiveRow $row): void
 	{
 		$this->row = $row;
 		$this->modified = $this->values = [];

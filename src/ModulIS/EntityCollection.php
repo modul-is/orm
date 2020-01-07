@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use Nette\Database\Table\Selection as NSelection;
-use Nette\Utils\Callback as NCallback;
+use Nette\Database\Table\Selection as Selection;
+use Nette\Utils\Callback as Callback;
 
 
 class EntityCollection implements \Iterator, \Countable
@@ -13,29 +13,43 @@ class EntityCollection implements \Iterator, \Countable
 
 	public const DESC = true;
 
-	/** @var NSelection */
+	/**
+	 * @var Selection
+	 */
 	protected $selection;
 
-	/** @var string|NCallback */
+	/**
+	 * @var string|Callback
+	 */
 	protected $entity;
 
-	/** @var string|NULL */
+	/**
+	 * @var string|NULL
+	 */
 	protected $refTable;
 
-	/** @var string|NULL */
+	/**
+	 * @var string|NULL
+	 */
 	protected $refColumn;
 
-	/** @var Entity[]|NULL */
+	/**
+	 * @var Entity[]|NULL
+	 */
 	protected $data;
 
-	/** @var int|NULL */
+	/**
+	 * @var int|NULL
+	 */
 	private $count;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $keys;
 
 
-	public function __construct(NSelection $selection, $entity, $refTable = null, $refColumn = null)
+	public function __construct(Selection $selection, $entity, $refTable = null, $refColumn = null)
 	{
 		$this->selection = $selection;
 		$this->refTable = $refTable;
@@ -43,8 +57,8 @@ class EntityCollection implements \Iterator, \Countable
 
 		try
 		{
-			NCallback::check($entity);
-			$this->entity = NCallback::closure($entity);
+			Callback::check($entity);
+			$this->entity = Callback::closure($entity);
 
 		}
 		catch(\Exception $e)
@@ -108,11 +122,9 @@ class EntityCollection implements \Iterator, \Countable
 			{
 				$this->orderBy($col, $d);
 			}
-
 		}
 		else
-		{
-			$dir === null && ($dir = static::ASC);
+		{			
 			$this->selection->order($column . ($dir === static::DESC ? ' DESC' : ''));
 		}
 

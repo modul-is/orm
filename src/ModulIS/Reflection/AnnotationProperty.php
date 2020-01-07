@@ -77,7 +77,7 @@ class AnnotationProperty extends EntityProperty
 			}
 
 		}
-		elseif(!$this->isOfNativeType())
+		elseif(!$this->isOfNativeType() && !$this->isOfExtraType())
 		{
 			$class = $this->getType();
 			if(!($value instanceof $class))

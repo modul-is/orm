@@ -4,20 +4,26 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use ModulIS\Reflection\AnnotationProperty;
-use Nette\Database\Table\ActiveRow as NActiveRow;
+use Nette\Database\Table\ActiveRow;
 
 
 abstract class Entity
 {
-	/** @var Record */
+	/**
+	 * @var Record
+	 */
 	protected $record;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private static $reflections = [];
 
 
-	/** @param  NActiveRow|Record $row */
-	public function __construct($row = null)
+	/**
+	 * @param  ActiveRow|Record $row
+	 */
+	public function __construct($row = null): void
 	{
 		$this->record = Record::create($row);
 	}
@@ -82,9 +88,7 @@ abstract class Entity
 		$prop = $ref->getEntityProperty($name);
 
 		if($prop instanceof AnnotationProperty)
-
 		{
-
 			if($prop->getType() == 'json')
 			{
 				if(is_array($value))
@@ -113,16 +117,7 @@ abstract class Entity
 
 		return false;
 	}
-
-
-	/**
-	 * @throws Exception\NotSupportedException
-	 */
-	public function __unset($name): void
-	{
-		throw new Exception\NotSupportedException;
-	}
-
+	
 
 	public static function getReflection(): Reflection\EntityType
 	{
@@ -150,27 +145,27 @@ abstract class Entity
 		}
 
 		$ref = static::getReflection();
-	$values = [];
+		$values = [];
 
-	foreach($ref->getEntityProperties() as $name => $property)
-		{
-			if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
+		foreach($ref->getEntityProperties() as $name => $property)
 			{
-				if($property instanceof \YetORM\Reflection\MethodProperty)
+				if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
 				{
-					$value = $this->{'get' . $name}();
-				}
-				else
-				{
-					$value = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
-				}
+					if($property instanceof \YetORM\Reflection\MethodProperty)
+					{
+						$value = $this->{'get' . $name}();
+					}
+					else
+					{
+						$value = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
+					}
 
-				if(!($value instanceof \YetORM\EntityCollection || $value instanceof \YetORM\Entity))
-				{
-					$values[$name] = $value;
+					if(!($value instanceof \YetORM\EntityCollection || $value instanceof \YetORM\Entity))
+					{
+						$values[$name] = $value;
+					}
 				}
-			}
-	}
+		}
 
 		return $values;
 	}

@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use ModulIS\Exception\InvalidArgumentException;
-use ModulIS\Reflection\AnnotationProperty;
 use ModulIS\Reflection\EntityType;
 use Nette;
 use Nette\Database\Context as NdbContext;
@@ -47,7 +46,7 @@ abstract class Repository
 	}
 
 
-	  public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' ')
+	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' ')
 	{
 		if(is_array($value))
 		{
@@ -197,9 +196,7 @@ abstract class Repository
 	final protected function getTableName(): string
 	{
 		if($this->table === null)
-
 		{
-
 			$ref = new \ReflectionClass($this);
 			$this->table = EntityType::parseAnnotation($ref, 'table');
 
@@ -244,100 +241,19 @@ abstract class Repository
 	}
 
 
-	public function __call($name, $args)
-	{
-		if(strncmp($name, 'getBy', 5) === 0)
-		{
-			$selection = $this->getTable()->limit(1);
-			$properties = explode('And', substr($name, 5));
-
-			if(count($properties) !== count($args))
-			{
-				throw new Exception\InvalidArgumentException('Wrong number of argument passed to ' . $name . ' method - ' . count($properties) . ' expected, ' . count($args) . ' given.');
-			}
-
-			$ref = Reflection\EntityType::from($class = $this->getEntityClass());
-			foreach($properties as $key => $property)
-			{
-				$property = lcfirst($property);
-				$prop = $ref->getEntityProperty($property);
-
-				if($prop === null)
-				{
-					throw new Exception\InvalidArgumentException("Property '\$$property' not found in entity '$class'.");
-				}
-
-				if(!$prop instanceof AnnotationProperty)
-				{
-					throw new InvalidArgumentException('Cannot use ' . static::getReflection()->getName() . "::$name() - missing @property definition of $class::\$$property.");
-				}
-
-				$selection->where($prop->getColumn(), $args[$key]);
-			}
-
-			return $this->createEntityFromSelection($selection);
-
-		}
-		elseif(strncmp($name, 'findBy', 6) === 0)
-		{
-			$properties = explode('And', substr($name, 6));
-
-			if(count($properties) !== count($args))
-			{
-				throw new Exception\InvalidArgumentException('Wrong number of argument passed to ' . $name . ' method - ' . count($properties) . ' expected, ' . count($args) . ' given.');
-			}
-
-			$criteria = [];
-			$ref = Reflection\EntityType::from($class = $this->getEntityClass());
-
-			foreach($properties as $key => $property)
-			{
-				$property = lcfirst($property);
-				$prop = $ref->getEntityProperty($property);
-
-				if($prop === null)
-				{
-					throw new Exception\InvalidArgumentException("Missing @property definition of $class::\$$property.");
-				}
-
-				if(!$prop instanceof AnnotationProperty)
-				{
-					$refs = Reflection\EntityType::from($this);
-					throw new InvalidArgumentException('Cannot use ' . $refs->getName() . "::$name() - missing @property definition of $class::\$$property.");
-				}
-
-				$criteria[$prop->getColumn()] = $args[$key];
-			}
-
-			return $this->findBy($criteria);
-		}
-
-		return $this->netteCall($name, $args);
-	}
-
-
-	// === TRANSACTION HELPERS ====================================================
-
-
 	final protected function transaction(\Closure $callback)
 	{
 		try
 		{
 			return $this->transaction->transaction($callback);
-
 		}
 		catch(\Exception $e)
-		{
-			$this->handleException($e);
+		{	
 			throw $e;
 		}
 	}
 
-
-	protected function handleException(\Exception $e): void
-	{}
-
-
+	
 	/**
 	 * Return ResultSet by custom SQL           
 	 */
@@ -348,12 +264,11 @@ abstract class Repository
 
 
 	/**
-	 * Remove collection by transaction
-	 * @note Array or Arrash hash must have entity inside
+	 * Remove collection by transaction	 
 	 */
-	public function removeCollection($collection): vid
+	public function removeCollection($collection)
 	{
-		if($collection)
+		if($collection && (is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{
 			return $this->transaction(function () use($collection)
 			{
@@ -362,6 +277,10 @@ abstract class Repository
 					$this->delete($entity);
 				}
 			});
+		}
+		else
+		{
+			throw new InvalidArgumentException();
 		}
 	}
 }

@@ -72,9 +72,21 @@ abstract class EntityProperty
 		return self::isNativeType($this->type);
 	}
 
+	
+	public function isOfExtraType(): bool
+	{
+		return self::isExtraType($this->type);
+	}
 
 	public static function isNativeType(string $type): bool
 	{
 		return $type !== null && in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array'], true);
 	}
+	
+	
+	public static function isExtraType(string $type): bool
+	{
+		return $type !== null && $type === 'json';
+	}
+	
 }

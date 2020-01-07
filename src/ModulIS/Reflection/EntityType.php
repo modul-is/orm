@@ -42,8 +42,7 @@ class EntityType extends \ReflectionClass
 	{
 		if($this->properties === null)
 		{
-			$this->properties = [];
-			$this->loadMethodProperties();
+			$this->properties = [];			
 
 			foreach($this->getClassTree() as $class)
 			{
@@ -56,38 +55,6 @@ class EntityType extends \ReflectionClass
 						$this->properties[$name] = $property;
 					}
 				}
-			}
-		}
-	}
-
-
-	private function loadMethodProperties(): void
-	{
-		foreach($this->getMethods(\ReflectionMethod::IS_PUBLIC) as $method)
-		{
-			if($method->getDeclaringClass()->getName() !== 'ModulIS\\Entity'
-					&& strlen($method->getName()) > 3 && substr($method->getName(), 0, 3) === 'get'
-					&& !NStrings::contains($method->getDocComment(), '@internal'))
-
-			{
-
-				$name = lcfirst(substr($method->getName(), 3));
-
-				$type = $method->getReturnType();
-
-				if($type !== null && !EntityProperty::isNativeType($type))
-				{
-					$type = AnnotationsParser::expandClassName($type, $this);
-				}
-
-				$description = trim(preg_replace('#^\s*@.*#m', '', preg_replace('#^\s*\* ?#m', '', trim($method->getDocComment(), "/* \r\n\t"))));
-
-				$this->properties[$name] = new MethodProperty(
-					$this,
-					$name,
-					!$this->hasMethod('set' . ucfirst($name)),
-					$type
-				);
 			}
 		}
 	}
