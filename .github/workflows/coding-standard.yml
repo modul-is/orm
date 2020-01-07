@@ -25,12 +25,11 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Verify MySQL connection
+    - name: Prepare MySQL connection
       run: |
         sudo apt-get update
-        sudo apt-get install -y mysql-client
-        sudo mysql --host 127.0.0.1 --port 13306 -uroot -ptest -e "SHOW DATABASES"
-        sudo mysql -e 'CREATE DATABASE test;'        	
+        sudo apt-get install -y mysql-client        
+        sudo mysql --host 127.0.0.1 --port 13306 -uroot -ptest -e 'CREATE DATABASE test;'        	
 
     - name: Run Nette Tester
       run: vendor/bin/tester -C tests/cases
