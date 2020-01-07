@@ -1,6 +1,6 @@
 name: PHP Composer, Nette Tester & CS
 
-on: [push]
+on: [pull_request]
 
 jobs:
   build:
