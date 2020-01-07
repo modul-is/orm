@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace ModulIS\Reflection;
 
 use ModulIS;
+use ModulIS\Exception;
 use Nette\Utils\Reflection;
 use Nette\Utils\Strings;
-use ModulIS\Exception;
 
 class EntityType extends \ReflectionClass
 {
@@ -43,7 +43,7 @@ class EntityType extends \ReflectionClass
 	{
 		if($this->properties === null)
 		{
-			$this->properties = [];			
+			$this->properties = [];
 
 			foreach($this->getClassTree() as $class)
 			{
@@ -98,7 +98,7 @@ class EntityType extends \ReflectionClass
 
 
 	private static function loadAnnotationProperties(string $class): void
-	{				
+	{
 		if(!isset(self::$annProps[$class]))
 		{
 			self::$annProps[$class] = [];
@@ -114,19 +114,19 @@ class EntityType extends \ReflectionClass
 			foreach($matches as $match)
 			{
 				[$result, $property, $type, $name] = $match;
-				
+
 				if($property === 'property' || $property === 'property-read')
-				{														
+				{
 					if(!Strings::startsWith($name, '$'))
 					{
-						throw new Exception\InvalidPropertyDefinitionException('Missing "$" in property name in "' . $name . '" in string "' .  $result . '"');
+						throw new Exception\InvalidPropertyDefinitionException('Missing "$" in property name in "' . $name . '" in string "' . $result . '"');
 					}
 
 					if(Strings::contains($type, '|'))
 					{
 						$kind = Strings::before($type, '|');
 						$null = Strings::after($type, '|');
-						
+
 						if($kind === 'null')
 						{
 							throw new Exception\InvalidPropertyDefinitionException('Use null as second parameter like "string|null".');
@@ -139,7 +139,7 @@ class EntityType extends \ReflectionClass
 						if($null === 'null')
 						{
 							$nullable = true;
-						}	
+						}
 						else
 						{
 							throw new Exception\InvalidPropertyDefinitionException('Use "null" instead of "' . $null . '". Multiple non-null types detected.');
@@ -148,7 +148,7 @@ class EntityType extends \ReflectionClass
 					else
 					{
 						$nullable = false;
-					}					
+					}
 
 					//if(!EntityProperty::isNativeType($type))
 					//{
@@ -156,12 +156,12 @@ class EntityType extends \ReflectionClass
 					//}
 
 					$column = Strings::after($name, '$');
-					
+
 					self::$annProps[$class][$column] = new AnnotationProperty(
 							$class::getReflection(),
 							$column,
 							$property === 'property-read',
-							$type,							
+							$type,
 							$nullable
 					);
 

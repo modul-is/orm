@@ -124,7 +124,7 @@ class EntityCollection implements \Iterator, \Countable
 			}
 		}
 		else
-		{			
+		{
 			$this->selection->order($column . ($dir === static::DESC ? ' DESC' : ''));
 		}
 

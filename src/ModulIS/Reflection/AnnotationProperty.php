@@ -95,8 +95,8 @@ class AnnotationProperty extends EntityProperty
 		elseif($need && !call_user_func('is_' . $this->getType(), $value))
 		{
 			bdump("X");
+		{			
 			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . gettype($value) . "' given.");
-
 		}
 		else
 		{
@@ -108,7 +108,7 @@ class AnnotationProperty extends EntityProperty
 
 
 	public function setType($value)
-	{		
+	{
 		if(!$this->checkType($value, true)){ // type casting needed
 			settype($value, $this->getType());
 		}

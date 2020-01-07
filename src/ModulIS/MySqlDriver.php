@@ -15,7 +15,7 @@ class MySqlDriver extends \Nette\Database\Drivers\MySqlDriver
 	{
 		$types = [];
 		$count = $statement->columnCount();
-		
+
 		for($col = 0; $col < $count; $col++)
 		{
 			$meta = $statement->getColumnMeta($col);

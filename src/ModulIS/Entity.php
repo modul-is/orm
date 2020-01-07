@@ -19,10 +19,6 @@ abstract class Entity
 	 */
 	private static $reflections = [];
 
-
-	/**
-	 * @param  ActiveRow|Record $row
-	 */
 	public function __construct($row = null)
 	{
 		$this->record = Record::create($row);
@@ -60,10 +56,10 @@ abstract class Entity
 
 	public function &__get($name)
 	{
-		
+
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
-		
+
 		if($prop instanceof AnnotationProperty)
 		{
 			$value = $prop->getValue($this);
@@ -76,7 +72,7 @@ abstract class Entity
 				}
 			}
 			elseif($prop->getType() == 'date')
-			{				
+			{
 				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
 			}
 
@@ -93,8 +89,9 @@ abstract class Entity
 		$prop = $ref->getEntityProperty($name);
 
 		if($prop instanceof AnnotationProperty)
+
 		{
-			
+
 			if($prop->getType() == 'json')
 			{
 				if(is_array($value))
@@ -127,7 +124,7 @@ abstract class Entity
 
 		return false;
 	}
-	
+
 
 	public static function getReflection(): Reflection\EntityType
 	{

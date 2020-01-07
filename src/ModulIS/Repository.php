@@ -248,12 +248,12 @@ abstract class Repository
 			return $this->transaction->transaction($callback);
 		}
 		catch(\Exception $e)
-		{	
+		{
 			throw $e;
 		}
 	}
 
-	
+
 	/**
 	 * Return ResultSet by custom SQL           
 	 */
