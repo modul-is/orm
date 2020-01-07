@@ -56,7 +56,6 @@ abstract class Entity
 
 	public function &__get($name)
 	{
-
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
@@ -73,7 +72,10 @@ abstract class Entity
 			}
 			elseif($prop->getType() == 'date')
 			{
-				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
+				if($value !== null)
+				{
+					$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
+				}
 			}
 
 			return $value;
@@ -92,14 +94,11 @@ abstract class Entity
 
 		{
 
-			if($prop->getType() == 'json')
+			if($prop->getType() == 'json' && is_array($value))
 			{
-				if(is_array($value))
-				{
-					$value = \Nette\Utils\Json::encode($value);
-				}
+				$value = \Nette\Utils\Json::encode($value);
 			}
-			elseif($prop->getType() == 'date')
+			elseif($prop->getType() == 'date' && is_string($value))
 			{
 				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
 			}
@@ -221,7 +220,7 @@ abstract class Entity
 				/**
 				 * Convert array to json
 				 */
-				if($property->getDescription() == 'json' && is_array($values[$name]))
+				if($property->getType() == 'json' && is_array($values[$name]))
 				{
 					$this->$name = \Nette\Utils\Json::encode($values[$name]);
 				}

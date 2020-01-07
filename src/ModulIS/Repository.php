@@ -283,4 +283,13 @@ abstract class Repository
 			throw new InvalidArgumentException();
 		}
 	}
+
+
+	/**
+	 * Remove single instance from database by ID              
+	 */
+	public function removeByID(int $id): bool
+	{
+		return (bool) $this->getTable()->wherePrimary($id)->delete();
+	}
 }

@@ -5,4 +5,4 @@ cd /path/to/tester/
 vendor\bin\tester.bat
 
 #Complete tests
-vendor\bin\tester.bat -c tests/models/ini/php.ini tests --colors
+vendor\bin\tester.bat tests --colors
