@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use ModulIS\Reflection\AnnotationProperty;
-use Nette\Database\Table\ActiveRow;
 
 
 abstract class Entity
@@ -18,6 +17,7 @@ abstract class Entity
 	 * @var array
 	 */
 	private static $reflections = [];
+
 
 	public function __construct($row = null)
 	{
