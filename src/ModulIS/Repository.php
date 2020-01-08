@@ -8,8 +8,8 @@ use ModulIS\Reflection\EntityType;
 use Nette;
 use Nette\Database\Context as Context;
 use Nette\Database\IRow as NIRow;
-use Nette\Database\Table\Selection as NSelection;
-use Nette\Utils\Reflection as NReflection;
+use Nette\Database\Table\Selection as Selection;
+use Nette\Utils\Reflection;
 
 abstract class Repository
 {
@@ -127,7 +127,7 @@ abstract class Repository
 	}
 
 
-	protected function createEntityFromSelection(NSelection $selection): ?Entity
+	protected function createEntityFromSelection(Selection $selection): ?Entity
 	{
 		$row = $selection->fetch();
 		return $row === null ? null : $this->createEntity($row);
@@ -187,7 +187,7 @@ abstract class Repository
 	}
 
 
-	protected function getTable($table = null): NSelection
+	protected function getTable($table = null): Selection
 	{
 		return $this->database->table($table === null ? $this->getTableName() : $table);
 	}
@@ -222,7 +222,7 @@ abstract class Repository
 				throw new Exception\InvalidStateException('Entity class not set. Use either annotation @entity or class member ' . $ref->getName() . '::$entity');
 			}
 
-			$this->entity = NReflection::expandClassName($annotation, $ref);
+			$this->entity = Reflection::expandClassName($annotation, $ref);
 		}
 
 		return $this->entity;
@@ -268,7 +268,7 @@ abstract class Repository
 	 */
 	public function removeCollection($collection)
 	{
-		if($collection && (is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
+		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{
 			return $this->transaction(function () use($collection)
 			{
@@ -280,7 +280,7 @@ abstract class Repository
 		}
 		else
 		{
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
 		}
 	}
 
