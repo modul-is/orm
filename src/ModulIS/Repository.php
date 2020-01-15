@@ -198,7 +198,7 @@ abstract class Repository
 	}
 
 
-	protected function getTable($table = null): Selection
+	public function getTable($table = null): Selection
 	{
 		return $this->database->table($table === null ? $this->getTableName() : $table);
 	}
