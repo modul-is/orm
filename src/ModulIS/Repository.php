@@ -6,10 +6,10 @@ namespace ModulIS;
 use ModulIS\Exception\InvalidArgumentException;
 use ModulIS\Reflection\EntityType;
 use Nette;
-use Nette\Database\Context as Context;
-use Nette\Database\IRow as NIRow;
-use Nette\Database\Table\Selection as NSelection;
-use Nette\Utils\Reflection as NReflection;
+use Nette\Database\Context;
+use Nette\Database\IRow;
+use Nette\Database\Table\Selection as Selection;
+use Nette\Utils\Reflection;
 
 abstract class Repository
 {
@@ -18,20 +18,27 @@ abstract class Repository
 		__call as public netteCall;
 	}
 
-	/** @var NdbContext */
+	/**
+	 * @var Context
+	 */
 	protected $database;
 
-	/** @var string|null */
+	/**
+	 * @var string|null
+	 */
 	protected $table;
 
-	/** @var string|null */
+	/**
+	 * @var string|null
+	 */
 	protected $entity;
 
-	/** @var Transaction */
+	/**
+	 * @var Transaction
+	 */
 	private $transaction;
 
 
-	/** @param  NdbContext $database */
 	public function __construct(Context $database)
 	{
 		$this->database = $database;
@@ -114,7 +121,7 @@ abstract class Repository
 	 */
 	public function saveCollection($collection)
 	{
-		if($collection)
+		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{
 			return $this->transaction(function () use($collection)
 			{
@@ -124,10 +131,14 @@ abstract class Repository
 				}
 			});
 		}
+		else
+		{
+			throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
+		}
 	}
 
 
-	protected function createEntityFromSelection(NSelection $selection): ?Entity
+	protected function createEntityFromSelection(Selection $selection): ?Entity
 	{
 		$row = $selection->fetch();
 		return $row === null ? null : $this->createEntity($row);
@@ -157,9 +168,9 @@ abstract class Repository
 			$inserted = $this->getTable()
 					->insert($record->getModified());
 
-			if(!$inserted instanceof NIRow)
+			if(!$inserted instanceof IRow)
 			{
-				throw new Exception\InvalidStateException('Insert did not return instance of ' . NIRow::class . '. '
+				throw new Exception\InvalidStateException('Insert did not return instance of ' . IRow::class . '. '
 						. 'Does table "' . $this->getTableName() . '" have primary key defined? If so, try cleaning cache.');
 			}
 
@@ -187,7 +198,7 @@ abstract class Repository
 	}
 
 
-	protected function getTable($table = null): NSelection
+	public function getTable($table = null): Selection
 	{
 		return $this->database->table($table === null ? $this->getTableName() : $table);
 	}
@@ -222,7 +233,7 @@ abstract class Repository
 				throw new Exception\InvalidStateException('Entity class not set. Use either annotation @entity or class member ' . $ref->getName() . '::$entity');
 			}
 
-			$this->entity = NReflection::expandClassName($annotation, $ref);
+			$this->entity = Reflection::expandClassName($annotation, $ref);
 		}
 
 		return $this->entity;
@@ -268,7 +279,7 @@ abstract class Repository
 	 */
 	public function removeCollection($collection)
 	{
-		if($collection && (is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
+		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{
 			return $this->transaction(function () use($collection)
 			{
@@ -280,7 +291,7 @@ abstract class Repository
 		}
 		else
 		{
-			throw new InvalidArgumentException();
+			throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
 		}
 	}
 
