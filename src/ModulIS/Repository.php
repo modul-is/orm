@@ -119,7 +119,7 @@ abstract class Repository
 	 * Save collection by transaction
 	 * @note Array or Arrash hash must have entity inside
 	 */
-	public function saveCollection($collection): void
+	public function saveCollection($collection)
 	{
 		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{
