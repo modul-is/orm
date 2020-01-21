@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use ModulIS\Reflection\AnnotationProperty;
-
+use Nette\Utils\DateTime;
 
 abstract class Entity
 {
@@ -74,7 +74,7 @@ abstract class Entity
 			{
 				if($value !== null)
 				{
-					$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
+					$value = $value instanceof DateTime ? $value : new DateTime($value);
 				}
 			}
 
@@ -91,16 +91,14 @@ abstract class Entity
 		$prop = $ref->getEntityProperty($name);
 
 		if($prop instanceof AnnotationProperty)
-
 		{
-
 			if($prop->getType() == 'json' && is_array($value))
 			{
 				$value = \Nette\Utils\Json::encode($value);
 			}
 			elseif($prop->getType() == 'date' && is_string($value))
 			{
-				$value = $value instanceof \Nette\Utils\DateTime ? $value : new \Nette\Utils\DateTime($value);
+				$value = $value instanceof DateTime ? $value : new DateTime($value);
 			}
 
 			$prop->setValue($this, $value);

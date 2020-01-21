@@ -53,7 +53,7 @@ abstract class Repository
 	}
 
 
-	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' ')
+	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' '): array
 	{
 		if(is_array($value))
 		{
@@ -109,7 +109,7 @@ abstract class Repository
 	/**
 	 * Save single instance from database
 	 */
-	public function save(Entity $entity)
+	public function save(Entity $entity): bool
 	{
 		return $this->persist($entity);
 	}
@@ -119,7 +119,7 @@ abstract class Repository
 	 * Save collection by transaction
 	 * @note Array or Arrash hash must have entity inside
 	 */
-	public function saveCollection($collection)
+	public function saveCollection($collection): void
 	{
 		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
 		{

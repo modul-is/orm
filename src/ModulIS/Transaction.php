@@ -35,7 +35,7 @@ class Transaction
 		try
 		{
 			$this->begin();
-				$return = $callback();
+			$return = $callback();
 			$this->commit();
 
 			return $return;
