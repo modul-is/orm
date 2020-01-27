@@ -25,7 +25,7 @@ class Record
 	private $modified = [];
 
 
-	public function __construct(ActiveRow $row = null)
+	final public function __construct(ActiveRow $row = null)
 	{
 		$this->row = $row;
 	}

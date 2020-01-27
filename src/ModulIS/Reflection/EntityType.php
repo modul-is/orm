@@ -15,7 +15,10 @@ class EntityType extends \ReflectionClass
 	 */
 	private $properties;
 
-	/** @var array <class> => AnnotationProperty[] */
+	/**
+	 * @note <class> => AnnotationProperty[]
+	 * @var array
+	 */
 	private static $annProps = [];
 
 
@@ -71,7 +74,7 @@ class EntityType extends \ReflectionClass
 			$tree[] = $current;
 			$current = get_parent_class($current);
 
-		} while($current !== false && $current !== ModulIS\Entity::class);
+		}while($current !== false && $current !== ModulIS\Entity::class);
 
 		return array_reverse($tree);
 	}
@@ -80,19 +83,22 @@ class EntityType extends \ReflectionClass
 	/**
 	 * Returns an annotation value.
 	 */
-	public static function parseAnnotation(\Reflector $ref, string $name): ?string
+	public static function parseAnnotation(\ReflectionClass $ref, string $name): ?string
 	{
 		if(!Reflection::areCommentsAvailable())
 		{
-			throw new Nette\InvalidStateException('You have to enable phpDoc comments in opcode cache.');
+			throw new \ModulIS\Exception\InvalidStateException('You have to enable phpDoc comments in opcode cache.');
 		}
+
 		$re = '#[\s*]@' . preg_quote($name, '#') . '(?=\s|$)(?:[ \t]+([^@\s]\S*))?#';
+
 		if($ref->getDocComment() && $m = Strings::match(trim($ref->getDocComment(), '/*'), $re))
 
 		{
 
 			return $m[1] ?? '';
 		}
+
 		return null;
 	}
 
@@ -103,13 +109,13 @@ class EntityType extends \ReflectionClass
 		{
 			self::$annProps[$class] = [];
 
-			$matches = Strings::matchAll(($class::getReflection())->getDocComment(), '/@(\S+) (\S+) (\S+)/', PREG_SET_ORDER);
+			$matches = Strings::matchAll($class::getReflection()->getDocComment(), '/@(\S+) (\S+) (\S+)/', PREG_SET_ORDER);
 
 			/**
 			 * 0 - @property-read int $id desc
 			 * 1 - property-read
 			 * 2 - int|NULL
-			 * 3 - $id			 
+			 * 3 - $id
 			 */
 			foreach($matches as $match)
 			{
@@ -164,18 +170,8 @@ class EntityType extends \ReflectionClass
 							$type,
 							$nullable
 					);
-
 				}
 			}
-
 		}
-
-
-	}
-
-
-	public static function from($class)
-	{
-		return new static($class);
 	}
 }
