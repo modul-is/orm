@@ -19,7 +19,7 @@ class EntityCollection implements \Iterator, \Countable
 	protected $selection;
 
 	/**
-	 * @var string|Callback
+	 * @var string|\Closure
 	 */
 	protected $entity;
 

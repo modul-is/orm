@@ -98,7 +98,7 @@ abstract class Entity
 			}
 			elseif($prop->getType() == 'date' && is_string($value))
 			{
-				$value = $value instanceof DateTime ? $value : new DateTime($value);
+				$value = new DateTime($value);
 			}
 
 			$prop->setValue($this, $value);
@@ -143,32 +143,15 @@ abstract class Entity
 
 	public function toArray(array $excludedProperties = []): array
 	{
-		if(!$excludedProperties instanceof \Nette\Utils\ArrayHash && !is_array($excludedProperties))
-		{
-			throw new \Exception('Excluded properties should be Array or \Nette\Utils\ArrayHash');
-		}
-
 		$ref = static::getReflection();
 		$values = [];
 
 		foreach($ref->getEntityProperties() as $name => $property)
+		{
+			if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
 			{
-				if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
-				{
-					if($property instanceof \YetORM\Reflection\MethodProperty)
-					{
-						$value = $this->{'get' . $name}();
-					}
-					else
-					{
-						$value = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
-					}
-
-					if(!($value instanceof \YetORM\EntityCollection || $value instanceof \YetORM\Entity))
-					{
-						$values[$name] = $value;
-					}
-				}
+				$values[$name] = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
+			}
 		}
 
 		return $values;
