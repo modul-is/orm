@@ -93,6 +93,7 @@ class EntityType extends \ReflectionClass
 		$re = '#[\s*]@' . preg_quote($name, '#') . '(?=\s|$)(?:[ \t]+([^@\s]\S*))?#';
 
 		if($ref->getDocComment() && $m = Strings::match(trim($ref->getDocComment(), '/*'), $re))
+
 		{
 
 			return $m[1] ?? '';
