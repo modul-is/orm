@@ -53,7 +53,7 @@ abstract class Repository
 	}
 
 
-	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' ')
+	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' '): array
 	{
 		if(is_array($value))
 		{
@@ -109,7 +109,7 @@ abstract class Repository
 	/**
 	 * Save single instance from database
 	 */
-	public function save(Entity $entity)
+	public function save(Entity $entity): bool
 	{
 		return $this->persist($entity);
 	}
