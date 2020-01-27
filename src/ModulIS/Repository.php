@@ -76,14 +76,14 @@ abstract class Repository
 	}
 
 
-	public function getByID($id): ?Entity
+	public function getByID($id)
 	{
 		$selection = $this->getTable()->wherePrimary($id);
 		return $this->createEntityFromSelection($selection);
 	}
 
 
-	public function getBy(array $criteria): ?Entity
+	public function getBy(array $criteria)
 	{
 		$selection = $this->getTable()->where($criteria);
 		return $this->createEntityFromSelection($selection);
@@ -266,7 +266,7 @@ abstract class Repository
 
 
 	/**
-	 * Return ResultSet by custom SQL           
+	 * Return ResultSet by custom SQL
 	 */
 	public function query(string $sql, ...$params): Nette\Database\ResultSet
 	{
@@ -275,7 +275,7 @@ abstract class Repository
 
 
 	/**
-	 * Remove collection by transaction	 
+	 * Remove collection by transaction
 	 */
 	public function removeCollection($collection)
 	{
@@ -297,7 +297,7 @@ abstract class Repository
 
 
 	/**
-	 * Remove single instance from database by ID              
+	 * Remove single instance from database by ID
 	 */
 	public function removeByID(int $id): bool
 	{
