@@ -83,7 +83,7 @@ class EntityType extends \ReflectionClass
 	/**
 	 * Returns an annotation value.
 	 */
-	public static function parseAnnotation(\Reflector $ref, string $name): ?string
+	public static function parseAnnotation(\ReflectionClass $ref, string $name): ?string
 	{
 		if(!Reflection::areCommentsAvailable())
 		{
