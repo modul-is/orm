@@ -121,19 +121,22 @@ abstract class Repository
 	 */
 	public function saveCollection($collection)
 	{
-		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
+		if($collection)
 		{
-			return $this->transaction(function () use($collection)
+			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				foreach($collection as $entity)
+				return $this->transaction(function() use ($collection)
 				{
-					$this->persist($entity);
-				}
-			});
-		}
-		else
-		{
-			throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
+					foreach($collection as $entity)
+					{
+						$this->persist($entity);
+					}
+				});
+			}
+			else
+			{
+				throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
+			}
 		}
 	}
 
@@ -279,19 +282,22 @@ abstract class Repository
 	 */
 	public function removeCollection($collection)
 	{
-		if($collection && ($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash))
+		if($collection)
 		{
-			return $this->transaction(function () use($collection)
+			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				foreach($collection as $entity)
+				return $this->transaction(function() use ($collection)
 				{
-					$this->delete($entity);
-				}
-			});
-		}
-		else
-		{
-			throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
+					foreach($collection as $entity)
+					{
+						$this->delete($entity);
+					}
+				});
+			}
+			else
+			{
+				throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
+			}
 		}
 	}
 
