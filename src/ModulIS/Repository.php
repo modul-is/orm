@@ -125,7 +125,7 @@ abstract class Repository
 		{
 			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				return $this->transaction(function() use ($collection)
+				return $this->transaction(function() use($collection)
 				{
 					foreach($collection as $entity)
 					{
@@ -158,7 +158,7 @@ abstract class Repository
 	{
 		$this->checkEntity($entity);
 
-		return $this->transaction(function () use($entity)
+		return $this->transaction(function() use($entity)
 
 		{
 
@@ -191,7 +191,7 @@ abstract class Repository
 
 		if($record->hasRow())
 		{
-			return $this->transaction(function () use($record)
+			return $this->transaction(function() use($record)
 			{
 				return $record->getRow()->delete() > 0;
 			});
@@ -286,7 +286,7 @@ abstract class Repository
 		{
 			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				return $this->transaction(function() use ($collection)
+				return $this->transaction(function() use($collection)
 				{
 					foreach($collection as $entity)
 					{
