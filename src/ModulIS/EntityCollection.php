@@ -80,7 +80,7 @@ class EntityCollection implements \Iterator, \Countable
 			else
 			{
 				$class = $this->entity;
-				$factory = function ($record) use($class)
+				$factory = function($record) use($class)
 				{
 					return new $class($record);
 				};
