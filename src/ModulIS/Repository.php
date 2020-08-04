@@ -200,6 +200,14 @@ abstract class Repository
 		return true;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	public function remove(Entity $entity): bool
+	{
+		return $this->delete($entity);
+	}
+
 
 	public function getTable($table = null): Selection
 	{
