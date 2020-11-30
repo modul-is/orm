@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use Nette\Database\Table\Selection as Selection;
-use Nette\Utils\Callback as Callback;
 
 
 class EntityCollection implements \Iterator, \Countable
@@ -57,8 +56,8 @@ class EntityCollection implements \Iterator, \Countable
 
 		try
 		{
-			Callback::check($entity);
-			$this->entity = Callback::closure($entity);
+			\Nette\Utils\Callback::check($entity);
+			$this->entity = \Closure::fromCallable($entity);
 
 		}
 		catch(\Exception $e)
