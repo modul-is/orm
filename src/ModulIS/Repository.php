@@ -65,7 +65,7 @@ abstract class Repository
 			$valueColumn = $value;
 		}
 
-		$table = $this->getTable()->select($key . ',' . $valueColumn)->where($criteria);
+		$table = $this->getTable()->select($this->table . '.' . $key . ',' . $valueColumn)->where($criteria);
 
 		if($order)
 		{
