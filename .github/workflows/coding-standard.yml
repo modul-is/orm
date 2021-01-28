@@ -27,6 +27,7 @@ jobs:
       run: composer validate
 
     - name: Install dependencies
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
       run: composer install --prefer-dist --no-progress --no-suggest
