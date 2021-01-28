@@ -36,5 +36,13 @@
 	{
 		"test": "tester tests/ -C",
 		"phpstan": "phpstan analyse --level 5 src"
+	},
+
+	"config":
+	{
+		"platform":
+		{
+			"php": "7.1.33"
+		}
 	}
 }
