@@ -23,7 +23,7 @@
 		"nette/tester": "^2.2",
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^3.0",
-		"modul-is/coding-standard": "^1.0.6",
+		"modul-is/coding-standard": "v2.x-dev",
 		"phpstan/phpstan": "^0.12.8"
 	},
 
@@ -36,13 +36,5 @@
 	{
 		"test": "tester tests/ -C",
 		"phpstan": "phpstan analyse --level 5 src"
-	},
-
-	"config":
-	{
-		"platform":
-		{
-			"php": "7.1.33"
-		}
 	}
 }

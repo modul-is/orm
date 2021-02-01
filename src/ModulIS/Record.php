@@ -45,7 +45,7 @@ class Record
 		}
 		else
 		{
-			throw new Exception\InvalidArgumentException("Instance of 'Nette\Database\Table\ActiveRow' or 'ModulIS\Record' expected, '"
+			throw new Exception\InvalidArgumentException("Instance of 'Nette\\Database\\Table\\ActiveRow' or 'ModulIS\\Record' expected, '"
 				. (is_object($row) ? get_class($row) : gettype($row))
 				. "' given.");
 		}

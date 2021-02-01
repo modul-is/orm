@@ -164,11 +164,11 @@ class EntityType extends \ReflectionClass
 					$column = Strings::after($name, '$');
 
 					self::$annProps[$class][$column] = new AnnotationProperty(
-							$class::getReflection(),
-							$column,
-							$property === 'property-read',
-							$type,
-							$nullable
+						$class::getReflection(),
+						$column,
+						$property === 'property-read',
+						$type,
+						$nullable
 					);
 				}
 			}

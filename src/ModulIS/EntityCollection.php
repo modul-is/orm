@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use Nette\Database\Table\Selection as Selection;
+use Nette\Database\Table\Selection;
 
 
 class EntityCollection implements \Iterator, \Countable
@@ -38,7 +38,7 @@ class EntityCollection implements \Iterator, \Countable
 	protected $data;
 
 	/**
-	 * @var int|NULL
+	 * @var int|null
 	 */
 	private $count;
 
