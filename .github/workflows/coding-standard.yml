@@ -7,6 +7,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        php: [7.3, 7.4]
+
     services:
       mysql:
         image: mysql:5.7
@@ -21,6 +25,11 @@ jobs:
 
     - name: Validate composer.json and composer.lock
       run: composer validate
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest

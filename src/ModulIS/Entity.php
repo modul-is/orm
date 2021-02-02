@@ -45,11 +45,11 @@ abstract class Entity
 					$cb($args);
 				}
 
-				return ;
+				return;
 			}
 		}
 
-		$class = get_class($this);
+		$class = static::class;
 		throw new Exception\MemberAccessException("Call to undefined method $class::$name().");
 	}
 
@@ -103,7 +103,7 @@ abstract class Entity
 
 			$prop->setValue($this, $value);
 
-			return ;
+			return;
 		}
 
 		throw new Exception\MemberAccessException("Cannot write to an undeclared property {$ref->getName()}::\$$name.");
@@ -125,7 +125,7 @@ abstract class Entity
 
 	public static function getReflection(): Reflection\EntityType
 	{
-		$class = get_called_class();
+		$class = static::class;
 		if(!isset(self::$reflections[$class]))
 		{
 			self::$reflections[$class] = new Reflection\EntityType($class);

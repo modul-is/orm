@@ -8,12 +8,11 @@ use ModulIS\Reflection\EntityType;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\IRow;
-use Nette\Database\Table\Selection as Selection;
+use Nette\Database\Table\Selection;
 use Nette\Utils\Reflection;
 
 abstract class Repository
 {
-
 	use Nette\SmartObject {
 		__call as public netteCall;
 	}
@@ -65,7 +64,7 @@ abstract class Repository
 			$valueColumn = $value;
 		}
 
-		$table = $this->getTable()->select($key . ',' . $valueColumn)->where($criteria);
+		$table = $this->getTable()->select($this->table . '.' . $key . ',' . $valueColumn)->where($criteria);
 
 		if($order)
 		{
@@ -150,7 +149,7 @@ abstract class Repository
 
 	protected function createCollection($selection, $entity = null, $refTable = null, $refColumn = null): EntityCollection
 	{
-		return new EntityCollection($selection, $entity === null ? [$this, 'createEntity'] : $entity, $refTable, $refColumn);
+		return new EntityCollection($selection, $entity ?? [$this, 'createEntity'], $refTable, $refColumn);
 	}
 
 
@@ -212,7 +211,7 @@ abstract class Repository
 
 	public function getTable($table = null): Selection
 	{
-		return $this->database->table($table === null ? $this->getTableName() : $table);
+		return $this->database->table($table ?? $this->getTableName());
 	}
 
 
