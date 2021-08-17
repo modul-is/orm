@@ -15,12 +15,6 @@ class EntityType extends \ReflectionClass
 	 */
 	private $properties;
 
-	/**
-	 * @note <class> => AnnotationProperty[]
-	 * @var array
-	 */
-	private static $annProps = [];
-
 
 	public function getEntityProperties(): array
 	{
@@ -50,14 +44,23 @@ class EntityType extends \ReflectionClass
 
 			foreach($this->getClassTree() as $class)
 			{
-				self::loadAnnotationProperties($class);
-
-				foreach(self::$annProps[$class] as $name => $property)
+				foreach($class::getReflection()->getProperties(\ReflectionProperty::IS_PRIVATE) as $key => $property)
 				{
-					if(!isset($this->properties[$name]))
+					if(!$property->getType())
 					{
-						$this->properties[$name] = $property;
+						throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 					}
+
+					$typeArray = explode('\\', $property->getType()->getName());
+					$type = end($typeArray);
+
+					$this->properties[$property->getName()] = new AnnotationProperty(
+						$class::getReflection(),
+						$property->getName(),
+						false,
+						$type,
+						$property->getType()->allowsNull()
+					);
 				}
 			}
 		}
@@ -73,8 +76,8 @@ class EntityType extends \ReflectionClass
 		{
 			$tree[] = $current;
 			$current = get_parent_class($current);
-
-		}while($current !== false && $current !== ModulIS\Entity::class);
+		}
+		while($current !== false && $current !== ModulIS\Entity::class);
 
 		return array_reverse($tree);
 	}
@@ -93,85 +96,10 @@ class EntityType extends \ReflectionClass
 		$re = '#[\s*]@' . preg_quote($name, '#') . '(?=\s|$)(?:[ \t]+([^@\s]\S*))?#';
 
 		if($ref->getDocComment() && $m = Strings::match(trim($ref->getDocComment(), '/*'), $re))
-
 		{
-
 			return $m[1] ?? '';
 		}
 
 		return null;
-	}
-
-
-	private static function loadAnnotationProperties(string $class): void
-	{
-		if(!isset(self::$annProps[$class]))
-		{
-			self::$annProps[$class] = [];
-
-			$matches = Strings::matchAll($class::getReflection()->getDocComment(), '/@(\S+) (\S+) (\S+)/', PREG_SET_ORDER);
-
-			/**
-			 * 0 - @property-read int $id desc
-			 * 1 - property-read
-			 * 2 - int|NULL
-			 * 3 - $id
-			 */
-			foreach($matches as $match)
-			{
-				[$result, $property, $type, $name] = $match;
-
-				if($property === 'property' || $property === 'property-read')
-				{
-					if(!Strings::startsWith($name, '$'))
-					{
-						throw new Exception\InvalidPropertyDefinitionException('Missing "$" in property name in "' . $name . '" in string "' . $result . '"');
-					}
-
-					if(Strings::contains($type, '|'))
-					{
-						$kind = Strings::before($type, '|');
-						$null = Strings::after($type, '|');
-
-						if($kind === 'null')
-						{
-							throw new Exception\InvalidPropertyDefinitionException('Use null as second parameter like "string|null".');
-						}
-						else
-						{
-							$type = $kind;
-						}
-
-						if($null === 'null')
-						{
-							$nullable = true;
-						}
-						else
-						{
-							throw new Exception\InvalidPropertyDefinitionException('Use "null" instead of "' . $null . '". Multiple non-null types detected.');
-						}
-					}
-					else
-					{
-						$nullable = false;
-					}
-
-					//if(!EntityProperty::isNativeType($type))
-					//{
-					//	$type = Reflection::expandClassName($type, $class::getReflection());
-					//}
-
-					$column = Strings::after($name, '$');
-
-					self::$annProps[$class][$column] = new AnnotationProperty(
-						$class::getReflection(),
-						$column,
-						$property === 'property-read',
-						$type,
-						$nullable
-					);
-				}
-			}
-		}
 	}
 }
