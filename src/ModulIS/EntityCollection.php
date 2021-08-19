@@ -5,47 +5,25 @@ namespace ModulIS;
 
 use Nette\Database\Table\Selection;
 
-
 class EntityCollection implements \Iterator, \Countable
 {
 	public const ASC = false;
 
 	public const DESC = true;
 
-	/**
-	 * @var Selection
-	 */
-	protected $selection;
+	protected Selection $selection;
 
-	/**
-	 * @var string|\Closure
-	 */
-	protected $entity;
+	protected string|\Closure $entity;
 
-	/**
-	 * @var string|null
-	 */
-	protected $refTable;
+	protected string|null $refTable;
 
-	/**
-	 * @var string|null
-	 */
-	protected $refColumn;
+	protected string|null $refColumn;
 
-	/**
-	 * @var Entity[]|null
-	 */
-	protected $data;
+	protected ?array $data;
 
-	/**
-	 * @var int|null
-	 */
-	private $count;
+	private int|null $count;
 
-	/**
-	 * @var array
-	 */
-	private $keys;
+	private array $keys;
 
 
 	public function __construct(Selection $selection, $entity, $refTable = null, $refColumn = null)
@@ -79,10 +57,7 @@ class EntityCollection implements \Iterator, \Countable
 			else
 			{
 				$class = $this->entity;
-				$factory = function($record) use($class)
-				{
-					return new $class($record);
-				};
+				$factory = fn($record) => new $class($record);
 			}
 
 			$this->data = [];
@@ -203,5 +178,4 @@ class EntityCollection implements \Iterator, \Countable
 
 		return $this->count;
 	}
-
 }

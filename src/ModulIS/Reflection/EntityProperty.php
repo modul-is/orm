@@ -7,25 +7,13 @@ use ModulIS\Entity;
 
 abstract class EntityProperty
 {
-	/**
-	 * @var EntityType
-	 */
-	private $reflection;
+	private EntityType $reflection;
 
-	/**
-	 * @var string
-	 */
-	private $name;
+	private string $name;
 
-	/**
-	 * @var bool
-	 */
-	private $readonly;
+	private bool $readonly;
 
-	/**
-	 * @var string
-	 */
-	private $type;
+	private string $type;
 
 
 	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type)
@@ -87,7 +75,6 @@ abstract class EntityProperty
 
 	public static function isExtraType(string $type): bool
 	{
-		return $type !== null && ($type === 'json' || $type == 'date');
+		return $type !== null && $type == 'DateTime';
 	}
-
 }

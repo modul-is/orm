@@ -5,13 +5,11 @@ namespace ModulIS;
 
 use ModulIS\Reflection\AnnotationProperty;
 use Nette\Utils\DateTime;
+use Nette\Utils\Json;
 
 abstract class Entity
 {
-	/**
-	 * @var Record
-	 */
-	protected $record;
+	protected Record $record;
 
 	/**
 	 * @var array
@@ -22,6 +20,12 @@ abstract class Entity
 	public function __construct($row = null)
 	{
 		$this->record = Record::create($row);
+		$ref = static::getReflection();
+
+		foreach($ref->getEntityProperties() as $key => $property)
+		{
+			unset($this->$key);
+		}
 	}
 
 
@@ -35,6 +39,7 @@ abstract class Entity
 	{
 		// events support
 		$ref = static::getReflection();
+
 		if(preg_match('#^on[A-Z]#', $name) && $ref->hasProperty($name))
 		{
 			$prop = $ref->getProperty($name);
@@ -63,14 +68,14 @@ abstract class Entity
 		{
 			$value = $prop->getValue($this);
 
-			if($prop->getType() == 'json')
+			if($prop->getType() == 'array')
 			{
 				if($value !== null)
 				{
-					$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
+					$value = Json::decode($value[0], Json::FORCE_ARRAY);
 				}
 			}
-			elseif($prop->getType() == 'date')
+			elseif($prop->getType() == 'DateTime')
 			{
 				if($value !== null)
 				{
@@ -92,11 +97,11 @@ abstract class Entity
 
 		if($prop instanceof AnnotationProperty)
 		{
-			if($prop->getType() == 'json' && is_array($value))
+			if($prop->getType() == 'array' && is_array($value))
 			{
-				$value = \Nette\Utils\Json::encode($value);
+				$value = Json::encode($value);
 			}
-			elseif($prop->getType() == 'date' && is_string($value))
+			elseif($prop->getType() == 'DateTime' && is_string($value))
 			{
 				$value = new DateTime($value);
 			}
@@ -201,9 +206,9 @@ abstract class Entity
 				/**
 				 * Convert array to json
 				 */
-				if($property->getType() == 'json' && is_array($values[$name]))
+				if($property->getType() == 'array' && is_array($values[$name]))
 				{
-					$this->$name = \Nette\Utils\Json::encode($values[$name]);
+					$this->$name = Json::encode($values[$name]);
 				}
 				else
 				{
@@ -213,5 +218,4 @@ abstract class Entity
 			}
 		}
 	}
-
 }

@@ -223,16 +223,16 @@
         },
         {
             "name": "nette/utils",
-            "version": "v3.2.2",
+            "version": "v3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c"
+                "reference": "5c36cc1ba9bb6abb8a9e425cf054e0c3fd5b9822"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/967cfc4f9a1acd5f1058d76715a424c53343c20c",
-                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c",
+                "url": "https://api.github.com/repos/nette/utils/zipball/5c36cc1ba9bb6abb8a9e425cf054e0c3fd5b9822",
+                "reference": "5c36cc1ba9bb6abb8a9e425cf054e0c3fd5b9822",
                 "shasum": ""
             },
             "require": {
@@ -302,9 +302,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v3.2.2"
+                "source": "https://github.com/nette/utils/tree/v3.2.3"
             },
-            "time": "2021-03-03T22:53:25+00:00"
+            "time": "2021-08-16T21:05:00+00:00"
         }
     ],
     "packages-dev": [
@@ -1023,12 +1023,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/modul-is/coding-standard.git",
-                "reference": "adacd90403db77384916a34f63dfae9950fa7c4a"
+                "reference": "8c7ba1a4216ae426db5a704da8681b4246c95456"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/modul-is/coding-standard/zipball/adacd90403db77384916a34f63dfae9950fa7c4a",
-                "reference": "adacd90403db77384916a34f63dfae9950fa7c4a",
+                "url": "https://api.github.com/repos/modul-is/coding-standard/zipball/8c7ba1a4216ae426db5a704da8681b4246c95456",
+                "reference": "8c7ba1a4216ae426db5a704da8681b4246c95456",
                 "shasum": ""
             },
             "require": {
@@ -1066,7 +1066,7 @@
                 "issues": "https://github.com/modul-is/coding-standard/issues",
                 "source": "https://github.com/modul-is/coding-standard/tree/v3"
             },
-            "time": "2021-08-16T09:45:37+00:00"
+            "time": "2021-08-18T14:29:17+00:00"
         },
         {
             "name": "nette/neon",
@@ -5064,16 +5064,16 @@
         },
         {
             "name": "tracy/tracy",
-            "version": "v2.8.5",
+            "version": "v2.8.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/tracy.git",
-                "reference": "b23da41363546aa750d9f698f21e14815bd78913"
+                "reference": "f3d2d6a1230a0a1a7b116c071ae4937e5e30101a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/tracy/zipball/b23da41363546aa750d9f698f21e14815bd78913",
-                "reference": "b23da41363546aa750d9f698f21e14815bd78913",
+                "url": "https://api.github.com/repos/nette/tracy/zipball/f3d2d6a1230a0a1a7b116c071ae4937e5e30101a",
+                "reference": "f3d2d6a1230a0a1a7b116c071ae4937e5e30101a",
                 "shasum": ""
             },
             "require": {
@@ -5132,9 +5132,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/tracy/issues",
-                "source": "https://github.com/nette/tracy/tree/v2.8.5"
+                "source": "https://github.com/nette/tracy/tree/v2.8.6"
             },
-            "time": "2021-06-02T15:42:54+00:00"
+            "time": "2021-08-16T21:50:26+00:00"
         }
     ],
     "aliases": [],

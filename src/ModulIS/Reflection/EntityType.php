@@ -10,10 +10,7 @@ use Nette\Utils\Strings;
 
 class EntityType extends \ReflectionClass
 {
-	/**
-	 * @var EntityProperty[]|null
-	 */
-	private $properties;
+	private ?array $properties;
 
 
 	public function getEntityProperties(): array
@@ -44,23 +41,26 @@ class EntityType extends \ReflectionClass
 
 			foreach($this->getClassTree() as $class)
 			{
-				foreach($class::getReflection()->getProperties(\ReflectionProperty::IS_PRIVATE) as $key => $property)
+				foreach($class::getReflection()->getProperties() as $property)
 				{
-					if(!$property->getType())
+					if($property->getName() !== 'record')
 					{
-						throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
+						if(!$property->getType())
+						{
+							throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
+						}
+
+						$typeArray = explode('\\', $property->getType()->getName());
+						$type = end($typeArray);
+
+						$this->properties[$property->getName()] = new AnnotationProperty(
+							$class::getReflection(),
+							$property->getName(),
+							false,
+							$type,
+							$property->getType()->allowsNull()
+						);
 					}
-
-					$typeArray = explode('\\', $property->getType()->getName());
-					$type = end($typeArray);
-
-					$this->properties[$property->getName()] = new AnnotationProperty(
-						$class::getReflection(),
-						$property->getName(),
-						false,
-						$type,
-						$property->getType()->allowsNull()
-					);
 				}
 			}
 		}

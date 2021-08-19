@@ -17,25 +17,13 @@ abstract class Repository
 		__call as public netteCall;
 	}
 
-	/**
-	 * @var Context
-	 */
-	protected $database;
+	protected Context $database;
 
-	/**
-	 * @var string|null
-	 */
-	protected $table;
+	protected string|null $table;
 
-	/**
-	 * @var string|null
-	 */
-	protected $entity;
+	protected string|null $entity;
 
-	/**
-	 * @var Transaction
-	 */
-	private $transaction;
+	private Transaction $transaction;
 
 
 	public function __construct(Context $database)
@@ -124,7 +112,7 @@ abstract class Repository
 		{
 			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				return $this->transaction(function() use($collection)
+				return $this->transaction(function() use ($collection)
 				{
 					foreach($collection as $entity)
 					{
@@ -157,10 +145,8 @@ abstract class Repository
 	{
 		$this->checkEntity($entity);
 
-		return $this->transaction(function() use($entity)
-
+		return $this->transaction(function() use ($entity)
 		{
-
 			$record = $entity->toRecord();
 			if($record->hasRow())
 			{
@@ -178,7 +164,6 @@ abstract class Repository
 
 			$record->setRow($inserted);
 			return true;
-
 		});
 	}
 
@@ -190,10 +175,7 @@ abstract class Repository
 
 		if($record->hasRow())
 		{
-			return $this->transaction(function() use($record)
-			{
-				return $record->getRow()->delete() > 0;
-			});
+			return $this->transaction(fn() => $record->getRow()->delete() > 0);
 		}
 
 		return true;
@@ -258,7 +240,7 @@ abstract class Repository
 		if(!$entity instanceof $class)
 		{
 			throw new Exception\InvalidArgumentException("Instance of '$class' expected, '"
-				. get_class($entity) . "' given.");
+				. $entity::class . "' given.");
 		}
 	}
 
@@ -294,7 +276,7 @@ abstract class Repository
 		{
 			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
 			{
-				return $this->transaction(function() use($collection)
+				return $this->transaction(function() use ($collection)
 				{
 					foreach($collection as $entity)
 					{

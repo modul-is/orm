@@ -8,10 +8,7 @@ use Nette\Database\Connection;
 
 class Transaction
 {
-	/**
-	 * @var Connection
-	 */
-	private $connection;
+	private Connection $connection;
 
 	/**
 	 * @var array
@@ -87,5 +84,4 @@ class Transaction
 	{
 		return sha1($this->connection->getDsn());
 	}
-
 }

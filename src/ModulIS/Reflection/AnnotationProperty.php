@@ -8,15 +8,9 @@ use ModulIS\Exception;
 
 class AnnotationProperty extends EntityProperty
 {
-	/**
-	 * @var string
-	 */
-	private $column;
+	private string $column;
 
-	/**
-	 * @var bool
-	 */
-	private $nullable;
+	private bool $nullable;
 
 
 	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type, bool $nullable)
@@ -88,11 +82,11 @@ class AnnotationProperty extends EntityProperty
 			if(!($value instanceof $class))
 			{
 				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
-						. (($valtype = gettype($value)) === 'object' ? get_class($value) : $valtype) . "' given.");
+						. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
 			}
 
 		}
-		elseif($need && !call_user_func('is_' . $this->getType(), $value))
+		elseif($need && !call_user_func('is_' . $this->getType(), $value) && ($this->getType() !== 'array' || gettype($value) !== 'string'))
 		{
 			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . gettype($value) . "' given.");
 		}
@@ -113,5 +107,4 @@ class AnnotationProperty extends EntityProperty
 
 		return $value;
 	}
-
 }

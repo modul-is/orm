@@ -9,10 +9,7 @@ use Nette\Database\Table\GroupedSelection;
 
 class Record
 {
-	/**
-	 * @var ActiveRow
-	 */
-	private $row;
+	private ActiveRow $row;
 
 	/**
 	 * @var array
@@ -46,7 +43,7 @@ class Record
 		else
 		{
 			throw new Exception\InvalidArgumentException("Instance of 'Nette\\Database\\Table\\ActiveRow' or 'ModulIS\\Record' expected, '"
-				. (is_object($row) ? get_class($row) : gettype($row))
+				. (is_object($row) ? $row::class : gettype($row))
 				. "' given.");
 		}
 	}
@@ -163,5 +160,4 @@ class Record
 		$this->row = $row;
 		$this->modified = $this->values = [];
 	}
-
 }
