@@ -35,7 +35,7 @@ class EntityType extends \ReflectionClass
 
 	private function loadEntityProperties(): void
 	{
-		if($this->properties === null)
+		if(!isset($this->properties))
 		{
 			$this->properties = [];
 

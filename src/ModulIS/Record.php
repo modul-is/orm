@@ -9,7 +9,7 @@ use Nette\Database\Table\GroupedSelection;
 
 class Record
 {
-	private ActiveRow $row;
+	private ?ActiveRow $row;
 
 	/**
 	 * @var array

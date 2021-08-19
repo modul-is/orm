@@ -19,9 +19,9 @@ abstract class Repository
 
 	protected Context $database;
 
-	protected string|null $table;
+	protected $table;
 
-	protected string|null $entity;
+	protected $entity;
 
 	private Transaction $transaction;
 

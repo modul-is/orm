@@ -47,7 +47,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	private function loadData(): void
 	{
-		if($this->data === null)
+		if(!isset($this->data))
 		{
 			if($this->entity instanceof \Closure)
 			{
@@ -166,12 +166,12 @@ class EntityCollection implements \Iterator, \Countable
 			return $this->selection->count($column);
 		}
 
-		if($this->data !== null)
+		if(isset($this->data))
 		{
 			return count($this->data);
 		}
 
-		if($this->count === null)
+		if(!isset($this->count))
 		{
 			$this->count = $this->selection->count('*');
 		}
