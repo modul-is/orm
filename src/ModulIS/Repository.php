@@ -84,9 +84,6 @@ abstract class Repository
 	}
 
 
-	/**
-	 * @deprecated Use findBy instead
-	 */
 	public function findAll(): EntityCollection
 	{
 		return $this->findBy([]);
