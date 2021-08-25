@@ -53,10 +53,20 @@ class EntityType extends \ReflectionClass
 						$typeArray = explode('\\', $property->getType()->getName());
 						$type = end($typeArray);
 
+						$readonly = false;
+
+						foreach($property->getAttributes() as $attribute)
+						{
+							if($attribute->getName() === 'ModulIS\Readonly')
+							{
+								$readonly = true;
+							}
+						}
+
 						$this->properties[$property->getName()] = new AnnotationProperty(
 							$class::getReflection(),
 							$property->getName(),
-							false,
+							$readonly,
 							$type,
 							$property->getType()->allowsNull()
 						);
