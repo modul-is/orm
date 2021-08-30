@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use ModulIS\Reflection\AnnotationProperty;
-use Nette\Utils\DateTime;
 use Nette\Utils\Json;
 
 abstract class Entity
@@ -72,15 +71,30 @@ abstract class Entity
 			{
 				if($value !== null)
 				{
-					$value = Json::decode($value[0], Json::FORCE_ARRAY);
+					$value = \ModulIS\Datatype\Json::output($value);
 				}
 			}
-			elseif($prop->getType() == 'DateTime')
+			elseif($prop->getType() == 'bool')
 			{
 				if($value !== null)
 				{
-					$value = $value instanceof DateTime ? $value : new DateTime($value);
+					$value = \ModulIS\Datatype\Boolean::output($value);
 				}
+			}
+			elseif($prop->getType() == 'Nette\Utils\DateTime')
+			{
+				if($value !== null)
+				{
+					$value = \ModulIS\Datatype\DateTime::output($value);
+				}
+			}
+			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+			{
+				$type = $prop->getType();
+
+				$typeClass = new $type();
+
+				$value = $typeClass::output($value);
 			}
 
 			return $value;
@@ -97,13 +111,21 @@ abstract class Entity
 
 		if($prop instanceof AnnotationProperty)
 		{
-			if($prop->getType() == 'array' && is_array($value))
+			if($prop->getType() == 'array')
 			{
-				$value = Json::encode($value);
+				$value = \ModulIS\Datatype\Json::input($value);
 			}
-			elseif($prop->getType() == 'DateTime' && is_string($value))
+			elseif($prop->getType() == 'bool')
 			{
-				$value = new DateTime($value);
+				$value = \ModulIS\Datatype\Boolean::input($value);
+			}
+			elseif($prop->getType() == 'Nette\Utils\DateTime')
+			{
+				$value = \ModulIS\Datatype\DateTime::input($value);
+			}
+			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+			{
+				$value = $value::input($value->value);
 			}
 
 			$prop->setValue($this, $value);
@@ -188,33 +210,16 @@ abstract class Entity
 				}
 
 				/**
-				 * Convert bool to int
-				 */
-				if($property->getType() == 'int' && is_bool($values[$name]))
-				{
-					$values[$name] = $values[$name] ? 1 : 0;
-				}
-
-				/**
 				 * Convert strings to int
 				 */
-				elseif($property->getType() == 'int' && !empty($values[$name]))
+				if($property->getType() == 'int' && !empty($values[$name]))
 				{
-					$values[$name] = intval($values[$name]);
-				}
-
-				/**
-				 * Convert array to json
-				 */
-				if($property->getType() == 'array' && is_array($values[$name]))
-				{
-					$this->$name = Json::encode($values[$name]);
+					$this->$name = intval($values[$name]);
 				}
 				else
 				{
 					$this->$name = $values[$name];
-					}
-
+				}
 			}
 		}
 	}

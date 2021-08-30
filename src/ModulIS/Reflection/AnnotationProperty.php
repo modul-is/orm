@@ -69,7 +69,6 @@ class AnnotationProperty extends EntityProperty
 				$entity = $this->getEntityReflection()->getName();
 				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
-
 		}
 		elseif($this->isOfExtraType())
 		{
@@ -79,16 +78,15 @@ class AnnotationProperty extends EntityProperty
 		{
 			$class = $this->getType();
 
-			if(!($value instanceof $class))
+			if(!($value instanceof $class) && get_parent_class($class) !== 'ModulIS\Datatype\Datatype')
 			{
 				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
 						. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
 			}
-
 		}
-		elseif($need && !call_user_func('is_' . $this->getType(), $value) && ($this->getType() !== 'array' || gettype($value) !== 'string'))
+		elseif($need && !call_user_func('is_' . $this->getType(), $value) && $this::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
-			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . gettype($value) . "' given.");
+			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
 		}
 		else
 		{
@@ -101,7 +99,11 @@ class AnnotationProperty extends EntityProperty
 
 	public function setType($value)
 	{
-		if(!$this->checkType($value, true)){ // type casting needed
+		/**
+		 * Type casting needed
+		 */
+		if(!$this->checkType($value))
+		{
 			settype($value, $this->getType());
 		}
 

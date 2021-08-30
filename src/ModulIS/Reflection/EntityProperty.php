@@ -67,14 +67,28 @@ abstract class EntityProperty
 	}
 
 
+	public static function getConvertedType(string $type): string
+	{
+		switch($type)
+		{
+			case 'array':
+				return 'string';
+			case 'bool':
+				return 'int';
+			default:
+				return $type;
+		}
+	}
+
+
 	public static function isNativeType(string $type): bool
 	{
-		return $type !== null && in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array'], true);
+		return in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array'], true);
 	}
 
 
 	public static function isExtraType(string $type): bool
 	{
-		return $type !== null && $type == 'DateTime';
+		return $type == 'Nette\Utils\DateTime';
 	}
 }

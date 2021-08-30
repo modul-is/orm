@@ -50,9 +50,6 @@ class EntityType extends \ReflectionClass
 							throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 						}
 
-						$typeArray = explode('\\', $property->getType()->getName());
-						$type = end($typeArray);
-
 						$readonly = false;
 
 						foreach($property->getAttributes() as $attribute)
@@ -67,7 +64,7 @@ class EntityType extends \ReflectionClass
 							$class::getReflection(),
 							$property->getName(),
 							$readonly,
-							$type,
+							$property->getType()->getName(),
 							$property->getType()->allowsNull()
 						);
 					}
