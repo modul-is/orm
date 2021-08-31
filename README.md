@@ -24,8 +24,7 @@ $grid = new \Ublaboo\DataGrid\DataGrid;
 
 $grid->setDataSource($this->TestRepository->getTable()
 	->select('a, b')
-	->where('b IS NOT NULL')
-	->fetchAll());
+	->where('b IS NOT NULL');
 ```
 
 For some edge-cases we are using `$repository->query()` with custom SQL.
