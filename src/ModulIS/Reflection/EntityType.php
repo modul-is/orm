@@ -5,8 +5,6 @@ namespace ModulIS\Reflection;
 
 use ModulIS;
 use ModulIS\Exception;
-use Nette\Utils\Reflection;
-use Nette\Utils\Strings;
 
 class EntityType extends \ReflectionClass
 {

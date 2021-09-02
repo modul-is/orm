@@ -64,7 +64,7 @@ abstract class Entity
 			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
 			{
 				$type = $prop->getType();
-				$typeClass = new $type();
+				$typeClass = new $type;
 
 				$value = $typeClass::output($value);
 			}
@@ -98,7 +98,7 @@ abstract class Entity
 			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
 			{
 				$type = $prop->getType();
-				$typeClass = new $type();
+				$typeClass = new $type;
 
 				$value = $typeClass::input($value->value);
 			}

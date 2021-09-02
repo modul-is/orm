@@ -3,13 +3,10 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use ModulIS\Exception\InvalidArgumentException;
-use ModulIS\Reflection\EntityType;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\Database\Table\Selection;
-use Nette\Utils\Reflection;
 
 abstract class Repository
 {
@@ -28,7 +25,7 @@ abstract class Repository
 		$this->transaction = new Transaction($database->getConnection());
 
 		$ref = new \ReflectionClass($this);
-		
+
 		if(!$this->table)
 		{
 			throw new Exception\InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
