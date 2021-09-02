@@ -37,7 +37,7 @@ $this->TestRepository->query("SELECT `c` FROM `test` WHERE (`b` IS NOT NULL)")->
 The Readonly attribute can be used for properties that should not be written into, for example columns with auto increment.
 
 ```
-#[\ModulIS\Readonly]
+#[\ModulIS\Attribute\Readonly]
 public int $id;
 ```
 

@@ -20,13 +20,13 @@ class EntityType extends \ReflectionClass
 	}
 
 
-	public function getEntityProperty($name, $default = null): ?EntityProperty
+	public function getEntityProperty(string $name): ?EntityProperty
 	{
-		return $this->hasEntityProperty($name) ? $this->properties[$name] : $default;
+		return $this->hasEntityProperty($name) ? $this->properties[$name] : null;
 	}
 
 
-	public function hasEntityProperty($name): bool
+	public function hasEntityProperty(string $name): bool
 	{
 		$this->loadEntityProperties();
 		return isset($this->properties[$name]);
@@ -60,12 +60,12 @@ class EntityType extends \ReflectionClass
 							}
 						}
 
-						$this->properties[$property->getName()] = new AnnotationProperty(
+						$this->properties[$property->getName()] = new EntityProperty(
 							$class::getReflection(),
 							$property->getName(),
-							$readonly,
 							$property->getType()->getName(),
-							$property->getType()->allowsNull()
+							$property->getType()->allowsNull(),
+							$readonly
 						);
 					}
 				}
@@ -87,26 +87,5 @@ class EntityType extends \ReflectionClass
 		while($current !== false && $current !== ModulIS\Entity::class);
 
 		return array_reverse($tree);
-	}
-
-
-	/**
-	 * Returns an annotation value.
-	 */
-	public static function parseAnnotation(\ReflectionClass $ref, string $name): ?string
-	{
-		if(!Reflection::areCommentsAvailable())
-		{
-			throw new \ModulIS\Exception\InvalidStateException('You have to enable phpDoc comments in opcode cache.');
-		}
-
-		$re = '#[\s*]@' . preg_quote($name, '#') . '(?=\s|$)(?:[ \t]+([^@\s]\S*))?#';
-
-		if($ref->getDocComment() && $m = Strings::match(trim($ref->getDocComment(), '/*'), $re))
-		{
-			return $m[1] ?? '';
-		}
-
-		return null;
 	}
 }

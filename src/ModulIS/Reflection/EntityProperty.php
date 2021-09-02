@@ -5,53 +5,103 @@ namespace ModulIS\Reflection;
 
 use ModulIS\Entity;
 
-abstract class EntityProperty
+class EntityProperty
 {
 	private EntityType $reflection;
 
 	private string $name;
 
-	private bool $readonly;
-
 	private string $type;
 
+	private bool $nullable;
 
-	public function __construct(EntityType $reflection, string $name, bool $readonly, string $type)
+	private bool $readonly;
+
+
+	public function __construct(EntityType $reflection, string $name, string $type, bool $nullable, bool $readonly)
 	{
+		$this->reflection = $reflection;
 		$this->name = $name;
 		$this->type = $type;
+		$this->nullable = $nullable;
 		$this->readonly = $readonly;
-		$this->reflection = $reflection;
 	}
 
 
-	abstract public function getValue(Entity $entity);
-
-
-	abstract public function setValue(Entity $entity, $value): void;
-
-
-	public function getEntityReflection(): EntityType
+	public function getValue(Entity $entity): mixed
 	{
-		return $this->reflection;
+		$value = $this->setType($entity->toRecord()->{$this->getName()});
+		return $value;
 	}
 
 
-	public function getName(): string
+	public function setValue(Entity $entity, $value): void
 	{
-		return $this->name;
+		if($this->isReadonly())
+		{
+			$ref = $entity::getReflection();
+			throw new Exception\MemberAccessException("Cannot write to a read-only property {$ref->getName()}::\${$this->getName()}.");
+		}
+
+		$this->checkType($value);
+		$entity->toRecord()->{$this->getName()} = $value;
 	}
 
 
-	public function isReadonly(): bool
+	public function checkType($value, bool $need = true): bool
 	{
-		return $this->readonly;
+		if($value === null)
+		{
+			if(!$this->nullable)
+			{
+				$entity = $this->getEntityReflection()->getName();
+				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
+			}
+		}
+		elseif($this->isOfExtraType())
+		{
+			return true;
+		}
+		elseif(!$this->isOfNativeType())
+		{
+			$class = $this->getType();
+
+			if(!($value instanceof $class) && get_parent_class($class) !== 'ModulIS\Datatype\Datatype')
+			{
+				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
+					. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
+			}
+		}
+		elseif($need && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
+		{
+			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 
 	public function getType(): string
 	{
 		return $this->type;
+	}
+
+
+	public function setType($value): mixed
+	{
+		/**
+		 * Type casting needed
+		 */
+		if(!$this->checkType($value))
+		{
+			settype($value, $this->getType());
+		}
+
+		return $value;
 	}
 
 
@@ -67,7 +117,7 @@ abstract class EntityProperty
 	}
 
 
-	public static function getConvertedType(string $type): string
+	private static function getConvertedType(string $type): string
 	{
 		switch($type)
 		{
@@ -81,14 +131,38 @@ abstract class EntityProperty
 	}
 
 
-	public static function isNativeType(string $type): bool
+	private static function isNativeType(string $type): bool
 	{
 		return in_array($type, ['int', 'float', 'double', 'bool', 'string', 'array'], true);
 	}
 
 
-	public static function isExtraType(string $type): bool
+	private static function isExtraType(string $type): bool
 	{
-		return $type == 'Nette\Utils\DateTime';
+		return $type === \Nette\Utils\DateTime::class;
+	}
+
+
+	public function getEntityReflection(): EntityType
+	{
+		return $this->reflection;
+	}
+
+
+	public function getName(): string
+	{
+		return $this->name;
+	}
+
+
+	public function isNullable(): bool
+	{
+		return $this->nullable;
+	}
+
+
+	public function isReadonly(): bool
+	{
+		return $this->readonly;
 	}
 }

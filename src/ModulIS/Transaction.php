@@ -27,7 +27,7 @@ class Transaction
 	}
 
 
-	public function transaction(\Closure $callback)
+	public function transaction(\Closure $callback): mixed
 	{
 		try
 		{

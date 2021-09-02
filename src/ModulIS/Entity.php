@@ -3,22 +3,19 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use ModulIS\Reflection\AnnotationProperty;
-use Nette\Utils\Json;
+use ModulIS\Reflection\EntityProperty;
 
 abstract class Entity
 {
 	protected Record $record;
 
-	/**
-	 * @var array
-	 */
-	private static $reflections = [];
+	private static array $reflections = [];
 
 
-	public function __construct($row = null)
+	public function __construct(?\Nette\Database\Table\ActiveRow $row = null)
 	{
 		$this->record = Record::create($row);
+
 		$ref = static::getReflection();
 
 		foreach($ref->getEntityProperties() as $key => $property)
@@ -34,36 +31,12 @@ abstract class Entity
 	}
 
 
-	public function __call($name, $args): void
-	{
-		// events support
-		$ref = static::getReflection();
-
-		if(preg_match('#^on[A-Z]#', $name) && $ref->hasProperty($name))
-		{
-			$prop = $ref->getProperty($name);
-			if($prop->isPublic() && !$prop->isStatic() && (is_array($this->$name) || $this->$name instanceof \Traversable))
-			{
-				foreach($this->$name as $cb)
-				{
-					$cb($args);
-				}
-
-				return;
-			}
-		}
-
-		$class = static::class;
-		throw new Exception\MemberAccessException("Call to undefined method $class::$name().");
-	}
-
-
-	public function &__get($name)
+	public function &__get(string $name): mixed
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
 			$value = $prop->getValue($this);
 
@@ -91,7 +64,6 @@ abstract class Entity
 			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
 			{
 				$type = $prop->getType();
-
 				$typeClass = new $type();
 
 				$value = $typeClass::output($value);
@@ -104,12 +76,12 @@ abstract class Entity
 	}
 
 
-	public function __set($name, $value): void
+	public function __set(string $name, $value): void
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
 			if($prop->getType() == 'array')
 			{
@@ -125,7 +97,10 @@ abstract class Entity
 			}
 			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
 			{
-				$value = $value::input($value->value);
+				$type = $prop->getType();
+				$typeClass = new $type();
+
+				$value = $typeClass::input($value->value);
 			}
 
 			$prop->setValue($this, $value);
@@ -137,11 +112,11 @@ abstract class Entity
 	}
 
 
-	public function __isset($name): bool
+	public function __isset(string $name): bool
 	{
 		$prop = static::getReflection()->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
 			return $prop->getValue($this) !== null;
 		}
@@ -188,7 +163,7 @@ abstract class Entity
 	/**
 	 * Fill entity from array or ArrayHash
 	 */
-	public function fillFromArray($values): void
+	public function fillFromArray(array|\Nette\Utils\ArrayHash $values): void
 	{
 		$ref = static::getReflection();
 

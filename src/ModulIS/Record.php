@@ -11,24 +11,18 @@ class Record
 {
 	private ?ActiveRow $row;
 
-	/**
-	 * @var array
-	 */
-	private $values = [];
+	private array $values = [];
 
-	/**
-	 * @var array
-	 */
-	private $modified = [];
+	private array $modified = [];
 
 
-	final public function __construct(ActiveRow $row = null)
+	final public function __construct(?ActiveRow $row = null)
 	{
 		$this->row = $row;
 	}
 
 
-	public static function create($row = null): self
+	public static function create(?ActiveRow $row = null): self
 	{
 		if($row === null || $row instanceof ActiveRow)
 		{
@@ -68,7 +62,7 @@ class Record
 	}
 
 
-	public function ref($key, $throughColumn = null): ?self
+	public function ref(string $key, string $throughColumn = null): ?self
 	{
 		$this->checkRow();
 		$native = $this->row->ref($key, $throughColumn);
@@ -76,7 +70,7 @@ class Record
 	}
 
 
-	public function related($key, $throughColumn = null): GroupedSelection
+	public function related(string $key, string $throughColumn = null): GroupedSelection
 	{
 		$this->checkRow();
 		return $this->row->related($key, $throughColumn);
@@ -104,7 +98,7 @@ class Record
 	}
 
 
-	public function &__get($name)
+	public function &__get(string $name): mixed
 	{
 		if(array_key_exists($name, $this->modified))
 		{
@@ -128,13 +122,13 @@ class Record
 	}
 
 
-	public function __set($name, $value): void
+	public function __set(string $name, $value): void
 	{
 		$this->modified[$name] = $value;
 	}
 
 
-	public function __isset($name): bool
+	public function __isset(string $name): bool
 	{
 		return isset($this->modified[$name]) || isset($this->values[$name]) || isset($this->row->$name);
 	}

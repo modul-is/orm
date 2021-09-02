@@ -88,7 +88,7 @@ class EntityCollection implements \Iterator, \Countable
 	 * ); // ORDER BY [first], [second] DESC
 	 * </code>
 	 */
-	public function orderBy($column, $dir = null): self
+	public function orderBy(string|array $column, ?bool $desc = null): self
 	{
 		if(is_array($column))
 		{
@@ -99,7 +99,7 @@ class EntityCollection implements \Iterator, \Countable
 		}
 		else
 		{
-			$this->selection->order($column . ($dir === static::DESC ? ' DESC' : ''));
+			$this->selection->order($column . ($desc === static::DESC ? ' DESC' : ''));
 		}
 
 		$this->invalidate();
@@ -107,7 +107,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	public function limit($limit, $offset = null): self
+	public function limit(?int $limit, int $offset = null): self
 	{
 		$this->selection->limit($limit, $offset);
 		$this->invalidate();
@@ -138,7 +138,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	public function key()
+	public function key(): mixed
 	{
 		return current($this->keys);
 	}
@@ -159,7 +159,7 @@ class EntityCollection implements \Iterator, \Countable
 	// === \Countable INTERFACE ======================================
 
 
-	public function count($column = null): int
+	public function count(string $column = null): int
 	{
 		if($column !== null)
 		{

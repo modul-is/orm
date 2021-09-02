@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ModulIS;
+namespace ModulIS\Attribute;
 
 use Attribute;
 
