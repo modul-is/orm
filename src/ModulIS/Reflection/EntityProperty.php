@@ -40,7 +40,7 @@ class EntityProperty
 		if($this->isReadonly())
 		{
 			$ref = $entity::getReflection();
-			throw new Exception\MemberAccessException("Cannot write to a read-only property {$ref->getName()}::\${$this->getName()}.");
+			throw new \ModulIS\Exception\MemberAccessException("Cannot write to a read-only property {$ref->getName()}::\${$this->getName()}.");
 		}
 
 		$this->checkType($value);
@@ -55,7 +55,7 @@ class EntityProperty
 			if(!$this->nullable)
 			{
 				$entity = $this->getEntityReflection()->getName();
-				throw new Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
+				throw new \ModulIS\Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 		}
 		elseif($this->isOfExtraType())
@@ -68,13 +68,14 @@ class EntityProperty
 
 			if(!($value instanceof $class) && get_parent_class($class) !== 'ModulIS\Datatype\Datatype')
 			{
-				throw new Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
+				throw new \ModulIS\Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
 					. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
 			}
 		}
+		/** @phpstan-ignore-next-line */
 		elseif($need && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
-			throw new Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
 		}
 		else
 		{

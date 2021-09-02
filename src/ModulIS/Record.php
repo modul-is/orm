@@ -22,23 +22,15 @@ class Record
 	}
 
 
-	public static function create(?ActiveRow $row = null): self
+	public static function create(ActiveRow|self|null $row = null): self
 	{
 		if($row === null || $row instanceof ActiveRow)
 		{
 			return new static($row);
-
-		}
-		elseif($row instanceof self)
-		{
-			return $row;
-
 		}
 		else
 		{
-			throw new Exception\InvalidArgumentException("Instance of 'Nette\\Database\\Table\\ActiveRow' or 'ModulIS\\Record' expected, '"
-				. (is_object($row) ? $row::class : gettype($row))
-				. "' given.");
+			return $row;
 		}
 	}
 
