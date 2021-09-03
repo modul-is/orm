@@ -13,7 +13,7 @@ class DateTime extends Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Instance of '\Nette\Utils\Datetime' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Instance of '\Nette\Utils\DateTime' expected, '" . get_debug_type($value) . "' given.");
 		}
 
 		return $value;

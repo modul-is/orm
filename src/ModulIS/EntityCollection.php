@@ -82,6 +82,8 @@ class EntityCollection implements \Iterator, \Countable
 	 * <code>
 	 * $this->orderBy('column', EntityCollection::DESC); // ORDER BY [column] DESC
 	 * // or
+	 * $this->orderBy('column DESC'); // ORDER BY [column] DESC
+	 * // or
 	 * $this->orderBy(array(
 	 *	'first'  => EntityCollection::ASC,
 	 *	'second' => EntityCollection::DESC,

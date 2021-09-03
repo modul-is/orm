@@ -40,33 +40,27 @@ abstract class Entity
 		{
 			$value = $prop->getValue($this);
 
-			if($prop->getType() == 'array')
+			if($value !== null)
 			{
-				if($value !== null)
+				if($prop->getType() == 'array')
 				{
 					$value = \ModulIS\Datatype\Json::output($value);
 				}
-			}
-			elseif($prop->getType() == 'bool')
-			{
-				if($value !== null)
+				elseif($prop->getType() == 'bool')
 				{
 					$value = \ModulIS\Datatype\Boolean::output($value);
 				}
-			}
-			elseif($prop->getType() == 'Nette\Utils\DateTime')
-			{
-				if($value !== null)
+				elseif($prop->getType() == \Nette\Utils\DateTime::class && !$value instanceof \Nette\Utils\DateTime)
 				{
 					$value = \ModulIS\Datatype\DateTime::output($value);
 				}
-			}
-			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
-			{
-				$type = $prop->getType();
-				$typeClass = new $type;
+				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+				{
+					$type = $prop->getType();
+					$typeClass = new $type;
 
-				$value = $typeClass::output($value);
+					$value = $typeClass::output($value);
+				}
 			}
 
 			return $value;
@@ -83,24 +77,27 @@ abstract class Entity
 
 		if($prop instanceof EntityProperty)
 		{
-			if($prop->getType() == 'array')
+			if($value !== null)
 			{
-				$value = \ModulIS\Datatype\Json::input($value);
-			}
-			elseif($prop->getType() == 'bool')
-			{
-				$value = \ModulIS\Datatype\Boolean::input($value);
-			}
-			elseif($prop->getType() == 'Nette\Utils\DateTime')
-			{
-				$value = \ModulIS\Datatype\DateTime::input($value);
-			}
-			elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
-			{
-				$type = $prop->getType();
-				$typeClass = new $type;
+				if($prop->getType() == 'array')
+				{
+					$value = \ModulIS\Datatype\Json::input($value);
+				}
+				elseif($prop->getType() == 'bool')
+				{
+					$value = \ModulIS\Datatype\Boolean::input($value);
+				}
+				elseif($prop->getType() == \Nette\Utils\DateTime::class)
+				{
+					$value = \ModulIS\Datatype\DateTime::input($value);
+				}
+				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+				{
+					$type = $prop->getType();
+					$typeClass = new $type;
 
-				$value = $typeClass::input($value->value);
+					$value = $typeClass::input($value->value);
+				}
 			}
 
 			$prop->setValue($this, $value);

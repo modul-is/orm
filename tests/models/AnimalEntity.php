@@ -9,13 +9,15 @@ class AnimalEntity extends \ModulIS\Entity
 
 	public int $weight;
 
-	public \Nette\Utils\Datetime $birth;
+	public \Nette\Utils\DateTime $birth;
 
 	public array $parameters;
 
-	public \Nette\Utils\Datetime|null $death;
+	public \Nette\Utils\DateTime|null $death;
 
-	public int $vaccinated;
+	public bool $vaccinated;
 
 	public int $height;
+
+	public float $price;
 }
