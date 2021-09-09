@@ -1,3 +1,7 @@
+![badge-licence](https://img.shields.io/github/license/modul-is/orm)
+![badge-stars](https://img.shields.io/github/stars/modul-is/orm)
+![badge-issues](https://img.shields.io/github/issues/modul-is/orm)
+
 # Licence
 This repository is an overhaul of [YetORM](https://github.com/uestla/YetORM) under MIT licence. Original fork [kravcik/core](https://github.com/kravcik/core) will not be maintained for Nette3. You can find the unfinished PR for YetORM and Nette 3 [here](https://github.com/uestla/YetORM/pull/23).
 
