@@ -1,4 +1,5 @@
-![badge-licence](https://img.shields.io/github/license/modul-is/orm)
+![badge-version](https://img.shields.io/github/v/release/modul-is/orm)
+![badge-licence](https://img.shields.io/badge/license-MIT-green)
 ![badge-stars](https://img.shields.io/github/stars/modul-is/orm)
 ![badge-issues](https://img.shields.io/github/issues/modul-is/orm)
 
