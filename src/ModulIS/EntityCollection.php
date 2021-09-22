@@ -7,9 +7,9 @@ use Nette\Database\Table\Selection;
 
 class EntityCollection implements \Iterator, \Countable
 {
-	public const ASC = false;
+	public const ASC = 'ASC';
 
-	public const DESC = true;
+	public const DESC = 'DESC';
 
 	protected Selection $selection;
 
@@ -84,24 +84,24 @@ class EntityCollection implements \Iterator, \Countable
 	 * // or
 	 * $this->orderBy('column DESC'); // ORDER BY [column] DESC
 	 * // or
-	 * $this->orderBy(array(
+	 * $this->orderBy([
 	 *	'first'  => EntityCollection::ASC,
 	 *	'second' => EntityCollection::DESC,
-	 * ); // ORDER BY [first], [second] DESC
+	 * ]; // ORDER BY [first], [second] DESC
 	 * </code>
 	 */
-	public function orderBy(string|array $column, ?bool $desc = null): self
+	public function orderBy(string|array $column, ?string $order = null): self
 	{
 		if(is_array($column))
 		{
-			foreach($column as $col => $d)
+			foreach($column as $col => $ord)
 			{
-				$this->orderBy($col, $d);
+				$this->orderBy($col, $ord);
 			}
 		}
 		else
 		{
-			$this->selection->order($column . ($desc === static::DESC ? ' DESC' : ''));
+			$this->selection->order($column . ($order ? ' ' . $order : ''));
 		}
 
 		$this->invalidate();
