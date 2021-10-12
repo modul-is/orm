@@ -68,14 +68,14 @@ abstract class Repository
 	}
 
 
-	public function getByID(int|string $id): ?Entity
+	public function getByID(int|string $id)
 	{
 		$selection = $this->getTable()->wherePrimary($id);
 		return $this->createEntityFromSelection($selection);
 	}
 
 
-	public function getBy(array $criteria): ?Entity
+	public function getBy(array $criteria)
 	{
 		$selection = $this->getTable()->where($criteria);
 		return $this->createEntityFromSelection($selection);
