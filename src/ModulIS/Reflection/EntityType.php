@@ -41,7 +41,7 @@ class EntityType extends \ReflectionClass
 			{
 				foreach($class::getReflection()->getProperties() as $property)
 				{
-					if($property->getName() !== 'record')
+					if($property->isPublic())
 					{
 						if(!$property->getType())
 						{
