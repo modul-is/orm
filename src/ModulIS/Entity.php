@@ -12,7 +12,7 @@ abstract class Entity
 	private static array $reflections = [];
 
 
-	public function __construct(?\Nette\Database\Table\ActiveRow $row = null)
+	public function __construct(Record|\Nette\Database\Table\ActiveRow|null $row = null)
 	{
 		$this->record = Record::create($row);
 
