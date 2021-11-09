@@ -52,7 +52,7 @@ class EntityType extends \ReflectionClass
 
 						foreach($property->getAttributes() as $attribute)
 						{
-							if($attribute->getName() === 'ModulIS\Readonly')
+							if($attribute->getName() === 'ModulIS\Attribute\Readonly')
 							{
 								$readonly = true;
 							}
