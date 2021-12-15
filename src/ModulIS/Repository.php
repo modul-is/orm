@@ -212,6 +212,7 @@ abstract class Repository
 	 */
 	public function query(string $sql, ...$params): Nette\Database\ResultSet
 	{
+		/** @phpstan-ignore-next-line */
 		return $this->database->query($sql, ...$params);
 	}
 

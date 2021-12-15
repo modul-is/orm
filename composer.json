@@ -23,8 +23,8 @@
 		"nette/tester": "^2.2",
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^3.0",
-		"modul-is/coding-standard": "v3.x-dev",
-		"phpstan/phpstan": "^0.12.8"
+		"modul-is/coding-standard": "^3.0",
+		"phpstan/phpstan": "^1"
 	},
 
 	"autoload":

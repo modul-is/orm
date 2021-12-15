@@ -72,7 +72,6 @@ class EntityProperty
 					. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
 			}
 		}
-		/** @phpstan-ignore-next-line */
 		elseif($need && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
 			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");

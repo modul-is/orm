@@ -10,10 +10,7 @@ class Transaction
 {
 	private Connection $connection;
 
-	/**
-	 * @var array
-	 */
-	private static $transactionCounter = [];
+	private static array $transactionCounter = [];
 
 
 	public function __construct(Connection $connection)

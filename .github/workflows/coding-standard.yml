@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.3, 7.4]
+        php: [8.0]
 
     services:
       mysql:
@@ -32,13 +32,13 @@ jobs:
         php-version: ${{ matrix.php }}
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer install --prefer-dist --no-progress
 
     - name: Prepare MySQL connection
       run: |
         sudo apt-get update
-        sudo apt-get install -y mysql-client        
-        sudo mysql --host 127.0.0.1 --port 13306 -uroot -ptest -e 'CREATE DATABASE test;'        	
+        sudo apt-get install -y mysql-client
+        sudo mysql --host 127.0.0.1 --port 13306 -uroot -ptest -e 'CREATE DATABASE test;'
 
     - name: Run Nette Tester
       run: vendor/bin/tester -C tests/cases
