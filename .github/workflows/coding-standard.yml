@@ -37,6 +37,7 @@ jobs:
     - name: Prepare MySQL connection
       run: |
         sudo apt-get update
+        sudo mysql -V
         sudo apt install mysql-client
         sudo mysql --host 127.0.0.1 --port 13306 -uroot -ptest -e 'CREATE DATABASE test;'
 
