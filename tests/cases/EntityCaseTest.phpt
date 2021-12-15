@@ -1,6 +1,7 @@
-<?php 
+<?php
+declare(strict_types=1);
 
-require_once __DIR__ . '/../boostrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 use Tester\Assert;
 
@@ -13,7 +14,7 @@ class EntityCaseTest extends \Tester\TestCase
 
     public function setUp()
     {
-        $this->Service = new Service();
+        $this->Service = new Service;
         $this->Service->cache->clean([\Nette\Caching\Cache::ALL]);
     }
 
@@ -34,14 +35,15 @@ class EntityCaseTest extends \Tester\TestCase
      */
     public function testEntityToArray()
     {
-        $animalEntity = new AnimalEntity();
+        $animalEntity = new AnimalEntity;
         $animalEntity->name = 'Kangaroo';
         $animalEntity->weight = 15;
         $animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
         $animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
         $animalEntity->death = null;
-        $animalEntity->vaccinated = 1;
+        $animalEntity->vaccinated = true;
         $animalEntity->height = 50;
+		$animalEntity->price = 999.90;
 
         $array = $animalEntity->toArray(['id']);
 
@@ -56,7 +58,7 @@ class EntityCaseTest extends \Tester\TestCase
         $array = [
             'name' => 'Kangaroo',
             'weight' => 15,
-            'birth' => new Nette\Utils\DateTime(),
+            'birth' => new Nette\Utils\DateTime,
             'parameters' => [
                 'color' => 'brown',
                 'ears' => 2,
@@ -67,7 +69,7 @@ class EntityCaseTest extends \Tester\TestCase
             'vaccinated' => true
         ];
 
-        $kangarooEntity = new AnimalEntity();
+        $kangarooEntity = new AnimalEntity;
         $kangarooEntity->fillFromArray($array);
 
         Assert::same(15, $kangarooEntity->weight);
@@ -75,7 +77,7 @@ class EntityCaseTest extends \Tester\TestCase
         /**
          * TEST: bool to int conversion
          */
-        Assert::same(1, $kangarooEntity->vaccinated);
+        Assert::same(true, $kangarooEntity->vaccinated);
 
         /**
          * TEST: string to int conversion
@@ -93,13 +95,13 @@ class EntityCaseTest extends \Tester\TestCase
      */
     public function testEntitySaveToDatabase()
     {
-        $animalEntity = new AnimalEntity();
+        $animalEntity = new AnimalEntity;
         $animalEntity->name = 'Kangaroo';
         $animalEntity->weight = 15;
         $animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
         $animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
         $animalEntity->death = null;
-        $animalEntity->vaccinated = 1;
+        $animalEntity->vaccinated = true;
         $animalEntity->height = 50;
 
         $repository = new AnimalRepository($this->Service->database);
@@ -132,5 +134,5 @@ class EntityCaseTest extends \Tester\TestCase
     }
 }
 
-$testCase = new EntityCaseTest();
+$testCase = new EntityCaseTest;
 $testCase->run();

@@ -1,6 +1,7 @@
-<?php 
+<?php
+declare(strict_types=1);
 
-require_once __DIR__ . '/../boostrap.php';
+require_once __DIR__ . '/../bootstrap.php';
 
 use Tester\Assert;
 
@@ -13,7 +14,7 @@ class CollectionCaseTest extends \Tester\TestCase
     
     public function setUp()
     {
-        $this->Service = new Service();
+        $this->Service = new Service;
         $this->Service->cache->clean([\Nette\Caching\Cache::ALL]);
     }
 
@@ -55,5 +56,5 @@ class CollectionCaseTest extends \Tester\TestCase
     }
 }
 
-$testCase = new CollectionCaseTest();
+$testCase = new CollectionCaseTest;
 $testCase->run();

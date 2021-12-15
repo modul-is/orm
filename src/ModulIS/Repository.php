@@ -3,56 +3,49 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use ModulIS\Exception\InvalidArgumentException;
-use ModulIS\Reflection\EntityType;
 use Nette;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\Database\Table\Selection;
-use Nette\Utils\Reflection;
 
 abstract class Repository
 {
-	use Nette\SmartObject {
-		__call as public netteCall;
-	}
+	protected Context $database;
 
-	/**
-	 * @var Context
-	 */
-	protected $database;
-
-	/**
-	 * @var string|null
-	 */
 	protected $table;
 
-	/**
-	 * @var string|null
-	 */
 	protected $entity;
 
-	/**
-	 * @var Transaction
-	 */
-	private $transaction;
+	private Transaction $transaction;
 
 
 	public function __construct(Context $database)
 	{
 		$this->database = $database;
 		$this->transaction = new Transaction($database->getConnection());
+
+		$ref = new \ReflectionClass($this);
+
+		if(!$this->table)
+		{
+			throw new Exception\InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
+		}
+
+		if(!$this->entity)
+		{
+			throw new Exception\InvalidStateException('Entity class not set. Use class property ' . $ref->getName() . '::$entity');
+		}
 	}
 
 
-	public function createEntity($row = null): Entity
+	public function createEntity(?\Nette\Database\Table\ActiveRow $row = null): Entity
 	{
-		$class = $this->getEntityClass();
+		$class = $this->entity;
 		return new $class($row);
 	}
 
 
-	public function fetchPairs($key, $value, array $criteria = [], $order = null, $separator = ' '): array
+	public function fetchPairs(?string $key = null, string|array|null $value = null, array $criteria = [], ?string $order = null, string $separator = ' '): array
 	{
 		if(is_array($value))
 		{
@@ -64,7 +57,7 @@ abstract class Repository
 			$valueColumn = $value;
 		}
 
-		$table = $this->getTable()->select($this->table . '.' . $key . ',' . $valueColumn)->where($criteria);
+		$table = $this->getTable()->select($this->table . '.' . $key . ($key && $valueColumn ? ',' : null) . $valueColumn)->where($criteria);
 
 		if($order)
 		{
@@ -75,7 +68,7 @@ abstract class Repository
 	}
 
 
-	public function getByID($id)
+	public function getByID(int|string $id)
 	{
 		$selection = $this->getTable()->wherePrimary($id);
 		return $this->createEntityFromSelection($selection);
@@ -96,9 +89,6 @@ abstract class Repository
 	}
 
 
-	/**
-	 * @deprecated Use findBy instead
-	 */
 	public function findAll(): EntityCollection
 	{
 		return $this->findBy([]);
@@ -118,25 +108,15 @@ abstract class Repository
 	 * Save collection by transaction
 	 * @note Array or Arrash hash must have entity inside
 	 */
-	public function saveCollection($collection)
+	public function saveCollection(array|EntityCollection|\Nette\Utils\ArrayHash $collection): mixed
 	{
-		if($collection)
+		return $this->transaction(function() use ($collection)
 		{
-			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
+			foreach($collection as $entity)
 			{
-				return $this->transaction(function() use($collection)
-				{
-					foreach($collection as $entity)
-					{
-						$this->persist($entity);
-					}
-				});
+				$this->persist($entity);
 			}
-			else
-			{
-				throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
-			}
-		}
+		});
 	}
 
 
@@ -147,7 +127,7 @@ abstract class Repository
 	}
 
 
-	protected function createCollection($selection, $entity = null, $refTable = null, $refColumn = null): EntityCollection
+	protected function createCollection(Selection $selection, $entity = null, $refTable = null, $refColumn = null): EntityCollection
 	{
 		return new EntityCollection($selection, $entity ?? [$this, 'createEntity'], $refTable, $refColumn);
 	}
@@ -157,10 +137,8 @@ abstract class Repository
 	{
 		$this->checkEntity($entity);
 
-		return $this->transaction(function() use($entity)
-
+		return $this->transaction(function() use ($entity)
 		{
-
 			$record = $entity->toRecord();
 			if($record->hasRow())
 			{
@@ -173,12 +151,11 @@ abstract class Repository
 			if(!$inserted instanceof IRow)
 			{
 				throw new Exception\InvalidStateException('Insert did not return instance of ' . IRow::class . '. '
-						. 'Does table "' . $this->getTableName() . '" have primary key defined? If so, try cleaning cache.');
+						. 'Does table "' . $this->table . '" have primary key defined? If so, try cleaning cache.');
 			}
 
 			$record->setRow($inserted);
 			return true;
-
 		});
 	}
 
@@ -190,10 +167,7 @@ abstract class Repository
 
 		if($record->hasRow())
 		{
-			return $this->transaction(function() use($record)
-			{
-				return $record->getRow()->delete() > 0;
-			});
+			return $this->transaction(fn() => $record->getRow()->delete() > 0);
 		}
 
 		return true;
@@ -209,70 +183,27 @@ abstract class Repository
 	}
 
 
-	public function getTable($table = null): Selection
+	public function getTable(?string $table = null): Selection
 	{
-		return $this->database->table($table ?? $this->getTableName());
-	}
-
-
-	final protected function getTableName(): string
-	{
-		if($this->table === null)
-		{
-			$ref = new \ReflectionClass($this);
-			$this->table = EntityType::parseAnnotation($ref, 'table');
-
-			if(!$this->table)
-			{
-				throw new Exception\InvalidStateException('Table name not set. Use either annotation @table or class member ' . $ref->getName() . '::$table');
-			}
-		}
-
-		return $this->table;
-	}
-
-
-	final protected function getEntityClass(): string
-	{
-		if($this->entity === null)
-		{
-			$ref = new \ReflectionClass($this);
-			$annotation = EntityType::parseAnnotation($ref, 'entity');
-
-			if(!$annotation)
-			{
-				throw new Exception\InvalidStateException('Entity class not set. Use either annotation @entity or class member ' . $ref->getName() . '::$entity');
-			}
-
-			$this->entity = Reflection::expandClassName($annotation, $ref);
-		}
-
-		return $this->entity;
+		return $this->database->table($table ?? $this->table);
 	}
 
 
 	final protected function checkEntity(Entity $entity): void
 	{
-		$class = $this->getEntityClass();
+		$class = $this->entity;
 
 		if(!$entity instanceof $class)
 		{
 			throw new Exception\InvalidArgumentException("Instance of '$class' expected, '"
-				. get_class($entity) . "' given.");
+				. $entity::class . "' given.");
 		}
 	}
 
 
-	final protected function transaction(\Closure $callback)
+	final protected function transaction(\Closure $callback): mixed
 	{
-		try
-		{
-			return $this->transaction->transaction($callback);
-		}
-		catch(\Exception $e)
-		{
-			throw $e;
-		}
+		return $this->transaction->transaction($callback);
 	}
 
 
@@ -281,6 +212,7 @@ abstract class Repository
 	 */
 	public function query(string $sql, ...$params): Nette\Database\ResultSet
 	{
+		/** @phpstan-ignore-next-line */
 		return $this->database->query($sql, ...$params);
 	}
 
@@ -288,32 +220,22 @@ abstract class Repository
 	/**
 	 * Remove collection by transaction
 	 */
-	public function removeCollection($collection)
+	public function removeCollection(array|EntityCollection|\Nette\Utils\ArrayHash $collection): mixed
 	{
-		if($collection)
+		return $this->transaction(function() use ($collection)
 		{
-			if($collection instanceof EntityCollection || is_array($collection) || $collection instanceof \Nette\Utils\ArrayHash)
+			foreach($collection as $entity)
 			{
-				return $this->transaction(function() use($collection)
-				{
-					foreach($collection as $entity)
-					{
-						$this->delete($entity);
-					}
-				});
+				$this->delete($entity);
 			}
-			else
-			{
-				throw new InvalidArgumentException('Must be ArrayHash, Array or EntityCollection');
-			}
-		}
+		});
 	}
 
 
 	/**
 	 * Remove single instance from database by ID
 	 */
-	public function removeByID(int $id): bool
+	public function removeByID(int|string $id): bool
 	{
 		return (bool) $this->getTable()->wherePrimary($id)->delete();
 	}

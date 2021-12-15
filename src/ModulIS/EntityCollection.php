@@ -5,47 +5,25 @@ namespace ModulIS;
 
 use Nette\Database\Table\Selection;
 
-
 class EntityCollection implements \Iterator, \Countable
 {
-	public const ASC = false;
+	public const ASC = 'ASC';
 
-	public const DESC = true;
+	public const DESC = 'DESC';
 
-	/**
-	 * @var Selection
-	 */
-	protected $selection;
+	protected Selection $selection;
 
-	/**
-	 * @var string|\Closure
-	 */
-	protected $entity;
+	protected string|\Closure $entity;
 
-	/**
-	 * @var string|null
-	 */
-	protected $refTable;
+	protected string|null $refTable;
 
-	/**
-	 * @var string|null
-	 */
-	protected $refColumn;
+	protected string|null $refColumn;
 
-	/**
-	 * @var Entity[]|null
-	 */
-	protected $data;
+	protected ?array $data;
 
-	/**
-	 * @var int|null
-	 */
-	private $count;
+	private int|null $count;
 
-	/**
-	 * @var array
-	 */
-	private $keys;
+	private array $keys;
 
 
 	public function __construct(Selection $selection, $entity, $refTable = null, $refColumn = null)
@@ -69,7 +47,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	private function loadData(): void
 	{
-		if($this->data === null)
+		if(!isset($this->data))
 		{
 			if($this->entity instanceof \Closure)
 			{
@@ -79,10 +57,7 @@ class EntityCollection implements \Iterator, \Countable
 			else
 			{
 				$class = $this->entity;
-				$factory = function($record) use($class)
-				{
-					return new $class($record);
-				};
+				$factory = fn($record) => new $class($record);
 			}
 
 			$this->data = [];
@@ -107,24 +82,26 @@ class EntityCollection implements \Iterator, \Countable
 	 * <code>
 	 * $this->orderBy('column', EntityCollection::DESC); // ORDER BY [column] DESC
 	 * // or
-	 * $this->orderBy(array(
+	 * $this->orderBy('column DESC'); // ORDER BY [column] DESC
+	 * // or
+	 * $this->orderBy([
 	 *	'first'  => EntityCollection::ASC,
 	 *	'second' => EntityCollection::DESC,
-	 * ); // ORDER BY [first], [second] DESC
+	 * ]; // ORDER BY [first], [second] DESC
 	 * </code>
 	 */
-	public function orderBy($column, $dir = null): self
+	public function orderBy(string|array $column, ?string $order = null): self
 	{
 		if(is_array($column))
 		{
-			foreach($column as $col => $d)
+			foreach($column as $col => $ord)
 			{
-				$this->orderBy($col, $d);
+				$this->orderBy($col, $ord);
 			}
 		}
 		else
 		{
-			$this->selection->order($column . ($dir === static::DESC ? ' DESC' : ''));
+			$this->selection->order($column . ($order ? ' ' . $order : ''));
 		}
 
 		$this->invalidate();
@@ -132,7 +109,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	public function limit($limit, $offset = null): self
+	public function limit(?int $limit, int $offset = null): self
 	{
 		$this->selection->limit($limit, $offset);
 		$this->invalidate();
@@ -163,7 +140,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	public function key()
+	public function key(): mixed
 	{
 		return current($this->keys);
 	}
@@ -184,24 +161,23 @@ class EntityCollection implements \Iterator, \Countable
 	// === \Countable INTERFACE ======================================
 
 
-	public function count($column = null): int
+	public function count(string $column = null): int
 	{
 		if($column !== null)
 		{
 			return $this->selection->count($column);
 		}
 
-		if($this->data !== null)
+		if(isset($this->data))
 		{
 			return count($this->data);
 		}
 
-		if($this->count === null)
+		if(!isset($this->count))
 		{
 			$this->count = $this->selection->count('*');
 		}
 
 		return $this->count;
 	}
-
 }

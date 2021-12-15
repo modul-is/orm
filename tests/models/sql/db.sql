@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `animal` (
   `death` datetime DEFAULT NULL,
   `height` int(5) NOT NULL,
   `vaccinated` int(5) NOT NULL,
+  `price` float NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

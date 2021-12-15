@@ -12,7 +12,7 @@
 
 	"require":
 	{
-		"php": ">=7.1.0 < 8.0.0",
+		"php": "^8.0",
 		"nette/utils": "^3.0",
 		"nette/database": "^3.0"
 	},
@@ -23,8 +23,8 @@
 		"nette/tester": "^2.2",
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^3.0",
-		"modul-is/coding-standard": "^2.0",
-		"phpstan/phpstan": "^0.12.8"
+		"modul-is/coding-standard": "^3.0",
+		"phpstan/phpstan": "^1"
 	},
 
 	"autoload":

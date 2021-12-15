@@ -3,25 +3,25 @@ declare(strict_types=1);
 
 namespace ModulIS;
 
-use ModulIS\Reflection\AnnotationProperty;
-use Nette\Utils\DateTime;
+use ModulIS\Reflection\EntityProperty;
 
 abstract class Entity
 {
-	/**
-	 * @var Record
-	 */
-	protected $record;
+	protected Record $record;
 
-	/**
-	 * @var array
-	 */
-	private static $reflections = [];
+	private static array $reflections = [];
 
 
-	public function __construct($row = null)
+	public function __construct(Record|\Nette\Database\Table\ActiveRow|null $row = null)
 	{
 		$this->record = Record::create($row);
+
+		$ref = static::getReflection();
+
+		foreach($ref->getEntityProperties() as $key => $property)
+		{
+			unset($this->$key);
+		}
 	}
 
 
@@ -31,50 +31,35 @@ abstract class Entity
 	}
 
 
-	public function __call($name, $args): void
-	{
-		// events support
-		$ref = static::getReflection();
-		if(preg_match('#^on[A-Z]#', $name) && $ref->hasProperty($name))
-		{
-			$prop = $ref->getProperty($name);
-			if($prop->isPublic() && !$prop->isStatic() && (is_array($this->$name) || $this->$name instanceof \Traversable))
-			{
-				foreach($this->$name as $cb)
-				{
-					$cb($args);
-				}
-
-				return;
-			}
-		}
-
-		$class = static::class;
-		throw new Exception\MemberAccessException("Call to undefined method $class::$name().");
-	}
-
-
-	public function &__get($name)
+	public function &__get(string $name): mixed
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
 			$value = $prop->getValue($this);
 
-			if($prop->getType() == 'json')
+			if($value !== null)
 			{
-				if($value !== null)
+				if($prop->getType() == 'array')
 				{
-					$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
+					$value = \ModulIS\Datatype\Json::output($value);
 				}
-			}
-			elseif($prop->getType() == 'date')
-			{
-				if($value !== null)
+				elseif($prop->getType() == 'bool')
 				{
-					$value = $value instanceof DateTime ? $value : new DateTime($value);
+					$value = \ModulIS\Datatype\Boolean::output($value);
+				}
+				elseif($prop->getType() == \Nette\Utils\DateTime::class && !$value instanceof \Nette\Utils\DateTime)
+				{
+					$value = \ModulIS\Datatype\DateTime::output($value);
+				}
+				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+				{
+					$type = $prop->getType();
+					$typeClass = new $type;
+
+					$value = $typeClass::output($value);
 				}
 			}
 
@@ -85,20 +70,34 @@ abstract class Entity
 	}
 
 
-	public function __set($name, $value): void
+	public function __set(string $name, $value): void
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
-			if($prop->getType() == 'json' && is_array($value))
+			if($value !== null)
 			{
-				$value = \Nette\Utils\Json::encode($value);
-			}
-			elseif($prop->getType() == 'date' && is_string($value))
-			{
-				$value = new DateTime($value);
+				if($prop->getType() == 'array')
+				{
+					$value = \ModulIS\Datatype\Json::input($value);
+				}
+				elseif($prop->getType() == 'bool')
+				{
+					$value = \ModulIS\Datatype\Boolean::input($value);
+				}
+				elseif($prop->getType() == \Nette\Utils\DateTime::class)
+				{
+					$value = \ModulIS\Datatype\DateTime::input($value);
+				}
+				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
+				{
+					$type = $prop->getType();
+					$typeClass = new $type;
+
+					$value = $typeClass::input($value->value);
+				}
 			}
 
 			$prop->setValue($this, $value);
@@ -110,11 +109,11 @@ abstract class Entity
 	}
 
 
-	public function __isset($name): bool
+	public function __isset(string $name): bool
 	{
 		$prop = static::getReflection()->getEntityProperty($name);
 
-		if($prop instanceof AnnotationProperty)
+		if($prop instanceof EntityProperty)
 		{
 			return $prop->getValue($this) !== null;
 		}
@@ -161,7 +160,7 @@ abstract class Entity
 	/**
 	 * Fill entity from array or ArrayHash
 	 */
-	public function fillFromArray($values): void
+	public function fillFromArray(array|\Nette\Utils\ArrayHash $values): void
 	{
 		$ref = static::getReflection();
 
@@ -183,35 +182,17 @@ abstract class Entity
 				}
 
 				/**
-				 * Convert bool to int
-				 */
-				if($property->getType() == 'int' && is_bool($values[$name]))
-				{
-					$values[$name] = $values[$name] ? 1 : 0;
-				}
-
-				/**
 				 * Convert strings to int
 				 */
-				elseif($property->getType() == 'int' && !empty($values[$name]))
+				if($property->getType() == 'int' && !empty($values[$name]))
 				{
-					$values[$name] = intval($values[$name]);
-				}
-
-				/**
-				 * Convert array to json
-				 */
-				if($property->getType() == 'json' && is_array($values[$name]))
-				{
-					$this->$name = \Nette\Utils\Json::encode($values[$name]);
+					$this->$name = intval($values[$name]);
 				}
 				else
 				{
 					$this->$name = $values[$name];
-					}
-
+				}
 			}
 		}
 	}
-
 }

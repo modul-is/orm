@@ -8,15 +8,9 @@ use Nette\Database\Connection;
 
 class Transaction
 {
-	/**
-	 * @var Connection
-	 */
-	private $connection;
+	private Connection $connection;
 
-	/**
-	 * @var array
-	 */
-	private static $transactionCounter = [];
+	private static array $transactionCounter = [];
 
 
 	public function __construct(Connection $connection)
@@ -30,7 +24,7 @@ class Transaction
 	}
 
 
-	public function transaction(\Closure $callback)
+	public function transaction(\Closure $callback): mixed
 	{
 		try
 		{
@@ -87,5 +81,4 @@ class Transaction
 	{
 		return sha1($this->connection->getDsn());
 	}
-
 }
