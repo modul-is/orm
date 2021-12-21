@@ -9,34 +9,7 @@ This repository is an overhaul of [YetORM](https://github.com/uestla/YetORM) und
 # Abstract
 This is a hybrid of a simple scalable database layer with ORM principles.
 
-We are using entities as data objects for structured work (forms, details, routing, etc.).
-
-```
-class TestEntity extends \ModulIS\Entity
-{
-	public int $a;
-
-	public ?string $b;
-
-	public \Nette\Utils\DateTime $c;
-}
-```
-
-It is also possible to make a repository call `$repository->getTable()` and inject it into Ublaboo/Datagrid.
-
-```
-$grid = new \Ublaboo\DataGrid\DataGrid;
-
-$grid->setDataSource($this->TestRepository->getTable()
-	->select('a, b')
-	->where('b IS NOT NULL');
-```
-
-For some edge-cases we are using `$repository->query()` with custom SQL.
-
-```
-$this->TestRepository->query("SELECT `c` FROM `test` WHERE (`b` IS NOT NULL)")->fetch();
-```
+For usage and examples refer to [quickstart](quickstart.md).
 
 ## Readonly
 The Readonly attribute can be used for properties that should not be written into, for example columns with auto increment.
@@ -121,5 +94,5 @@ Just make sure the data is always wrapped in the specified class to avoid errors
 $entity->file = new \App\Datatype\File(new \SplFileInfo('../app/Datatype/File.php'));
 
 bdump($entity->file); //App\Datatype\File(value: SplFileInfo(path: '../app/Datatype/File.php'));
-bdump($ntity->file->value->getFilename()); //'File.php'
+bdump($entity->file->value->getFilename()); //'File.php'
 ```
