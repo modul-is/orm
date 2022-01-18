@@ -6,6 +6,6 @@ namespace ModulIS\Attribute;
 use Attribute;
 
 #[Attribute]
-class Readonly
+class ReadonlyProperty
 {
 }

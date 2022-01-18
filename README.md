@@ -12,10 +12,10 @@ This is a hybrid of a simple scalable database layer with ORM principles.
 For usage and examples refer to [quickstart](quickstart.md).
 
 ## Readonly
-The Readonly attribute can be used for properties that should not be written into, for example columns with auto increment.
+The ReadonlyProperty attribute can be used for properties that should not be written into, for example columns with auto increment.
 
 ```
-#[\ModulIS\Attribute\Readonly]
+#[\ModulIS\Attribute\ReadonlyProperty]
 public int $id;
 ```
 
