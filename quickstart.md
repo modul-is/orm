@@ -24,7 +24,7 @@ namespace Example\Entity;
 
 class ZooEntity extends \ModulIS\Entity
 {
-	#[\ModulIS\Attribute\Readonly]
+	#[\ModulIS\Attribute\ReadonlyProperty]
 	public int $id;
 
 	public string $name;
@@ -37,7 +37,7 @@ namespace Example\Entity;
 
 class AnimalEntity extends \ModulIS\Entity
 {
-	#[\ModulIS\Attribute\Readonly]
+	#[\ModulIS\Attribute\ReadonlyProperty]
 	public int $id;
 
 	public string $name;
