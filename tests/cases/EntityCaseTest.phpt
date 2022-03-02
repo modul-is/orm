@@ -111,8 +111,6 @@ class EntityCaseTest extends \Tester\TestCase
         Assert::same(null, $kangarooEntity->death);
     }
 
-
-
 	/**
      * Entity save to database
      */
