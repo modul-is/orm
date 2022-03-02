@@ -29,7 +29,7 @@ class EntityCaseTest extends \Tester\TestCase
 
         Assert::same(null, $zooEntity->motto);
     }
-	
+
 	/**
      * Entity to Array
      */
@@ -49,8 +49,29 @@ class EntityCaseTest extends \Tester\TestCase
 
         Assert::true(is_array($array));
     }
-	
-	    /**
+
+
+    public function testEntityToArrayEdgeCase()
+    {
+        $animalEntity = new AnimalEntity;
+        $animalEntity->name = '';
+        $animalEntity->weight = 0;
+        $animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+        $animalEntity->parameters = [];
+        $animalEntity->death = null;
+        $animalEntity->vaccinated = true;
+        $animalEntity->height = 0;
+		$animalEntity->price = 0.0;
+
+        $array = $animalEntity->toArray(['id']);
+
+		Assert::same('', $array['name']);
+        Assert::same(0, $array['weight']);
+		Assert::same(0.0, $array['price']);
+		Assert::same([], $array['parameters']);
+    }
+
+	/**
      * Entity filled from Array
      */
     public function testEntityFromArray()
@@ -89,7 +110,9 @@ class EntityCaseTest extends \Tester\TestCase
          */
         Assert::same(null, $kangarooEntity->death);
     }
-	
+
+
+
 	/**
      * Entity save to database
      */
