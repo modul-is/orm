@@ -121,5 +121,5 @@ Just make sure the data is always wrapped in the specified class to avoid errors
 $entity->file = new \App\Datatype\File(new \SplFileInfo('../app/Datatype/File.php'));
 
 bdump($entity->file); //App\Datatype\File(value: SplFileInfo(path: '../app/Datatype/File.php'));
-bdump($ntity->file->value->getFilename()); //'File.php'
+bdump($entity->file->value->getFilename()); //'File.php'
 ```
