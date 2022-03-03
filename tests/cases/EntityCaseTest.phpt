@@ -71,6 +71,16 @@ class EntityCaseTest extends \Tester\TestCase
 		Assert::same([], $array['parameters']);
     }
 
+	public function testEntityToArrayNullProperty()
+    {
+        $zooEntity = new ZooEntity;
+        $zooEntity->name = 'Lion';
+
+        $array = $zooEntity->toArray(['id']);
+
+		Assert::same(null, $array['motto']);
+    }
+
 	/**
      * Entity filled from Array
      */
