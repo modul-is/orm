@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -18,7 +19,7 @@ $path = join(DIRECTORY_SEPARATOR, [__DIR__, '..', 'temp']);
 
 if(!file_exists($path))
 {
-    mkdir($path);
+	mkdir($path);
 }
 
 \Tester\Environment::lock('core', $path);
