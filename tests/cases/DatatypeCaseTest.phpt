@@ -12,6 +12,7 @@ class DatatypeCaseTest extends \Tester\TestCase
 {
 	protected $Service;
 
+
 	public function setUp()
 	{
 		$this->Service = new Service;
