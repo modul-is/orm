@@ -2,4 +2,4 @@ parameters:
 	ignoreErrors:
 		-
 			message: '#Dead catch - ModulIS\\Exception\\MemberAccessException is never thrown in the try block.#'
-			path: /src/ModulIS/Entity.php
+			path: src/ModulIS/Entity.php
