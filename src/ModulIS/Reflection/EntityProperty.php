@@ -74,7 +74,7 @@ class EntityProperty
 		}
 		elseif($need && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$this->getName()}' - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
 		}
 		else
 		{
