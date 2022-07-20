@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ModulIS\Reflection;
@@ -7,24 +8,15 @@ use ModulIS\Entity;
 
 class EntityProperty
 {
-	private EntityType $reflection;
-
-	private string $name;
-
-	private string $type;
-
-	private bool $nullable;
-
-	private bool $readonly;
-
-
-	public function __construct(EntityType $reflection, string $name, string $type, bool $nullable, bool $readonly)
+	public function __construct
+	(
+		private EntityType $reflection,
+		private string $name,
+		private string $type,
+		private bool $nullable,
+		private bool $readonly
+	)
 	{
-		$this->reflection = $reflection;
-		$this->name = $name;
-		$this->type = $type;
-		$this->nullable = $nullable;
-		$this->readonly = $readonly;
 	}
 
 
