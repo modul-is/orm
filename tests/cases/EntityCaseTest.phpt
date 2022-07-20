@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -16,7 +17,7 @@ class EntityCaseTest extends \Tester\TestCase
 	public function setUp()
 	{
 		$this->Service = new Service;
-		$this->Service->cache->clean([\Nette\Caching\Cache::ALL]);
+		$this->Service->cache->clean([Nette\Caching\Cache::ALL]);
 	}
 
 
@@ -41,7 +42,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
@@ -59,7 +60,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = '';
 		$animalEntity->weight = 0;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = [];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
@@ -135,7 +136,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;

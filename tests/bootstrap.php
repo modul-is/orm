@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -11,7 +12,7 @@ require __DIR__ . '/models/ZooEntity.php';
 require __DIR__ . '/models/AnimalRepository.php';
 require __DIR__ . '/models/Service.php';
 
-\Tester\Environment::setup();
+Tester\Environment::setup();
 
 date_default_timezone_set('UTC');
 
@@ -22,4 +23,4 @@ if(!file_exists($path))
 	mkdir($path);
 }
 
-\Tester\Environment::lock('core', $path);
+Tester\Environment::lock('core', $path);
