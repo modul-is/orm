@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ModulIS\Reflection;
@@ -52,7 +53,7 @@ class EntityType extends \ReflectionClass
 
 						foreach($property->getAttributes() as $attribute)
 						{
-							if($attribute->getName() === 'ModulIS\Attribute\Readonly')
+							if($attribute->getName() === 'ModulIS\Attribute\ReadonlyProperty')
 							{
 								$readonly = true;
 							}

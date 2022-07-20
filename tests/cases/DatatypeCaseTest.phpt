@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -12,10 +13,11 @@ class DatatypeCaseTest extends \Tester\TestCase
 {
 	protected $Service;
 
+
 	public function setUp()
 	{
 		$this->Service = new Service;
-		$this->Service->cache->clean([\Nette\Caching\Cache::ALL]);
+		$this->Service->cache->clean([Nette\Caching\Cache::ALL]);
 	}
 
 
@@ -320,7 +322,7 @@ class DatatypeCaseTest extends \Tester\TestCase
 	public function testDatetimeToInt()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->weight = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->weight = new Nette\Utils\DateTime('2021-01-01');
 	}
 
 
@@ -330,7 +332,7 @@ class DatatypeCaseTest extends \Tester\TestCase
 	public function testDatetimeToFloat()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->price = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->price = new Nette\Utils\DateTime('2021-01-01');
 	}
 
 
@@ -340,7 +342,7 @@ class DatatypeCaseTest extends \Tester\TestCase
 	public function testDatetimeToString()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->name = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->name = new Nette\Utils\DateTime('2021-01-01');
 	}
 
 
@@ -350,7 +352,7 @@ class DatatypeCaseTest extends \Tester\TestCase
 	public function testDatetimeToArray()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->parameters = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->parameters = new Nette\Utils\DateTime('2021-01-01');
 	}
 
 
@@ -360,16 +362,16 @@ class DatatypeCaseTest extends \Tester\TestCase
 	public function testDatetimeToBool()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->vaccinated = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->vaccinated = new Nette\Utils\DateTime('2021-01-01');
 	}
 
 
 	public function testDatetimeToDatetime()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->birth = new Nette\Utils\DateTime('2021-01-01');
 
-		Assert::same((new \Nette\Utils\DateTime('2021-01-01'))->format('Y-m-d'), $animalEntity->birth->format('Y-m-d'));
+		Assert::same((new Nette\Utils\DateTime('2021-01-01'))->format('Y-m-d'), $animalEntity->birth->format('Y-m-d'));
 	}
 
 

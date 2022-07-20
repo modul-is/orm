@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ModulIS;
@@ -147,9 +148,25 @@ abstract class Entity
 
 		foreach($ref->getEntityProperties() as $name => $property)
 		{
-			if(array_search($name, $excludedProperties, true) === false && $name != 'modifiedArray')
+			if(array_search($name, $excludedProperties, true) !== false || $name === 'modifiedArray')
 			{
-				$values[$name] = (!empty($this->$name) || $this->$name === 0) ? $this->$name : null;
+				continue;
+			}
+
+			try
+			{
+				$values[$name] = $this->$name;
+			}
+			catch(Exception\MemberAccessException $ex)
+			{
+				if($property->isNullable())
+				{
+					$values[$name] = null;
+				}
+				else
+				{
+					throw new Exception\MemberAccessException($ex->getMessage());
+				}
 			}
 		}
 

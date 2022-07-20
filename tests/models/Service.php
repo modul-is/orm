@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 class Service
@@ -13,13 +14,13 @@ class Service
 
 	public function __construct()
 	{
-		$connection = new \Nette\Database\Connection('mysql:host=127.0.0.1;dbname=test;port=3306', 'root', 'test');
+		$connection = new Nette\Database\Connection('mysql:host=127.0.0.1;dbname=test;port=3306', 'root', 'test');
 
-		\Nette\Database\Helpers::loadFromFile($connection, __DIR__ . '/sql/db.sql');
-		$structure = new \Nette\Database\Structure($connection, new \Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp/'));
-		$conventions = new \Nette\Database\Conventions\DiscoveredConventions($structure);
+		Nette\Database\Helpers::loadFromFile($connection, __DIR__ . '/sql/db.sql');
+		$structure = new Nette\Database\Structure($connection, new Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp/'));
+		$conventions = new Nette\Database\Conventions\DiscoveredConventions($structure);
 
-		$this->database = new \Nette\Database\Context($connection, $structure, $conventions, new \Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp/'));
+		$this->database = new Nette\Database\Context($connection, $structure, $conventions, new Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp/'));
 
 		$this->cache = new Nette\Caching\Storages\FileStorage(__DIR__ . '/../../temp');
 	}

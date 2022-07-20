@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 require_once __DIR__ . '/../bootstrap.php';
@@ -10,128 +11,165 @@ use Tester\Assert;
  */
 class EntityCaseTest extends \Tester\TestCase
 {
-    protected $Service;
+	protected $Service;
 
-    public function setUp()
-    {
-        $this->Service = new Service;
-        $this->Service->cache->clean([\Nette\Caching\Cache::ALL]);
-    }
 
-    /**
-     * If possible set NULL thruw new reflection?
-     */
-    public function testEntitySetNull()
-    {
-        $zooEntity = new ZooEntity;
-        $zooEntity->name = 'Zoo Pilsen';
-        $zooEntity->motto = null;
+	public function setUp()
+	{
+		$this->Service = new Service;
+		$this->Service->cache->clean([Nette\Caching\Cache::ALL]);
+	}
 
-        Assert::same(null, $zooEntity->motto);
-    }
-	
+
 	/**
-     * Entity to Array
-     */
-    public function testEntityToArray()
-    {
-        $animalEntity = new AnimalEntity;
-        $animalEntity->name = 'Kangaroo';
-        $animalEntity->weight = 15;
-        $animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
-        $animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
-        $animalEntity->death = null;
-        $animalEntity->vaccinated = true;
-        $animalEntity->height = 50;
+	 * If possible set NULL thruw new reflection?
+	 */
+	public function testEntitySetNull()
+	{
+		$zooEntity = new ZooEntity;
+		$zooEntity->name = 'Zoo Pilsen';
+		$zooEntity->motto = null;
+
+		Assert::same(null, $zooEntity->motto);
+	}
+
+
+	/**
+	 * Entity to Array
+	 */
+	public function testEntityToArray()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->name = 'Kangaroo';
+		$animalEntity->weight = 15;
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
+		$animalEntity->death = null;
+		$animalEntity->vaccinated = true;
+		$animalEntity->height = 50;
 		$animalEntity->price = 999.90;
 
-        $array = $animalEntity->toArray(['id']);
+		$array = $animalEntity->toArray(['id']);
 
-        Assert::true(is_array($array));
-    }
-	
-	    /**
-     * Entity filled from Array
-     */
-    public function testEntityFromArray()
-    {
-        $array = [
-            'name' => 'Kangaroo',
-            'weight' => 15,
-            'birth' => new Nette\Utils\DateTime,
-            'parameters' => [
-                'color' => 'brown',
-                'ears' => 2,
-                'eyes' => 1
-            ],
-            'death' => null,
-            'height' => '50',
-            'vaccinated' => true
-        ];
+		Assert::true(is_array($array));
+	}
 
-        $kangarooEntity = new AnimalEntity;
-        $kangarooEntity->fillFromArray($array);
 
-        Assert::same(15, $kangarooEntity->weight);
+	public function testEntityToArrayEdgeCase()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->name = '';
+		$animalEntity->weight = 0;
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->parameters = [];
+		$animalEntity->death = null;
+		$animalEntity->vaccinated = true;
+		$animalEntity->height = 0;
+		$animalEntity->price = 0.0;
 
-        /**
-         * TEST: bool to int conversion
-         */
-        Assert::same(true, $kangarooEntity->vaccinated);
+		$array = $animalEntity->toArray(['id']);
 
-        /**
-         * TEST: string to int conversion
-         */
-        Assert::same(50, $kangarooEntity->height);
+		Assert::same('', $array['name']);
+		Assert::same(0, $array['weight']);
+		Assert::same(0.0, $array['price']);
+		Assert::same([], $array['parameters']);
+	}
 
-        /**
-         * TEST: Filling null values from array
-         */
-        Assert::same(null, $kangarooEntity->death);
-    }
-	
+
+	public function testEntityToArrayNullProperty()
+	{
+		$zooEntity = new ZooEntity;
+		$zooEntity->name = 'Lion';
+
+		$array = $zooEntity->toArray(['id']);
+
+		Assert::same(null, $array['motto']);
+	}
+
+
 	/**
-     * Entity save to database
-     */
-    public function testEntitySaveToDatabase()
-    {
-        $animalEntity = new AnimalEntity;
-        $animalEntity->name = 'Kangaroo';
-        $animalEntity->weight = 15;
-        $animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
-        $animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
-        $animalEntity->death = null;
-        $animalEntity->vaccinated = true;
-        $animalEntity->height = 50;
+	 * Entity filled from Array
+	 */
+	public function testEntityFromArray()
+	{
+		$array = [
+			'name' => 'Kangaroo',
+			'weight' => 15,
+			'birth' => new Nette\Utils\DateTime,
+			'parameters' => [
+				'color' => 'brown',
+				'ears' => 2,
+				'eyes' => 1
+			],
+			'death' => null,
+			'height' => '50',
+			'vaccinated' => true
+		];
 
-        $repository = new AnimalRepository($this->Service->database);
-        $repository->save($animalEntity);
+		$kangarooEntity = new AnimalEntity;
+		$kangarooEntity->fillFromArray($array);
 
-        /* @var $loadedEntity AnimalEntity */
-        $loadedEntity = $repository->getBy(['name' => 'Kangaroo']);
+		Assert::same(15, $kangarooEntity->weight);
 
-        /**
-         * TEST: save entity to database
-         */
-        Assert::true($loadedEntity instanceof \ModulIS\Entity);
+		/**
+		 * TEST: bool to int conversion
+		 */
+		Assert::same(true, $kangarooEntity->vaccinated);
 
-        /**
-         * TEST: save & load it back like array via JSON
-         */
-        Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $loadedEntity->parameters);
+		/**
+		 * TEST: string to int conversion
+		 */
+		Assert::same(50, $kangarooEntity->height);
 
-        /**
-         * TEST: save & load \Nette\Utils\DateTime
-         */
-        Assert::true($loadedEntity->birth instanceof \Nette\Utils\DateTime);
+		/**
+		 * TEST: Filling null values from array
+		 */
+		Assert::same(null, $kangarooEntity->death);
+	}
 
-        /**
-         * TEST: check right type of date
-         */
-        Assert::same($loadedEntity->birth->format('Y'), '2015');
-        Assert::same($loadedEntity->birth->format('m-d'), '01-01');
-        Assert::same($loadedEntity->birth->format('H:i:s'), '12:00:00');
-    }
+
+	/**
+	 * Entity save to database
+	 */
+	public function testEntitySaveToDatabase()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->name = 'Kangaroo';
+		$animalEntity->weight = 15;
+		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
+		$animalEntity->death = null;
+		$animalEntity->vaccinated = true;
+		$animalEntity->height = 50;
+
+		$repository = new AnimalRepository($this->Service->database);
+		$repository->save($animalEntity);
+
+		/* @var $loadedEntity AnimalEntity */
+		$loadedEntity = $repository->getBy(['name' => 'Kangaroo']);
+
+		/**
+		 * TEST: save entity to database
+		 */
+		Assert::true($loadedEntity instanceof \ModulIS\Entity);
+
+		/**
+		 * TEST: save & load it back like array via JSON
+		 */
+		Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $loadedEntity->parameters);
+
+		/**
+		 * TEST: save & load \Nette\Utils\DateTime
+		 */
+		Assert::true($loadedEntity->birth instanceof \Nette\Utils\DateTime);
+
+		/**
+		 * TEST: check right type of date
+		 */
+		Assert::same($loadedEntity->birth->format('Y'), '2015');
+		Assert::same($loadedEntity->birth->format('m-d'), '01-01');
+		Assert::same($loadedEntity->birth->format('H:i:s'), '12:00:00');
+	}
 }
 
 $testCase = new EntityCaseTest;
