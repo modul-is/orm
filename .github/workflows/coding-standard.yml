@@ -9,11 +9,11 @@ jobs:
 
     strategy:
       matrix:
-        php: [8.0]
+        php: [8.1]
 
     services:
       mysql:
-        image: mysql:8.0
+        image: mysql:8.1
         env:
           MYSQL_ROOT_PASSWORD: test
         ports:
@@ -46,4 +46,4 @@ jobs:
       run: vendor/bin/phpstan analyse --level 5 src
 
     - name: Run Coding Standard
-      run: vendor/modul-is/coding-standard/ecs check src
+      run: vendor/modul-is/coding-standard/ecs check src --preset php81
