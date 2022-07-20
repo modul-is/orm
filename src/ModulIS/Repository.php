@@ -7,6 +7,7 @@ use Nette;
 use Nette\Database\Context;
 use Nette\Database\IRow;
 use Nette\Database\Table\Selection;
+use Nette\Utils\ArrayHash;
 
 abstract class Repository
 {
@@ -108,8 +109,13 @@ abstract class Repository
 	 * Save collection by transaction
 	 * @note Array or Arrash hash must have entity inside
 	 */
-	public function saveCollection(array|EntityCollection|\Nette\Utils\ArrayHash $collection): mixed
+	public function saveCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{
+		if($this->isCollectionEmpty($collection))
+		{
+			return null;
+		}
+
 		return $this->transaction(function() use ($collection)
 		{
 			foreach($collection as $entity)
@@ -217,11 +223,22 @@ abstract class Repository
 	}
 
 
+	private function isCollectionEmpty(array|EntityCollection|ArrayHash $collection): bool
+	{
+		return (is_array($collection) && !$collection) || $collection->count() === 0;
+	}
+
+
 	/**
 	 * Remove collection by transaction
 	 */
-	public function removeCollection(array|EntityCollection|\Nette\Utils\ArrayHash $collection): mixed
+	public function removeCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{
+		if($this->isCollectionEmpty($collection))
+		{
+			return null;
+		}
+
 		return $this->transaction(function() use ($collection)
 		{
 			foreach($collection as $entity)
