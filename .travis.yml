@@ -15,8 +15,8 @@ before_script:
   - travis_retry composer install --no-interaction --prefer-source
 
 script:
-  - vendor/bin/tester tests -s -p php -c tests/php.ini $NTESTER_FLAGS
-  - vendor/modul-is/coding-standard/ecs check src --fix
+  - vendor/bin/tester tests -C
+  - vendor/modul-is/coding-standard/ecs check src --preset php81
   - vendor/bin/phpstan analyse --level 5 src
 
 after_failure:
