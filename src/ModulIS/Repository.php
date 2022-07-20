@@ -226,7 +226,7 @@ abstract class Repository
 
 	private function isCollectionEmpty(array|EntityCollection|ArrayHash $collection): bool
 	{
-		return (is_array($collection) && !$collection) || $collection->count() === 0;
+		return (!is_array($collection) && $collection->count() === 0) || !$collection;
 	}
 
 
