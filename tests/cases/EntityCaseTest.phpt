@@ -170,6 +170,17 @@ class EntityCaseTest extends \Tester\TestCase
 		Assert::same($loadedEntity->birth->format('m-d'), '01-01');
 		Assert::same($loadedEntity->birth->format('H:i:s'), '12:00:00');
 	}
+
+
+	/**
+	 * Isset empty property
+	 */
+	public function testIssetEmptyProperty()
+	{
+		$animalEntity = new AnimalEntity;
+
+		Assert::false($animalEntity->__isset('name'));
+	}
 }
 
 $testCase = new EntityCaseTest;

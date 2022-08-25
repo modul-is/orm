@@ -114,9 +114,16 @@ abstract class Entity
 	{
 		$prop = static::getReflection()->getEntityProperty($name);
 
-		if($prop instanceof EntityProperty)
+		try
 		{
-			return $prop->getValue($this) !== null;
+			if($prop instanceof EntityProperty)
+			{
+				return $prop->getValue($this) !== null;
+			}
+		}
+		catch(\ModulIS\Exception\MemberAccessException $e)
+		{
+			return false;
 		}
 
 		return false;
