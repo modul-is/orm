@@ -9,8 +9,8 @@ class AnimalRepository extends \ModulIS\Repository
 	protected $entity = 'AnimalEntity';
 
 
-	public function __construct(Nette\Database\Context $context)
+	public function __construct(Nette\Database\Explorer $explorer)
 	{
-		parent::__construct($context);
+		parent::__construct($explorer);
 	}
 }
