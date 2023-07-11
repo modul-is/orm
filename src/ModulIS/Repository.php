@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace ModulIS;
 
 use Nette;
-use Nette\Database\Context;
+use Nette\Database\Explorer;
 use Nette\Database\IRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
 abstract class Repository
 {
-	protected Context $database;
+	protected Explorer $database;
 
 	protected $table;
 
@@ -21,7 +21,7 @@ abstract class Repository
 	private Transaction $transaction;
 
 
-	public function __construct(Context $database)
+	public function __construct(Explorer $database)
 	{
 		$this->database = $database;
 		$this->transaction = new Transaction($database->getConnection());
