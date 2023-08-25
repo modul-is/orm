@@ -12,18 +12,18 @@
 
 	"require":
 	{
-		"php": "^8.0",
-		"nette/utils": "^3.0",
+		"php": "^8.2",
+		"nette/utils": "^4.0",
 		"nette/database": "^3.0"
 	},
 
 	"require-dev":
 	{
-		"tracy/tracy": "^2.6",
-		"nette/tester": "^2.2",
+		"tracy/tracy": "^2.7",
+		"nette/tester": "^2.5",
 		"nette/caching": "^3.0",
-		"nette/robot-loader": "^3.0",
-		"modul-is/coding-standard": "^4.0",
+		"nette/robot-loader": "^4.0",
+		"modul-is/coding-standard": "^4",
 		"phpstan/phpstan": "^1"
 	},
 
