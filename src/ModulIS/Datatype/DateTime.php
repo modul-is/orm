@@ -6,7 +6,7 @@ namespace ModulIS\Datatype;
 
 class DateTime extends Datatype
 {
-	public static function input($value): string
+	public static function input(string $name, $value): string
 	{
 		if($value instanceof \Nette\Utils\DateTime)
 		{
@@ -14,7 +14,7 @@ class DateTime extends Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Instance of '\\Nette\\Utils\\DateTime' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - Instance of '\\Nette\\Utils\\DateTime' expected, '" . get_debug_type($value) . "' given.");
 		}
 
 		return $value;

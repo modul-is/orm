@@ -52,13 +52,13 @@ null | int &#124;&#124; float &#124;&#124; string &#124;&#124; array &#124;&#124
 
 ## Custom types
 You can also use custom types, you just have to create a class that extends `\ModulIS\Datatype\Datatype` and implements both of its static functions:
-1) `input($value)` - save logic (conversion into a database-compatible type)
+1) `input(string $name, $value)` - save logic (conversion into a database-compatible type)
 2) `output($value)` - read logic (conversion back into the original type)
 
 ```
 class File extends \ModulIS\Datatype\Datatype
 {
-	public static function input($value): string
+	public static function input(string $name, $value): string
 	{
 		if($value instanceof \SplFileInfo)
 		{
@@ -66,7 +66,7 @@ class File extends \ModulIS\Datatype\Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Instance of '\SplFileInfo' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - Instance of '\SplFileInfo' expected, '" . get_debug_type($value) . "' given.");
 		}
 
 		return $value;

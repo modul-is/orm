@@ -8,4 +8,4 @@ database:
 		driverClass: ModulIS\MySqlDriver
 
 services:
-	- Nette\DI\Container
+	- ModulIS\Orm\AnimalRepository
