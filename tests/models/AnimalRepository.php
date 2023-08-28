@@ -2,15 +2,23 @@
 
 declare(strict_types=1);
 
+namespace ModulIS\Orm;
+
 class AnimalRepository extends \ModulIS\Repository
 {
-	protected $table = 'animal';
+	protected string $table = 'animal';
 
-	protected $entity = 'AnimalEntity';
+	protected string $entity = AnimalEntity::class;
 
 
-	public function __construct(Nette\Database\Explorer $explorer)
+	public function getByID(int|string $id): ?AnimalEntity
 	{
-		parent::__construct($explorer);
+		return parent::getByID($id);
+	}
+
+
+	public function getBy(array $criteria): ?AnimalEntity
+	{
+		return parent::getBy($criteria);
 	}
 }

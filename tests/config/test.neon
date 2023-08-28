@@ -1,0 +1,11 @@
+database:
+	dsn: 'mysql:host=localhost;dbname=php_test'
+	user: php
+	password: ''
+	options:
+		lazy: yes
+		charset: utf8mb4
+		driverClass: ModulIS\MySqlDriver
+
+services:
+	- Nette\DI\Container

@@ -6,4 +6,5 @@ namespace ModulIS\Exception;
 
 
 class InvalidStateException extends \RuntimeException
-{}
+{
+}

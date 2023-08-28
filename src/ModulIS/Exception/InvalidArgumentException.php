@@ -6,4 +6,5 @@ namespace ModulIS\Exception;
 
 
 class InvalidArgumentException extends \InvalidArgumentException
-{}
+{
+}
