@@ -5,4 +5,4 @@ vendor\bin\tester.bat -C tests/cases
 vendor\bin\tester.bat -C tests/cases/ModificatorManagerTest
 
 #Generate coverage
-vendor/bin/tester -C --coverage tests/coverage.html --coverage-src src
+vendor/bin/tester.bat -C --coverage tests/coverage.html --coverage-src src
