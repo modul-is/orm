@@ -30,7 +30,7 @@
 
 	"autoload":
 	{
-		"classmap": ["src/"]
+		"classmap": ["src/", "tests/Bootstrap.php"]
 	},
 
 	"scripts":
