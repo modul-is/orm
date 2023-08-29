@@ -30,7 +30,7 @@
 
 	"autoload":
 	{
-		"classmap": ["src/", "tests/"]
+		"classmap": ["src/"]
 	},
 
 	"scripts":
