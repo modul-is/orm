@@ -35,7 +35,7 @@
 
 	"scripts":
 	{
-		"test": "tester tests/ -C",
+		"test": "vendor/bin/tester.bat -C tests/cases",
 		"phpstan": "phpstan analyse --level 5 src"
 	},
 	"config": {
