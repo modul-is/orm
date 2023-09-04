@@ -6,7 +6,7 @@ namespace ModulIS\Datatype;
 
 class Json extends Datatype
 {
-	public static function input($value): string
+	public static function input(string $name, $value): string
 	{
 		if(is_array($value))
 		{
@@ -14,7 +14,7 @@ class Json extends Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type - 'array' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - 'array' expected, '" . get_debug_type($value) . "' given.");
 		}
 
 		return $value;

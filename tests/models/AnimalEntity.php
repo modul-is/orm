@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace ModulIS\Orm;
+
 class AnimalEntity extends \ModulIS\Entity
 {
 	public int $id;

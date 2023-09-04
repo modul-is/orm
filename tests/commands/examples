@@ -1,8 +1,8 @@
 #Run all tests
-cd /path/to/tester/
+vendor\bin\tester.bat -C tests/cases
 
-#Run tester
-vendor\bin\tester.bat
+#Run specific tests
+vendor\bin\tester.bat -C tests/cases/ModificatorManagerTest
 
-#Complete tests
-vendor\bin\tester.bat tests --colors
+#Generate coverage
+vendor/bin/tester.bat -C --coverage tests/coverage.html --coverage-src src

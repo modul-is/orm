@@ -2,27 +2,16 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../bootstrap.php';
+namespace ModulIS\Orm;
+
+$testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
 use Tester\Assert;
 
-/**
- * @testCase
- */
-class EntityCaseTest extends \Tester\TestCase
+class EntityCaseTest extends TestCase
 {
-	protected $Service;
-
-
-	public function setUp()
-	{
-		$this->Service = new Service;
-		$this->Service->cache->clean([Nette\Caching\Cache::ALL]);
-	}
-
-
 	/**
-	 * If possible set NULL thruw new reflection?
+	 * Set entity property to null
 	 */
 	public function testEntitySetNull()
 	{
@@ -30,7 +19,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$zooEntity->name = 'Zoo Pilsen';
 		$zooEntity->motto = null;
 
-		Assert::same(null, $zooEntity->motto);
+		Assert::null($zooEntity->motto);
 	}
 
 
@@ -42,7 +31,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
@@ -60,7 +49,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = '';
 		$animalEntity->weight = 0;
-		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = [];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
@@ -83,7 +72,7 @@ class EntityCaseTest extends \Tester\TestCase
 
 		$array = $zooEntity->toArray(['id']);
 
-		Assert::same(null, $array['motto']);
+		Assert::null($array['motto']);
 	}
 
 
@@ -95,7 +84,7 @@ class EntityCaseTest extends \Tester\TestCase
 		$array = [
 			'name' => 'Kangaroo',
 			'weight' => 15,
-			'birth' => new Nette\Utils\DateTime,
+			'birth' => new \Nette\Utils\DateTime,
 			'parameters' => [
 				'color' => 'brown',
 				'ears' => 2,
@@ -114,7 +103,7 @@ class EntityCaseTest extends \Tester\TestCase
 		/**
 		 * TEST: bool to int conversion
 		 */
-		Assert::same(true, $kangarooEntity->vaccinated);
+		Assert::true($kangarooEntity->vaccinated);
 
 		/**
 		 * TEST: string to int conversion
@@ -124,7 +113,7 @@ class EntityCaseTest extends \Tester\TestCase
 		/**
 		 * TEST: Filling null values from array
 		 */
-		Assert::same(null, $kangarooEntity->death);
+		Assert::null($kangarooEntity->death);
 	}
 
 
@@ -136,16 +125,15 @@ class EntityCaseTest extends \Tester\TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
 		$animalEntity->height = 50;
 
-		$repository = new AnimalRepository($this->Service->database);
+		$repository = $this->Container->getByType(AnimalRepository::class);
 		$repository->save($animalEntity);
 
-		/* @var $loadedEntity AnimalEntity */
 		$loadedEntity = $repository->getBy(['name' => 'Kangaroo']);
 
 		/**
@@ -183,5 +171,4 @@ class EntityCaseTest extends \Tester\TestCase
 	}
 }
 
-$testCase = new EntityCaseTest;
-$testCase->run();
+$testerContainer->createInstance(EntityCaseTest::class)->run();

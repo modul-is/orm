@@ -6,7 +6,7 @@ namespace ModulIS\Datatype;
 
 class Boolean extends Datatype
 {
-	public static function input($value): int
+	public static function input(string $name, $value): int
 	{
 		if(is_bool($value))
 		{
@@ -14,7 +14,7 @@ class Boolean extends Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type - 'bool' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - 'bool' expected, '" . get_debug_type($value) . "' given.");
 		}
 	}
 

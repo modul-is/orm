@@ -14,9 +14,9 @@ abstract class Repository
 {
 	protected Explorer $database;
 
-	protected $table;
+	protected string $table;
 
-	protected $entity;
+	protected string $entity;
 
 	private Transaction $transaction;
 
@@ -219,7 +219,6 @@ abstract class Repository
 	 */
 	public function query(string $sql, ...$params): Nette\Database\ResultSet
 	{
-		/** @phpstan-ignore-next-line */
 		return $this->database->query($sql, ...$params);
 	}
 

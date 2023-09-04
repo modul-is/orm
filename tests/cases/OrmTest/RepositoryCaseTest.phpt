@@ -2,43 +2,32 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../bootstrap.php';
+namespace ModulIS\Orm;
+
+$testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
 use Tester\Assert;
 
-/**
- * @testCase
- */
-class RepositoryCaseTest extends \Tester\TestCase
+class RepositoryCaseTest extends TestCase
 {
-	protected $Service;
-
-
-	public function setUp()
-	{
-		$this->Service = new Service;
-		$this->Service->cache->clean([Nette\Caching\Cache::ALL]);
-	}
-
-
 	/**
-	 * Entity to Array
+	 * Save entity to database
 	 */
-	public function testSaveEntityToDatabase()
+	public function testSaveEntity()
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Gorilla';
 		$animalEntity->weight = 350;
-		$animalEntity->birth = new Nette\Utils\DateTime('1998-10-01 12:00:00');
+		$animalEntity->birth = new \Nette\Utils\DateTime('1998-10-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'black', 'ears' => 1, 'eyes' => 2];
 
 		$animalEntity2 = new AnimalEntity;
 		$animalEntity2->name = 'Giraffe';
 		$animalEntity2->weight = 600;
-		$animalEntity2->birth = new Nette\Utils\DateTime('1992-03-01 12:00:00');
+		$animalEntity2->birth = new \Nette\Utils\DateTime('1992-03-01 12:00:00');
 		$animalEntity2->parameters = ['color' => 'yellow', 'ears' => 2, 'eyes' => 2];
 
-		$repository = new AnimalRepository($this->Service->database);
+		$repository = $this->Container->getByType(AnimalRepository::class);
 		$result = $repository->save($animalEntity);
 
 		Assert::true($result);
@@ -55,7 +44,6 @@ class RepositoryCaseTest extends \Tester\TestCase
 		/**
 		 * TEST: Load entity from DB by criteria
 		 */
-		/* @var $entity AnimalEntity */
 		$entity = $repository->getBy(['name' => 'Giraffe']);
 
 		Assert::true($entity instanceof \ModulIS\Entity);
@@ -94,24 +82,23 @@ class RepositoryCaseTest extends \Tester\TestCase
 		 */
 		$remove = $repository->delete($loadedEntity);
 
-		Assert::same(true, $remove);
+		Assert::true($remove);
 
 		$deletedEntity = $repository->getBy(['id' => $loadedEntity->id]);
 
-		Assert::same(null, $deletedEntity);
+		Assert::null($deletedEntity);
 
 		/**
 		 * TEST: Remove entity by ID
 		 */
 		$deletedByIdEntity = $repository->removeByID(1);
 
-		Assert::same(true, $deletedByIdEntity);
+		Assert::true($deletedByIdEntity);
 
 		$deletedByIdEntity = $repository->getByID(1);
 
-		Assert::same(null, $deletedByIdEntity);
+		Assert::null($deletedByIdEntity);
 	}
 }
 
-$testCase = new RepositoryCaseTest;
-$testCase->run();
+$testerContainer->createInstance(RepositoryCaseTest::class)->run();
