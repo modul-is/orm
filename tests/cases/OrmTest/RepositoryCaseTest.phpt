@@ -91,7 +91,7 @@ class RepositoryCaseTest extends TestCase
 		/**
 		 * TEST: Remove entity by ID
 		 */
-		$deletedByIdEntity = $repository->removeByID(1);
+		$deletedByIdEntity = $repository->deleteByID(1);
 
 		Assert::true($deletedByIdEntity);
 

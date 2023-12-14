@@ -7,19 +7,18 @@ namespace ModulIS;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\GroupedSelection;
 
-
 class Record
 {
-	private ?ActiveRow $row;
-
 	private array $values = [];
 
 	private array $modified = [];
 
 
-	final public function __construct(?ActiveRow $row = null)
+	final public function __construct
+	(
+		private ?ActiveRow $row = null
+	)
 	{
-		$this->row = $row;
 	}
 
 

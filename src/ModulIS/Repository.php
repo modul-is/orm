@@ -17,7 +17,10 @@ abstract class Repository
 	protected string $entity;
 
 
-	public function __construct(protected Explorer $database)
+	public function __construct
+	(
+		protected Explorer $database
+	)
 	{
 		$ref = new \ReflectionClass($this);
 
@@ -165,12 +168,7 @@ abstract class Repository
 		$this->checkEntity($entity);
 		$record = $entity->toRecord();
 
-		if($record->hasRow())
-		{
-			return $this->transaction(fn() => $record->getRow()->delete() > 0);
-		}
-
-		return true;
+		return $record->hasRow() ? $record->getRow()->delete() > 0 : true;
 	}
 
 
