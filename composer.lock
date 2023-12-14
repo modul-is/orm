@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7eb3c089d1d2996d75174d37c7e8fcb9",
+    "content-hash": "d13ed31bf5d9df336570ac3ecfdc6270",
     "packages": [
         {
             "name": "nette/bootstrap",
@@ -160,16 +160,16 @@
         },
         {
             "name": "nette/database",
-            "version": "v3.2.0-RC2",
+            "version": "v3.2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/database.git",
-                "reference": "69552f016c6a2f0f056ab5bc4b6a0e6a105fd6ba"
+                "reference": "5a3ba137ceb8a5da8afa7da13c992d6e1a8291d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/database/zipball/69552f016c6a2f0f056ab5bc4b6a0e6a105fd6ba",
-                "reference": "69552f016c6a2f0f056ab5bc4b6a0e6a105fd6ba",
+                "url": "https://api.github.com/repos/nette/database/zipball/5a3ba137ceb8a5da8afa7da13c992d6e1a8291d9",
+                "reference": "5a3ba137ceb8a5da8afa7da13c992d6e1a8291d9",
                 "shasum": ""
             },
             "require": {
@@ -180,7 +180,7 @@
             },
             "require-dev": {
                 "jetbrains/phpstorm-attributes": "^1.0",
-                "mockery/mockery": "^1.4.3",
+                "mockery/mockery": "^1.6",
                 "nette/di": "^3.1",
                 "nette/tester": "^2.5",
                 "phpstan/phpstan-nette": "^1.0",
@@ -229,9 +229,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/database/issues",
-                "source": "https://github.com/nette/database/tree/v3.2.0-RC2"
+                "source": "https://github.com/nette/database/tree/v3.2"
             },
-            "time": "2023-12-08T11:16:07+00:00"
+            "time": "2023-12-13T17:31:55+00:00"
         },
         {
             "name": "nette/di",
@@ -3316,7 +3316,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "nette/database": 5
+        "nette/database": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
