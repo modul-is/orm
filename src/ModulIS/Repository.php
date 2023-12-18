@@ -238,4 +238,22 @@ abstract class Repository
 	{
 		return (bool) $this->getTable()->wherePrimary($id)->delete();
 	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function removeCollection(array|EntityCollection|ArrayHash $collection): mixed
+	{
+		return $this->deleteCollection($collection);
+	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function removeByID(int|string $id): bool
+	{
+		return $this->deleteByID($id);
+	}
 }
