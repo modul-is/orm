@@ -29,8 +29,6 @@ class EntityCollection implements \Iterator, \Countable
 		protected ?string $refColumn = null
 	)
 	{
-		$this->refColumn = $refColumn;
-
 		try
 		{
 			\Nette\Utils\Callback::check($entity);
