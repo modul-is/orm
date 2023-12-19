@@ -228,14 +228,14 @@ To delete a single row, use `delete()` with an entity.
 $this->AnimalRepository->delete($animalEntity);
 ```
 
-To delete multiple rows, use `removeCollection()` with an array or a collection.
+To delete multiple rows, use `deleteCollection()` with an array or a collection.
 ```
 $entityArray = [$zooEntity1, $zooEntity2];
 
-$this->ZooRepository->removeCollection($entityArray);
+$this->ZooRepository->deleteCollection($entityArray);
 ```
 
 Alternatively we can delete a row only using its ID.
 ```
-$this->ZooRepository->removeByID(1);
+$this->ZooRepository->deleteByID(1);
 ```
