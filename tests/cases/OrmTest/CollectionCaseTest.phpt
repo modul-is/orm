@@ -40,7 +40,7 @@ class CollectionCaseTest extends TestCase
 
 		Assert::same(2, $collection->count());
 
-		$animalRepository->removeCollection($collection);
+		$animalRepository->deleteCollection($collection);
 
 		$deleted = $animalRepository->findBy([]);
 

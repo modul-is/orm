@@ -12,20 +12,16 @@ use Nette\Utils\ArrayHash;
 
 abstract class Repository
 {
-	protected Explorer $database;
-
 	protected string $table;
 
 	protected string $entity;
 
-	private Transaction $transaction;
 
-
-	public function __construct(Explorer $database)
+	public function __construct
+	(
+		protected Explorer $database
+	)
 	{
-		$this->database = $database;
-		$this->transaction = new Transaction($database->getConnection());
-
 		$ref = new \ReflectionClass($this);
 
 		if(!$this->table)
@@ -153,7 +149,7 @@ abstract class Repository
 			}
 
 			$inserted = $this->getTable()
-					->insert($record->getModified());
+				->insert($record->getModified());
 
 			if(!$inserted instanceof IRow)
 			{
@@ -172,21 +168,7 @@ abstract class Repository
 		$this->checkEntity($entity);
 		$record = $entity->toRecord();
 
-		if($record->hasRow())
-		{
-			return $this->transaction(fn() => $record->getRow()->delete() > 0);
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * @deprecated
-	 */
-	public function remove(Entity $entity): bool
-	{
-		return $this->delete($entity);
+		return $record->hasRow() ? $record->getRow()->delete() > 0 : true;
 	}
 
 
@@ -210,7 +192,7 @@ abstract class Repository
 
 	final protected function transaction(\Closure $callback): mixed
 	{
-		return $this->transaction->transaction($callback);
+		return $this->database->getConnection()->transaction($callback);
 	}
 
 
@@ -230,9 +212,9 @@ abstract class Repository
 
 
 	/**
-	 * Remove collection by transaction
+	 * Delete collection by transaction
 	 */
-	public function removeCollection(array|EntityCollection|ArrayHash $collection): mixed
+	public function deleteCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{
 		if($this->isCollectionEmpty($collection))
 		{
@@ -250,10 +232,28 @@ abstract class Repository
 
 
 	/**
-	 * Remove single instance from database by ID
+	 * Delete single instance from database by ID
+	 */
+	public function deleteByID(int|string $id): bool
+	{
+		return (bool) $this->getTable()->wherePrimary($id)->delete();
+	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function removeCollection(array|EntityCollection|ArrayHash $collection): mixed
+	{
+		return $this->deleteCollection($collection);
+	}
+
+
+	/**
+	 * @deprecated
 	 */
 	public function removeByID(int|string $id): bool
 	{
-		return (bool) $this->getTable()->wherePrimary($id)->delete();
+		return $this->deleteByID($id);
 	}
 }

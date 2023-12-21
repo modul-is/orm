@@ -111,15 +111,12 @@ class EntityProperty
 
 	private static function getConvertedType(string $type): string
 	{
-		switch($type)
+		return match($type)
 		{
-			case 'array':
-				return 'string';
-			case 'bool':
-				return 'int';
-			default:
-				return $type;
-		}
+			'array' => 'string',
+			'bool' => 'int',
+			default => $type
+		};
 	}
 
 

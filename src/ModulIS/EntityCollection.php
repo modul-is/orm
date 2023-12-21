@@ -12,13 +12,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	public const DESC = 'DESC';
 
-	protected Selection $selection;
-
 	protected string|\Closure $entity;
-
-	protected string|null $refTable;
-
-	protected string|null $refColumn;
 
 	protected ?array $data;
 
@@ -27,12 +21,14 @@ class EntityCollection implements \Iterator, \Countable
 	private array $keys;
 
 
-	public function __construct(Selection $selection, $entity, $refTable = null, $refColumn = null)
+	public function __construct
+	(
+		protected Selection $selection,
+		$entity,
+		protected ?string $refTable = null,
+		protected ?string $refColumn = null
+	)
 	{
-		$this->selection = $selection;
-		$this->refTable = $refTable;
-		$this->refColumn = $refColumn;
-
 		try
 		{
 			\Nette\Utils\Callback::check($entity);
