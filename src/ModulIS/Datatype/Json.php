@@ -23,7 +23,7 @@ class Json extends Datatype
 
 	public static function output($value): array
 	{
-		$value = \Nette\Utils\Json::decode($value[0], \Nette\Utils\Json::FORCE_ARRAY);
+		$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
 
 		return $value;
 	}

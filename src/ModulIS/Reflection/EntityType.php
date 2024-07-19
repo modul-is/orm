@@ -79,9 +79,9 @@ class EntityType extends \ReflectionClass
 								$readonly = true;
 							}
 
-							if($attributeName instanceof \ModulIS\Datatype\Datatype)
+							if(is_subclass_of($attributeName, \ModulIS\Datatype\Datatype::class, true))
 							{
-								$parser = $attributeName;
+								$parser = new $attributeName;
 							}
 						}
 

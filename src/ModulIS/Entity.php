@@ -54,37 +54,12 @@ abstract class Entity
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof EntityProperty)
+		if(!$prop instanceof EntityProperty)
 		{
-			if($value !== null)
-			{
-				if($prop->getType() == 'array')
-				{
-					$value = \ModulIS\Datatype\Json::input($name, $value);
-				}
-				elseif($prop->getType() == 'bool')
-				{
-					$value = \ModulIS\Datatype\Boolean::input($name, $value);
-				}
-				elseif($prop->getType() == \Nette\Utils\DateTime::class)
-				{
-					$value = \ModulIS\Datatype\DateTime::input($name, $value);
-				}
-				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
-				{
-					$type = $prop->getType();
-					$typeClass = new $type;
-
-					$value = $typeClass::input($name, $value->value);
-				}
-			}
-
-			$prop->setValue($this, $value);
-
-			return;
+			throw new Exception\MemberAccessException("Cannot write to an undeclared property {$ref->getName()}::\$$name.");
 		}
 
-		throw new Exception\MemberAccessException("Cannot write to an undeclared property {$ref->getName()}::\$$name.");
+		$prop->setValue($this, $value);
 	}
 
 
