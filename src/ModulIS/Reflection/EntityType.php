@@ -44,27 +44,54 @@ class EntityType extends \ReflectionClass
 				{
 					if($property->isPublic())
 					{
-						if(!$property->getType())
+						$propertyType = $property->getType();
+
+						if(!$propertyType)
 						{
 							throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 						}
 
 						$readonly = false;
+						$parser = null;
+
+						/**
+						 * Basic parsers
+						 */
+						if($propertyType == 'bool')
+						{
+							$parser = \ModulIS\Datatype\Boolean::class;
+						}
+						elseif($propertyType == \Nette\Utils\DateTime::class)
+						{
+							$parser = \ModulIS\Datatype\DateTime::class;
+						}
+						elseif(enum_exists($propertyType->getName()))
+						{
+							$parser = new ModulIS\Datatype\Enum($propertyType->getName());
+						}
 
 						foreach($property->getAttributes() as $attribute)
 						{
-							if($attribute->getName() === 'ModulIS\Attribute\ReadonlyProperty')
+							$attributeName = $attribute->getName();
+
+							if($attributeName === \ModulIS\Attribute\ReadonlyProperty::class)
 							{
 								$readonly = true;
+							}
+
+							if($attributeName instanceof \ModulIS\Datatype\Datatype)
+							{
+								$parser = $attributeName;
 							}
 						}
 
 						$this->properties[$property->getName()] = new EntityProperty(
 							$class::getReflection(),
 							$property->getName(),
-							$property->getType()->getName(),
-							$property->getType()->allowsNull(),
-							$readonly
+							$propertyType->getName(),
+							$propertyType->allowsNull(),
+							$readonly,
+							$parser
 						);
 					}
 				}

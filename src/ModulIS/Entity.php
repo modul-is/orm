@@ -37,37 +37,15 @@ abstract class Entity
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
 
-		if($prop instanceof EntityProperty)
+		if(!$prop instanceof EntityProperty)
 		{
-			$value = $prop->getValue($this);
-
-			if($value !== null)
-			{
-				if($prop->getType() == 'array')
-				{
-					$value = \ModulIS\Datatype\Json::output($value);
-				}
-				elseif($prop->getType() == 'bool')
-				{
-					$value = \ModulIS\Datatype\Boolean::output($value);
-				}
-				elseif($prop->getType() == \Nette\Utils\DateTime::class && !$value instanceof \Nette\Utils\DateTime)
-				{
-					$value = \ModulIS\Datatype\DateTime::output($value);
-				}
-				elseif(!$prop->isOfNativeType() && !$prop->isOfExtraType() && class_exists($prop->getType()))
-				{
-					$type = $prop->getType();
-					$typeClass = new $type;
-
-					$value = $typeClass::output($value);
-				}
-			}
-
-			return $value;
+			throw new Exception\MemberAccessException("Cannot read an undeclared property {$ref->getName()}::\$$name.");
 		}
 
-		throw new Exception\MemberAccessException("Cannot read an undeclared property {$ref->getName()}::\$$name.");
+		$value = $prop->getValue($this);
+
+		return $value;
+
 	}
 
 
