@@ -66,7 +66,7 @@ class EntityType extends \ReflectionClass
 				 */
 				if($propertyType == 'bool')
 				{
-					$parser = \ModulIS\Datatype\Boolean::class;
+					$parser = new \ModulIS\Datatype\BooleanDatatype;
 				}
 
 				foreach($property->getAttributes() as $attribute)
