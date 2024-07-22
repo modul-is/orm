@@ -10,5 +10,5 @@ class ZooEntity extends \ModulIS\Entity
 
 	public string $name;
 
-	public string|null $motto;
+	public ?string $motto;
 }

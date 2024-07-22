@@ -12,7 +12,7 @@ class DateTimeDatatype extends Datatype
 		{
 			$value = $value->__toString();
 		}
-		else
+		elseif(!is_string($value))
 		{
 			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - Instance of '\\Nette\\Utils\\DateTime' expected, '" . get_debug_type($value) . "' given.");
 		}

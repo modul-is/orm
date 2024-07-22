@@ -25,12 +25,12 @@ class EntityProperty
 	{
 		$value = $entity->toRecord()->{$this->getName()};
 
-		$this->checkType($value);
-
 		if($this->parser)
 		{
 			$value = $this->parser::output($this->getType(), $value);
 		}
+
+		$this->checkType($value);
 
 		return $value;
 	}
@@ -44,12 +44,12 @@ class EntityProperty
 			throw new \ModulIS\Exception\MemberAccessException("Cannot write to a read-only property {$ref->getName()}::\${$this->getName()}.");
 		}
 
-		$this->checkType($value);
-
 		if($this->parser)
 		{
 			$value = $this->parser::input($this->getName(), $this->getType(), $value);
 		}
+
+		$this->checkType($value);
 
 		$entity->toRecord()->{$this->getName()} = $value;
 	}
@@ -67,7 +67,7 @@ class EntityProperty
 				throw new \ModulIS\Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 		}
-		elseif(is_subclass_of($class, \ModulIS\Datatype\Datatype::class))
+		elseif($this->parser instanceof \ModulIS\Datatype\Datatype)
 		{
 			$valueType = gettype($value);
 

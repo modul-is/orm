@@ -12,11 +12,14 @@ class AnimalEntity extends \ModulIS\Entity
 
 	public int $weight;
 
+	#[\ModulIS\Datatype\DateTime]
 	public \Nette\Utils\DateTime $birth;
 
+	#[\ModulIS\Datatype\Json]
 	public array $parameters;
 
-	public \Nette\Utils\DateTime|null $death;
+	#[\ModulIS\Datatype\DateTime]
+	public ?string $death;
 
 	public bool $vaccinated;
 
