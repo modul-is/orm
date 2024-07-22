@@ -8,5 +8,6 @@ abstract class Datatype
 {
 	abstract public static function input(string $name, string $type, $value);
 
+
 	abstract public static function output(string $type, $value);
 }
