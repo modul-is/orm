@@ -45,7 +45,6 @@ abstract class Entity
 		$value = $prop->getValue($this);
 
 		return $value;
-
 	}
 
 
@@ -143,32 +142,34 @@ abstract class Entity
 
 		foreach($ref->getEntityProperties() as $name => $property)
 		{
-			if(!$property->isReadonly())
+			if($property->isReadonly())
 			{
-				/**
-				 * Set NULL for nullable properties without value
-				 * Skip if property not set and is not nullable
-				 */
-				if(!isset($values[$name]) && $property->isNullable() && empty($values[$name]))
-				{
-					$values[$name] = null;
-				}
-				elseif(!isset($values[$name]) && !$property->isNullable())
-				{
-					continue;
-				}
+				continue;
+			}
 
-				/**
-				 * Convert strings to int
-				 */
-				if($property->getType() == 'int' && !empty($values[$name]))
-				{
-					$this->$name = intval($values[$name]);
-				}
-				else
-				{
-					$this->$name = $values[$name];
-				}
+			/**
+			 * Set NULL for nullable properties without value
+			 * Skip if property not set and is not nullable
+			 */
+			if(!isset($values[$name]) && $property->isNullable() && empty($values[$name]))
+			{
+				$values[$name] = null;
+			}
+			elseif(!isset($values[$name]) && !$property->isNullable())
+			{
+				continue;
+			}
+
+			/**
+			 * Convert strings to int
+			 */
+			if($property->getType() == 'int' && !empty($values[$name]))
+			{
+				$this->$name = intval($values[$name]);
+			}
+			else
+			{
+				$this->$name = $values[$name];
 			}
 		}
 	}

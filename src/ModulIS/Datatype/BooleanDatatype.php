@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
-class Boolean extends Datatype
+class BooleanDatatype extends Datatype
 {
-	public static function input(string $name, $value): int
+	public static function input(string $name, string $type, $value): int
 	{
 		if(is_bool($value))
 		{
@@ -19,7 +19,7 @@ class Boolean extends Datatype
 	}
 
 
-	public static function output($value): bool
+	public static function output(string $type, $value): bool
 	{
 		return (bool) $value;
 	}

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
-class DateTime extends Datatype
+class DateTimeDatatype extends Datatype
 {
-	public static function input(string $name, $value): string
+	public static function input(string $name, string $type, $value): string
 	{
 		if($value instanceof \Nette\Utils\DateTime)
 		{
@@ -21,7 +21,7 @@ class DateTime extends Datatype
 	}
 
 
-	public static function output($value): \Nette\Utils\DateTime
+	public static function output(string $type, $value): \Nette\Utils\DateTime
 	{
 		$value = new \Nette\Utils\DateTime($value);
 

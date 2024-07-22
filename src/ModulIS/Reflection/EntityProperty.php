@@ -29,7 +29,7 @@ class EntityProperty
 
 		if($this->parser)
 		{
-			$value = $this->parser::output($value);
+			$value = $this->parser::output($this->getType(), $value);
 		}
 
 		return $value;
@@ -48,7 +48,7 @@ class EntityProperty
 
 		if($this->parser)
 		{
-			$value = $this->parser::input($this->getName(), $value);
+			$value = $this->parser::input($this->getName(), $this->getType(), $value);
 		}
 
 		$entity->toRecord()->{$this->getName()} = $value;

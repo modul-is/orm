@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
-class Json extends Datatype
+use Nette\Utils\Json;
+
+class JsonDatatype extends Datatype
 {
-	public static function input(string $name, $value): string
+	public static function input(string $name, string $type, $value): string
 	{
 		if(is_array($value))
 		{
-			$value = \Nette\Utils\Json::encode($value);
+			$value = Json::encode($value);
 		}
 		else
 		{
@@ -21,10 +23,8 @@ class Json extends Datatype
 	}
 
 
-	public static function output($value): array
+	public static function output(string $type, $value): array
 	{
-		$value = \Nette\Utils\Json::decode($value, \Nette\Utils\Json::FORCE_ARRAY);
-
-		return $value;
+		return Json::decode($value, Json::FORCE_ARRAY);
 	}
 }
