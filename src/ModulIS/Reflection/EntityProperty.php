@@ -67,7 +67,7 @@ class EntityProperty
 				throw new \ModulIS\Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 		}
-		elseif($class instanceof \ModulIS\Datatype\Datatype)
+		elseif(is_subclass_of($class, \ModulIS\Datatype\Datatype::class))
 		{
 			$valueType = gettype($value);
 
