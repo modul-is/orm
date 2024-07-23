@@ -67,7 +67,7 @@ class EntityProperty
 				throw new \ModulIS\Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 		}
-		elseif($this->parser instanceof \ModulIS\Datatype\Datatype)
+		elseif(!$this->parser instanceof \ModulIS\Datatype\Datatype && !$this->isOfNativeType())
 		{
 			$valueType = gettype($value);
 
