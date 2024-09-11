@@ -8,13 +8,13 @@ use Nette\Utils\Json;
 
 class JsonDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): string
+	public static function input(?string $name, string $type, $value): ?string
 	{
 		if(is_array($value))
 		{
 			$value = Json::encode($value);
 		}
-		else
+		elseif($value !== null)
 		{
 			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - 'array' expected, '" . get_debug_type($value) . "' given.");
 		}
