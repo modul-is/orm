@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
+use Attribute;
 use Nette\Utils\Json;
+
 
 class JsonDatatype extends Datatype
 {

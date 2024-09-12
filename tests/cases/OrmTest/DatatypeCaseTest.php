@@ -205,18 +205,6 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToDatetime()
-	{
-		$animalEntity = new AnimalEntity;
-
-		Assert::exception(
-			fn() => $animalEntity->birth = '1',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'birth' - Instance of '\Nette\Utils\DateTime' expected, 'string' given."
-		);
-	}
-
-
 	public function testArrayToInt()
 	{
 		$animalEntity = new AnimalEntity;

@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
+use Attribute;
+use Nette\Utils\DateTime;
+
+
 class DateTimeDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): string
+	public static function input(string $name, string $type, $value): ?string
 	{
 		if($value instanceof \Nette\Utils\DateTime)
 		{
 			$value = $value->__toString();
+		}
+		elseif($value === null)
+		{
+			$value = null;
 		}
 		elseif(!is_string($value))
 		{
@@ -21,10 +29,8 @@ class DateTimeDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): \Nette\Utils\DateTime
+	public static function output(string $type, $value): ?DateTime
 	{
-		$value = new \Nette\Utils\DateTime($value);
-
-		return $value;
+		return $value === null ? null : new DateTime($value);
 	}
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ModulIS\Orm;
 
+use ModulIS\Datatype\DateTimeDatatype;
+use ModulIS\Datatype\JsonDatatype;
+
 class AnimalEntity extends \ModulIS\Entity
 {
 	public int $id;
@@ -12,13 +15,13 @@ class AnimalEntity extends \ModulIS\Entity
 
 	public int $weight;
 
-	#[\ModulIS\Datatype\DateTime]
+	#[DateTimeDatatype]
 	public \Nette\Utils\DateTime $birth;
 
-	#[\ModulIS\Datatype\Json]
+	#[JsonDatatype]
 	public array $parameters;
 
-	#[\ModulIS\Datatype\DateTime]
+	#[DateTimeDatatype]
 	public ?string $death;
 
 	public bool $vaccinated;
