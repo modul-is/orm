@@ -14,7 +14,8 @@ class EntityProperty
 		private string $name,
 		private string $type,
 		private bool $nullable,
-		private bool $readonly
+		private bool $readonly,
+		private ?\ModulIS\Datatype\Datatype $parser
 	)
 	{
 	}
@@ -22,7 +23,15 @@ class EntityProperty
 
 	public function getValue(Entity $entity): mixed
 	{
-		$value = $this->setType($entity->toRecord()->{$this->getName()});
+		$value = $entity->toRecord()->{$this->getName()};
+
+		if($this->parser)
+		{
+			$value = $this->parser::output($this->getType(), $value);
+		}
+
+		$this->checkType($value);
+
 		return $value;
 	}
 
@@ -35,13 +44,21 @@ class EntityProperty
 			throw new \ModulIS\Exception\MemberAccessException("Cannot write to a read-only property {$ref->getName()}::\${$this->getName()}.");
 		}
 
+		if($this->parser)
+		{
+			$value = $this->parser::input($this->getName(), $this->getType(), $value);
+		}
+
 		$this->checkType($value);
+
 		$entity->toRecord()->{$this->getName()} = $value;
 	}
 
 
-	public function checkType($value, bool $need = true): bool
+	public function checkType($value): void
 	{
+		$class = $this->getType();
+
 		if($value === null)
 		{
 			if(!$this->nullable)
@@ -50,50 +67,25 @@ class EntityProperty
 				throw new \ModulIS\Exception\InvalidArgumentException("Property '{$entity}::\${$this->getName()}' cannot be null.");
 			}
 		}
-		elseif($this->isOfExtraType())
+		elseif(!$this->parser instanceof \ModulIS\Datatype\Datatype && !$this->isOfNativeType())
 		{
-			return true;
-		}
-		elseif(!$this->isOfNativeType())
-		{
-			$class = $this->getType();
+			$valueType = gettype($value);
 
-			if(!($value instanceof $class) && get_parent_class($class) !== 'ModulIS\Datatype\Datatype')
+			if(!$value instanceof $class)
 			{
-				throw new \ModulIS\Exception\InvalidArgumentException("Instance of '{$class}' expected, '"
-					. (($valtype = gettype($value)) === 'object' ? $value::class : $valtype) . "' given.");
+				throw new \ModulIS\Exception\InvalidArgumentException("Instance of '{$class}' expected, '" . ($valueType === 'object' ? $value::class : $valueType) . "' given.");
 			}
 		}
-		elseif($need && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
+		elseif($this->isOfNativeType() && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
 			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$this->getName()}' - '{$this->getType()}' expected, '" . get_debug_type($value) . "' given.");
 		}
-		else
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 
 	public function getType(): string
 	{
 		return $this->type;
-	}
-
-
-	public function setType($value): mixed
-	{
-		/**
-		 * Type casting needed
-		 */
-		if(!$this->checkType($value))
-		{
-			settype($value, $this->getType());
-		}
-
-		return $value;
 	}
 
 
@@ -106,6 +98,12 @@ class EntityProperty
 	public function isOfExtraType(): bool
 	{
 		return self::isExtraType($this->type);
+	}
+
+
+	public function getParser(): ?\ModulIS\Datatype\Datatype
+	{
+		return $this->parser;
 	}
 
 
@@ -128,7 +126,7 @@ class EntityProperty
 
 	private static function isExtraType(string $type): bool
 	{
-		return $type === \Nette\Utils\DateTime::class;
+		return $type === \Nette\Utils\DateTime::class || enum_exists($type, false);
 	}
 
 

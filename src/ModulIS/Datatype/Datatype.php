@@ -4,19 +4,11 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
+
 abstract class Datatype
 {
-	public function __construct
-	(
-		public string $name,
-		public $value = null
-	)
-	{
-	}
+	abstract public static function input(string $name, string $type, $value);
 
 
-	abstract public static function input(string $name, $value);
-
-
-	abstract public static function output($value);
+	abstract public static function output(string $type, $value);
 }

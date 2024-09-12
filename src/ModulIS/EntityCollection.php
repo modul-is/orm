@@ -12,11 +12,9 @@ class EntityCollection implements \Iterator, \Countable
 
 	public const DESC = 'DESC';
 
-	protected string|\Closure $entity;
-
 	protected ?array $data;
 
-	private int|null $count;
+	private ?int $count;
 
 	private array $keys;
 
@@ -24,21 +22,9 @@ class EntityCollection implements \Iterator, \Countable
 	public function __construct
 	(
 		protected Selection $selection,
-		$entity,
-		protected ?string $refTable = null,
-		protected ?string $refColumn = null
+		protected string $entity
 	)
 	{
-		try
-		{
-			\Nette\Utils\Callback::check($entity);
-			$this->entity = \Closure::fromCallable($entity);
-
-		}
-		catch(\Exception $e)
-		{
-			$this->entity = $entity;
-		}
 	}
 
 
@@ -46,22 +32,13 @@ class EntityCollection implements \Iterator, \Countable
 	{
 		if(!isset($this->data))
 		{
-			if($this->entity instanceof \Closure)
-			{
-				$factory = $this->entity;
-
-			}
-			else
-			{
-				$class = $this->entity;
-				$factory = fn($record) => new $class($record);
-			}
+			$class = $this->entity;
 
 			$this->data = [];
+
 			foreach($this->selection as $row)
 			{
-				$record = $this->refTable === null ? $row : $row->ref($this->refTable, $this->refColumn);
-				$this->data[] = $factory($record);
+				$this->data[] = new $class($row);
 			}
 		}
 	}

@@ -9,7 +9,7 @@ use ModulIS\Exception;
 
 class EntityType extends \ReflectionClass
 {
-	private ?array $properties;
+	private array $properties = [];
 
 
 	public function getEntityProperties(): array
@@ -34,40 +34,64 @@ class EntityType extends \ReflectionClass
 
 	private function loadEntityProperties(): void
 	{
-		if(!isset($this->properties))
+		if($this->properties !== [])
 		{
-			$this->properties = [];
+			return;
+		}
 
-			foreach($this->getClassTree() as $class)
+		/**
+		 * Entity might extend another one - collect all properties
+		 */
+		foreach($this->getClassTree() as $class)
+		{
+			foreach($class::getReflection()->getProperties() as $property)
 			{
-				foreach($class::getReflection()->getProperties() as $property)
+				if(!$property->isPublic())
 				{
-					if($property->isPublic())
+					continue;
+				}
+
+				$propertyType = $property->getType();
+
+				if(!$propertyType)
+				{
+					throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
+				}
+
+				$readonly = false;
+				$parser = null;
+
+				/**
+				 * Basic parser
+				 */
+				if($propertyType == 'bool')
+				{
+					$parser = new \ModulIS\Datatype\BooleanDatatype;
+				}
+
+				foreach($property->getAttributes() as $attribute)
+				{
+					$attributeName = $attribute->getName();
+
+					if(in_array($attributeName, [\ModulIS\Attribute\ReadonlyProperty::class, \ModulIS\Attribute\VirtualProperty::class], true))
 					{
-						if(!$property->getType())
-						{
-							throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
-						}
+						$readonly = true;
+					}
 
-						$readonly = false;
-
-						foreach($property->getAttributes() as $attribute)
-						{
-							if($attribute->getName() === 'ModulIS\Attribute\ReadonlyProperty')
-							{
-								$readonly = true;
-							}
-						}
-
-						$this->properties[$property->getName()] = new EntityProperty(
-							$class::getReflection(),
-							$property->getName(),
-							$property->getType()->getName(),
-							$property->getType()->allowsNull(),
-							$readonly
-						);
+					if(is_subclass_of($attributeName, \ModulIS\Datatype\Datatype::class, true))
+					{
+						$parser = new $attributeName;
 					}
 				}
+
+				$this->properties[$property->getName()] = new EntityProperty(
+					$class::getReflection(),
+					$property->getName(),
+					$propertyType->getName(),
+					$propertyType->allowsNull(),
+					$readonly,
+					$parser
+				);
 			}
 		}
 	}

@@ -22,24 +22,19 @@ abstract class Repository
 		protected Explorer $database
 	)
 	{
-		$ref = new \ReflectionClass($this);
-
 		if(!$this->table)
 		{
+			$ref = new \ReflectionClass($this);
+
 			throw new Exception\InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
 		}
 
 		if(!$this->entity)
 		{
+			$ref = new \ReflectionClass($this);
+
 			throw new Exception\InvalidStateException('Entity class not set. Use class property ' . $ref->getName() . '::$entity');
 		}
-	}
-
-
-	public function createEntity(?\Nette\Database\Table\ActiveRow $row = null): Entity
-	{
-		$class = $this->entity;
-		return new $class($row);
 	}
 
 
@@ -126,13 +121,21 @@ abstract class Repository
 	protected function createEntityFromSelection(Selection $selection): ?Entity
 	{
 		$row = $selection->fetch();
-		return $row === null ? null : $this->createEntity($row);
+
+		if($row === null)
+		{
+			return null;
+		}
+
+		$class = $this->entity;
+
+		return new $class($row);
 	}
 
 
-	protected function createCollection(Selection $selection, $entity = null, $refTable = null, $refColumn = null): EntityCollection
+	protected function createCollection(Selection $selection): EntityCollection
 	{
-		return new EntityCollection($selection, $entity ?? [$this, 'createEntity'], $refTable, $refColumn);
+		return new EntityCollection($selection, $this->entity);
 	}
 
 
@@ -184,8 +187,7 @@ abstract class Repository
 
 		if(!$entity instanceof $class)
 		{
-			throw new Exception\InvalidArgumentException("Instance of '$class' expected, '"
-				. $entity::class . "' given.");
+			throw new Exception\InvalidArgumentException("Instance of '$class' expected, '" . $entity::class . "' given.");
 		}
 	}
 
