@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
+use Attribute;
+use BackedEnum;
+use ModulIS\Exception\InvalidArgumentException;
+
+#[Attribute]
 class EnumDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value)
+	public static function input(string $name, string $type, $value): mixed
 	{
 		if(is_string($value))
 		{
@@ -14,7 +19,7 @@ class EnumDatatype extends Datatype
 
 			if($value === null)
 			{
-				throw new \ModulIS\Exception\InvalidArgumentException("Invalid value for column '$name' - Value '$value' is not part of enum '" . $type . "'");
+				throw new InvalidArgumentException("Invalid value for column '" . $name . "' - Value '" . $value . "' is not part of enum '" . $type . "'");
 			}
 		}
 
@@ -22,7 +27,7 @@ class EnumDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): \BackedEnum
+	public static function output(string $type, $value): BackedEnum
 	{
 		if(is_string($value))
 		{
