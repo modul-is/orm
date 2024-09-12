@@ -8,6 +8,7 @@ use Attribute;
 use Nette\Utils\DateTime;
 
 
+#[Attribute]
 class DateTimeDatatype extends Datatype
 {
 	public static function input(string $name, string $type, $value): ?string

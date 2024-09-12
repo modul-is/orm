@@ -8,6 +8,7 @@ use Attribute;
 use BackedEnum;
 use ModulIS\Exception\InvalidArgumentException;
 
+
 #[Attribute]
 class EnumDatatype extends Datatype
 {

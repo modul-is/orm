@@ -8,6 +8,7 @@ use Attribute;
 use Nette\Utils\Json;
 
 
+#[Attribute]
 class JsonDatatype extends Datatype
 {
 	public static function input(?string $name, string $type, $value): ?string

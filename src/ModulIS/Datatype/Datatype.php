@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace ModulIS\Datatype;
 
-use Attribute;
 
-
-#[Attribute]
 abstract class Datatype
 {
 	abstract public static function input(string $name, string $type, $value);

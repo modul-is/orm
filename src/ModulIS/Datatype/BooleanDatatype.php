@@ -7,6 +7,7 @@ namespace ModulIS\Datatype;
 use Attribute;
 
 
+#[Attribute]
 class BooleanDatatype extends Datatype
 {
 	public static function input(string $name, string $type, $value): int
