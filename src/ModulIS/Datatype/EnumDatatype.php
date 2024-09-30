@@ -14,7 +14,7 @@ class EnumDatatype extends Datatype
 {
 	public static function input(string $name, string $type, $value): mixed
 	{
-		if(is_string($value))
+		if(is_string($value) || is_int($value))
 		{
 			$value = $type::tryFrom($value);
 
@@ -30,7 +30,7 @@ class EnumDatatype extends Datatype
 
 	public static function output(string $type, $value): BackedEnum
 	{
-		if(is_string($value))
+		if(is_string($value) || is_int($value))
 		{
 			$value = $type::tryFrom($value);
 		}
