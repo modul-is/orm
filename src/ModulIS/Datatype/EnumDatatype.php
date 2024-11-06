@@ -28,7 +28,7 @@ class EnumDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): BackedEnum
+	public static function output(string $type, $value): ?BackedEnum
 	{
 		if(is_string($value) || is_int($value))
 		{
