@@ -431,6 +431,36 @@ class DatatypeCaseTest extends TestCase
 			"Property 'ModulIS\Orm\AnimalEntity::\$parameters' cannot be null."
 		);
 	}
+
+
+	public function testEnumToEnum()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->type = AnimalEnum::MAMMAL;
+
+		Assert::same(AnimalEnum::MAMMAL, $animalEntity->type);
+	}
+
+
+	public function testStringToEnum()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->type = 'fish';
+
+		Assert::same(AnimalEnum::FISH, $animalEntity->type);
+	}
+
+
+	public function testWrongStringToEnum()
+	{
+		$animalEntity = new AnimalEntity;
+
+		Assert::exception(
+			fn() => $animalEntity->type = '',
+			\ModulIS\Exception\InvalidArgumentException::class,
+			"Invalid value for column 'type' - Value '' is not part of enum 'ModulIS\Orm\AnimalEnum'"
+		);
+	}
 }
 
 $testerContainer->createInstance(DatatypeCaseTest::class)->run();
