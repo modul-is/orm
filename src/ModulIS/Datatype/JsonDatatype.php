@@ -28,6 +28,6 @@ class JsonDatatype extends Datatype
 
 	public static function output(string $type, $value): array
 	{
-		return Json::decode($value, Json::FORCE_ARRAY);
+		return Json::decode($value, true);
 	}
 }
