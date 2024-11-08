@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ModulIS\Orm;
 
 use ModulIS\Datatype\DateTimeDatatype;
+use ModulIS\Datatype\EnumDatatype;
 use ModulIS\Datatype\JsonDatatype;
 
 class AnimalEntity extends \ModulIS\Entity
@@ -29,4 +30,7 @@ class AnimalEntity extends \ModulIS\Entity
 	public int $height;
 
 	public float $price;
+
+	#[EnumDatatype]
+	public ?AnimalEnum $type;
 }

@@ -7,6 +7,7 @@ require_once __DIR__ . '/ModulIS/Exception/InvalidPropertyDefinitionException.ph
 require_once __DIR__ . '/ModulIS/Exception/InvalidStateException.php';
 require_once __DIR__ . '/ModulIS/Exception/MemberAccessException.php';
 require_once __DIR__ . '/ModulIS/Exception/NotSupportedException.php';
+require_once __DIR__ . '/ModulIS/Exception/MissingAttributeException.php';
 require_once __DIR__ . '/ModulIS/Reflection/EntityType.php';
 require_once __DIR__ . '/ModulIS/Reflection/EntityProperty.php';
 require_once __DIR__ . '/ModulIS/Exception/exceptions.php';

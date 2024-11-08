@@ -37,6 +37,7 @@ class EntityCaseTest extends TestCase
 		$animalEntity->vaccinated = true;
 		$animalEntity->height = 50;
 		$animalEntity->price = 999.90;
+		$animalEntity->type = AnimalEnum::MAMMAL;
 
 		$array = $animalEntity->toArray(['id']);
 
@@ -55,6 +56,7 @@ class EntityCaseTest extends TestCase
 		$animalEntity->vaccinated = true;
 		$animalEntity->height = 0;
 		$animalEntity->price = 0.0;
+		$animalEntity->type = AnimalEnum::FISH;
 
 		$array = $animalEntity->toArray(['id']);
 

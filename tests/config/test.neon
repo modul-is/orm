@@ -1,7 +1,7 @@
 database:
 	dsn: 'mysql:host=127.0.0.1;dbname=test'
 	user: root
-	password: test
+	password: '1234'
 	options:
 		lazy: yes
 		charset: utf8mb4
