@@ -29,6 +29,6 @@ class JsonDatatype extends Datatype
 
 	public static function output(string $type, $value): ?array
 	{
-		return is_null($value) ? $value : Json::decode($value, true);
+		return $value === null ? $value : Json::decode($value, true);
 	}
 }
