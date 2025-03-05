@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ModulIS\Datatype;
 
 use Attribute;
+use ModulIS\Exception\InvalidArgumentException;
 use Nette\Utils\Json;
 
 
@@ -19,15 +20,15 @@ class JsonDatatype extends Datatype
 		}
 		elseif($value !== null)
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - 'array' expected, '" . get_debug_type($value) . "' given.");
+			throw new InvalidArgumentException("Invalid type for column '{$name}' - 'array' expected, '" . get_debug_type($value) . "' given.");
 		}
 
 		return $value;
 	}
 
 
-	public static function output(string $type, $value): array
+	public static function output(string $type, $value): ?array
 	{
-		return Json::decode($value, Json::FORCE_ARRAY);
+		return is_null($value) ? $value : Json::decode($value, true);
 	}
 }
