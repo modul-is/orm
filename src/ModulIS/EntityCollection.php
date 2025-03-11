@@ -14,7 +14,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	protected ?array $data;
 
-	private ?int $count;
+	private int $count;
 
 	private array $keys;
 
