@@ -14,7 +14,7 @@ class EntityCollection implements \Iterator, \Countable
 
 	protected ?array $data;
 
-	private ?int $count;
+	private int $count;
 
 	private array $keys;
 
@@ -83,7 +83,7 @@ class EntityCollection implements \Iterator, \Countable
 	}
 
 
-	public function limit(?int $limit, int $offset = null): self
+	public function limit(?int $limit, ?int $offset = null): self
 	{
 		$this->selection->limit($limit, $offset);
 		$this->invalidate();
@@ -135,7 +135,7 @@ class EntityCollection implements \Iterator, \Countable
 	// === \Countable INTERFACE ======================================
 
 
-	public function count(string $column = null): int
+	public function count(?string $column = null): int
 	{
 		if($column !== null)
 		{
