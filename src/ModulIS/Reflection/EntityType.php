@@ -58,6 +58,13 @@ class EntityType extends \ReflectionClass
 					throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 				}
 
+				$propertyTypeClean = str_replace(['?', '|', 'null'], '', (string) $propertyType);
+
+				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && !$property->getAttributes())
+				{
+					throw new \ModulIS\Exception\MissingAttributeException('Property "' . $property->getName() . '" of type "' . $propertyType . '" cannot be used without a datatype attribute');
+				}
+
 				$readonly = false;
 				$parser = null;
 
@@ -78,7 +85,7 @@ class EntityType extends \ReflectionClass
 						$readonly = true;
 					}
 
-					if(is_subclass_of($attributeName, \ModulIS\Datatype\Datatype::class, true))
+					if(is_subclass_of($attributeName, \ModulIS\Datatype\Datatype::class))
 					{
 						$parser = new $attributeName;
 					}
