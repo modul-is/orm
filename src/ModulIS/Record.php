@@ -54,7 +54,7 @@ class Record
 	}
 
 
-	public function ref(string $key, string $throughColumn = null): ?self
+	public function ref(string $key, ?string $throughColumn = null): ?self
 	{
 		$this->checkRow();
 		$native = $this->row->ref($key, $throughColumn);
@@ -62,7 +62,7 @@ class Record
 	}
 
 
-	public function related(string $key, string $throughColumn = null): GroupedSelection
+	public function related(string $key, ?string $throughColumn = null): GroupedSelection
 	{
 		$this->checkRow();
 		return $this->row->related($key, $throughColumn);
