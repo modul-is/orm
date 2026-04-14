@@ -1,6 +1,6 @@
 database:
 	default:
-		dsn: 'mysql:host=127.0.0.1:3307;dbname=test'
+		dsn: 'mysql:host=127.0.0.1;dbname=test'
 		user: root
 		password: test
 		options:
@@ -8,7 +8,7 @@ database:
 			charset: utf8mb4
 			driverClass: ModulIS\MySqlDriver
 	withoutdriver:
-		dsn: 'mysql:host=127.0.0.1:3307;dbname=test'
+		dsn: 'mysql:host=127.0.0.1;dbname=test'
 		user: root
 		password: test
 		options:
