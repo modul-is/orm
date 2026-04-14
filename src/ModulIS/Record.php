@@ -1,11 +1,14 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS;
 
+use ModulIS\Exception\InvalidStateException;
+use ModulIS\Exception\MemberAccessException;
 use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\GroupedSelection;
+
 
 class Record
 {
@@ -104,7 +107,7 @@ class Record
 
 		if($this->row === null)
 		{
-			throw new Exception\MemberAccessException("The value of column '$name' not set.");
+			throw new MemberAccessException("The value of column '$name' not set.");
 		}
 
 		$native = $this->row->$name;
@@ -136,7 +139,7 @@ class Record
 	{
 		if(!$this->hasRow())
 		{
-			throw new Exception\InvalidStateException('Row not set yet.');
+			throw new InvalidStateException('Row not set yet.');
 		}
 	}
 

@@ -1,18 +1,21 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS;
 
-use Nette;
+use Nette\Database\Drivers\MySqlDriver as NetteMySqlDriver;
+use Nette\Database\Helpers;
 use Nette\Database\IStructure;
+use PDOStatement;
 
-class MySqlDriver extends \Nette\Database\Drivers\MySqlDriver
+
+class MySqlDriver extends NetteMySqlDriver
 {
 	/**
 	 * @note Returns associative array of detected types (IReflection::FIELD_*) in result set.
 	 */
-	public function getColumnTypes(\PDOStatement $statement): array
+	public function getColumnTypes(PDOStatement $statement): array
 	{
 		$types = [];
 		$count = $statement->columnCount();
@@ -22,7 +25,7 @@ class MySqlDriver extends \Nette\Database\Drivers\MySqlDriver
 			$meta = $statement->getColumnMeta($col);
 			if(isset($meta['native_type']))
 			{
-				$types[$meta['name']] = $type = Nette\Database\Helpers::detectType($meta['native_type']);
+				$types[$meta['name']] = $type = Helpers::detectType($meta['native_type']);
 
 				if($type === IStructure::FIELD_TIME)
 				{

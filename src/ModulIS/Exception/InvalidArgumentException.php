@@ -1,9 +1,12 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS\Exception;
 
-class InvalidArgumentException extends \InvalidArgumentException
+use InvalidArgumentException as PHPInvalidArgumentException;
+
+
+class InvalidArgumentException extends PHPInvalidArgumentException
 {
 }

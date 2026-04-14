@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 namespace ModulIS\Orm;
 
-abstract class TestCase extends \Tester\TestCase
+use Nette\Database\Explorer;
+use Nette\Database\Helpers;
+use Nette\DI\Container;
+use Nette\Utils\Strings;
+use Tester\TestCase as TesterTestCase;
+
+
+abstract class TestCase extends TesterTestCase
 {
 	public function __construct
 	(
-		protected \Nette\DI\Container $Container,
-		protected \Nette\Database\Explorer $Explorer
+		protected Container $Container,
+		protected Explorer $Explorer
 	)
 	{
 	}
@@ -21,17 +28,17 @@ abstract class TestCase extends \Tester\TestCase
 
 		if(file_exists($basicSql))
 		{
-			\Nette\Database\Helpers::loadFromFile($this->Explorer->getConnection(), $basicSql);
+			Helpers::loadFromFile($this->Explorer->getConnection(), $basicSql);
 		}
 
 		$reflection = new \ReflectionObject($this);
 
 		$parentDirectory = substr($reflection->getFileName(), 0, strrpos($reflection->getFileName(), DIRECTORY_SEPARATOR));
-		$filePath = $parentDirectory . '/sql/' . \Nette\Utils\Strings::firstLower($reflection->getShortName()) . '.sql';
+		$filePath = $parentDirectory . '/sql/' . Strings::firstLower($reflection->getShortName()) . '.sql';
 
 		if(file_exists($filePath))
 		{
-			\Nette\Database\Helpers::loadFromFile($this->Explorer->getConnection(), $filePath);
+			Helpers::loadFromFile($this->Explorer->getConnection(), $filePath);
 		}
 	}
 }

@@ -6,6 +6,8 @@ namespace ModulIS\Orm;
 
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
+use ModulIS\Entity;
+use Nette\Utils\DateTime;
 use Tester\Assert;
 
 class EntityCaseTest extends TestCase
@@ -31,13 +33,13 @@ class EntityCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
 		$animalEntity->height = 50;
 		$animalEntity->price = 999.90;
-		$animalEntity->type = AnimalEnum::MAMMAL;
+		$animalEntity->type = AnimalEnum::Mammal;
 
 		$array = $animalEntity->toArray(['id']);
 
@@ -50,13 +52,13 @@ class EntityCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = '';
 		$animalEntity->weight = 0;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = [];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
 		$animalEntity->height = 0;
 		$animalEntity->price = 0.0;
-		$animalEntity->type = AnimalEnum::FISH;
+		$animalEntity->type = AnimalEnum::Fish;
 
 		$array = $animalEntity->toArray(['id']);
 
@@ -86,7 +88,7 @@ class EntityCaseTest extends TestCase
 		$array = [
 			'name' => 'Kangaroo',
 			'weight' => 15,
-			'birth' => new \Nette\Utils\DateTime,
+			'birth' => new DateTime,
 			'parameters' => [
 				'color' => 'brown',
 				'ears' => 2,
@@ -119,15 +121,14 @@ class EntityCaseTest extends TestCase
 	}
 
 
-	/**
-	 * Entity save to database
-	 */
-	public function testEntitySaveToDatabase()
+
+
+	public function testEntitySaveToDatabaseDriver()
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
 		$animalEntity->weight = 15;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
+		$animalEntity->birth = new DateTime('2015-01-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
 		$animalEntity->death = null;
 		$animalEntity->vaccinated = true;
@@ -141,7 +142,7 @@ class EntityCaseTest extends TestCase
 		/**
 		 * TEST: save entity to database
 		 */
-		Assert::true($loadedEntity instanceof \ModulIS\Entity);
+		Assert::true($loadedEntity instanceof Entity);
 
 		/**
 		 * TEST: save & load it back like array via JSON
@@ -151,7 +152,49 @@ class EntityCaseTest extends TestCase
 		/**
 		 * TEST: save & load \Nette\Utils\DateTime
 		 */
-		Assert::true($loadedEntity->birth instanceof \Nette\Utils\DateTime);
+		Assert::true($loadedEntity->birth instanceof DateTime);
+
+		/**
+		 * TEST: check right type of date
+		 */
+		Assert::same($loadedEntity->birth->format('Y'), '2015');
+		Assert::same($loadedEntity->birth->format('m-d'), '01-01');
+		Assert::same($loadedEntity->birth->format('H:i:s'), '12:00:00');
+	}
+
+
+	public function testEntitySaveToDatabaseWithoutDriver()
+	{
+		$animalEntity = new AnimalEntity;
+		$animalEntity->name = 'Kangaroo';
+		$animalEntity->weight = 15;
+		$animalEntity->birth = new DateTime('2015-01-01 12:00:00');
+		$animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 1];
+		$animalEntity->death = null;
+		$animalEntity->vaccinated = true;
+		$animalEntity->height = 50;
+
+		$databaseWithoutDriver = $this->Container->getByName('database.withoutdriver.context');
+		$repository = new AnimalRepository($databaseWithoutDriver);
+
+		$repository->save($animalEntity);
+
+		$loadedEntity = $repository->getBy(['name' => 'Kangaroo']);
+
+		/**
+		 * TEST: save entity to database
+		 */
+		Assert::true($loadedEntity instanceof Entity);
+
+		/**
+		 * TEST: save & load it back like array via JSON
+		 */
+		Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $loadedEntity->parameters);
+
+		/**
+		 * TEST: save & load \Nette\Utils\DateTime
+		 */
+		Assert::true($loadedEntity->birth instanceof DateTime);
 
 		/**
 		 * TEST: check right type of date

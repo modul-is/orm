@@ -4,7 +4,9 @@ namespace ModulIS\Orm;
 
 enum AnimalEnum: string
 {
-	case MAMMAL = 'mammal';
-	case BIRD = 'bird';
-	case FISH = 'fish';
+	case Mammal = 'mammal';
+
+	case Bird = 'bird';
+
+	case Fish = 'fish';
 }

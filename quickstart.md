@@ -22,12 +22,16 @@ __ZooEntity__
 ```
 namespace Example\Entity;
 
-class ZooEntity extends \ModulIS\Entity
+use ModulIS\Entity;
+
+
+class ZooEntity extends Entity
 {
-	#[\ModulIS\Attribute\ReadonlyProperty]
 	public int $id;
 
 	public string $name;
+
+	public ?string $motto;
 }
 ```
 
@@ -35,24 +39,40 @@ __AnimalEntity__
 ```
 namespace Example\Entity;
 
-class AnimalEntity extends \ModulIS\Entity
+use ModulIS\Datatype\DateTimeDatatype;
+use ModulIS\Datatype\EnumDatatype;
+use ModulIS\Datatype\JsonDatatype;
+use ModulIS\Entity;
+use Nette\Utils\DateTime;
+
+
+class AnimalEntity extends Entity
 {
-	#[\ModulIS\Attribute\ReadonlyProperty]
 	public int $id;
 
 	public string $name;
 
 	public int $weight;
 
+	#[DateTimeDatatype]
+	public DateTime $birth;
+
+	#[JsonDatatype]
+	public array $parameters;
+
+	#[DateTimeDatatype]
+	public ?string $death = null;
+
 	public bool $vaccinated;
 
-	public \Nette\Utils\DateTime $birth;
+	public int $height;
 
 	public float $price;
 
-	public array|null $parameters;
-	
-	public int|null $zoo_id
+	#[EnumDatatype]
+	public ?AnimalEnum $type = null;
+
+	public ?int $zoo_id = null;
 }
 ```
 
@@ -62,20 +82,23 @@ __ZooRepository__
 ```
 namespace Example\Repository;
 
-class ZooRepository extends \ModulIS\Repository
+use ModulIS\Repository;
+
+
+class ZooRepository extends Repository
 {
-	protected $table = 'zoo';
+	protected string $table = 'zoo';
 
-	protected $entity = '\Example\Entity\ZooEntity';
+	protected string $entity = ZooEntity::class;
 
 
-	public function getBy(array $criteria): ?\Example\Entity\ZooEntity
+	public function getBy(array $criteria): ?ZooEntity
 	{
 		return parent::getBy($criteria);
 	}
 
 
-	public function getByID($id): ?\Example\Entity\ZooEntity
+	public function getByID(int|string $id): ?ZooEntity
 	{
 		return parent::getByID($id);
 	}
@@ -86,20 +109,23 @@ __AnimalRepository__
 ```
 namespace Example\Repository;
 
-class AnimalRepository extends \ModulIS\Repository
+use ModulIS\Repository;
+
+
+class AnimalRepository extends Repository
 {
-	protected $table = 'animal';
+	protected string $table = 'animal';
 
-	protected $entity = '\Example\Entity\AnimalEntity';
+	protected string $entity = AnimalEntity::class;
 
 
-	public function getBy(array $criteria): ?\Example\Entity\AnimalEntity
+	public function getBy(array $criteria): ?AnimalEntity
 	{
 		return parent::getBy($criteria);
 	}
 
 
-	public function getByID($id): ?\Example\Entity\AnimalEntity
+	public function getByID(int|string $id): ?AnimalEntity
 	{
 		return parent::getByID($id);
 	}
@@ -117,15 +143,19 @@ services:
 
 __Presenter__
 ```
-protected \Example\Repository\ZooRepository $ZooRepository;
+use Example\Repository\AnimalRepository;
+use Example\Repository\ZooRepository;
 
-protected \Example\Repository\AnimalRepository $AnimalRepository;
+
+protected ZooRepository $ZooRepository;
+
+protected AnimalRepository $AnimalRepository;
 
 
 public function __construct
 (
-	\Example\Repository\ZooRepository $ZooRepository,
-	\Example\Repository\AnimalRepository $AnimalRepository
+	ZooRepository $ZooRepository,
+	AnimalRepository $AnimalRepository
 )
 {
 	$this->ZooRepository = $ZooRepository;
@@ -136,21 +166,31 @@ public function __construct
 ### Filling entities
 To fill an entity with data, simply instantiate it and use it as an object.
 ```
-$animalEntity = new \Example\Entity\AnimalEntity;
+use Example\Entity\AnimalEntity;
+use Example\Entity\AnimalEnum;
+use Nette\Utils\DateTime;
+
+
+$animalEntity = new AnimalEntity;
 
 $animalEntity->name = 'Kangaroo';
 $animalEntity->weight = 15;
 $animalEntity->vaccinated = true;
-$animalEntity->birth = new \Nette\Utils\DateTime('2015-01-01 12:00:00');
-$animalEntity->price = 199.99
+$animalEntity->birth = new DateTime('2015-01-01 12:00:00');
+$animalEntity->price = 199.99;
 $animalEntity->parameters = ['color' => 'brown', 'ears' => 2, 'eyes' => 2];
+$animalEntity->height = 50;
+$animalEntity->type = AnimalEnum::Mammal;
 ```
 
 We can also fill it quickly from an array.
 ```
+use Example\Entity\ZooEntity;
+
+
 $array = ['name' => 'My Zoo', 'city' => 'Prague'];
 
-$zooEntity = new \Example\Entity\ZooEntity;
+$zooEntity = new ZooEntity;
 
 $zooEntity->fillFromArray($array)
 ```

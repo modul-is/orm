@@ -1,10 +1,14 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS;
 
+use ModulIS\Exception\MemberAccessException;
 use ModulIS\Reflection\EntityProperty;
+use Nette\Database\Table\ActiveRow;
+use Nette\Utils\ArrayHash;
+
 
 abstract class Entity
 {
@@ -13,7 +17,10 @@ abstract class Entity
 	private static array $reflections = [];
 
 
-	public function __construct(Record|\Nette\Database\Table\ActiveRow|null $row = null)
+	public function __construct
+	(
+		Record|ActiveRow|null $row = null
+	)
 	{
 		$this->record = Record::create($row);
 
@@ -39,7 +46,7 @@ abstract class Entity
 
 		if(!$prop instanceof EntityProperty)
 		{
-			throw new Exception\MemberAccessException("Cannot read an undeclared property {$ref->getName()}::\$$name.");
+			throw new MemberAccessException('Cannot read an undeclared property "' . $ref->getName() . '::' . $name . '"');
 		}
 
 		$value = $prop->getValue($this);
@@ -55,7 +62,7 @@ abstract class Entity
 
 		if(!$prop instanceof EntityProperty)
 		{
-			throw new Exception\MemberAccessException("Cannot write to an undeclared property {$ref->getName()}::\$$name.");
+			throw new Exception\MemberAccessException('Cannot write to an undeclared property "' . $ref->getName() . '::' . $name . '"');
 		}
 
 		$prop->setValue($this, $value);
@@ -73,7 +80,7 @@ abstract class Entity
 				return $prop->getValue($this) !== null;
 			}
 		}
-		catch(\ModulIS\Exception\MemberAccessException $e)
+		catch(MemberAccessException $e)
 		{
 			return false;
 		}
@@ -116,7 +123,7 @@ abstract class Entity
 			{
 				$values[$name] = $this->$name;
 			}
-			catch(Exception\MemberAccessException $ex)
+			catch(MemberAccessException $ex)
 			{
 				if($property->isNullable())
 				{
@@ -124,7 +131,7 @@ abstract class Entity
 				}
 				else
 				{
-					throw new Exception\MemberAccessException($ex->getMessage());
+					throw new MemberAccessException($ex->getMessage());
 				}
 			}
 		}
@@ -136,7 +143,7 @@ abstract class Entity
 	/**
 	 * Fill entity from array or ArrayHash
 	 */
-	public function fillFromArray(array|\Nette\Utils\ArrayHash $values): void
+	public function fillFromArray(array|ArrayHash $values): void
 	{
 		$ref = static::getReflection();
 

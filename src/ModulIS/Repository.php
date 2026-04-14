@@ -1,14 +1,16 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS;
 
-use Nette;
+use ModulIS\Exception\InvalidStateException;
 use Nette\Database\Explorer;
 use Nette\Database\IRow;
+use Nette\Database\ResultSet;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
+
 
 abstract class Repository
 {
@@ -26,14 +28,14 @@ abstract class Repository
 		{
 			$ref = new \ReflectionClass($this);
 
-			throw new Exception\InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
+			throw new InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
 		}
 
 		if(!$this->entity)
 		{
 			$ref = new \ReflectionClass($this);
 
-			throw new Exception\InvalidStateException('Entity class not set. Use class property ' . $ref->getName() . '::$entity');
+			throw new InvalidStateException('Entity class not set. Use class property ' . $ref->getName() . '::$entity');
 		}
 	}
 
@@ -187,7 +189,7 @@ abstract class Repository
 
 		if(!$entity instanceof $class)
 		{
-			throw new Exception\InvalidArgumentException("Instance of '$class' expected, '" . $entity::class . "' given.");
+			throw new Exception\InvalidArgumentException('Instance of "' . $class . '" expected, "' . $entity::class . '" given.');
 		}
 	}
 
@@ -201,7 +203,7 @@ abstract class Repository
 	/**
 	 * Return ResultSet by custom SQL
 	 */
-	public function query(string $sql, ...$params): Nette\Database\ResultSet
+	public function query(string $sql, ...$params): ResultSet
 	{
 		return $this->database->query($sql, ...$params);
 	}

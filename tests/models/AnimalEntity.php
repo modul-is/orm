@@ -7,8 +7,11 @@ namespace ModulIS\Orm;
 use ModulIS\Datatype\DateTimeDatatype;
 use ModulIS\Datatype\EnumDatatype;
 use ModulIS\Datatype\JsonDatatype;
+use ModulIS\Entity;
+use Nette\Utils\DateTime;
 
-class AnimalEntity extends \ModulIS\Entity
+
+class AnimalEntity extends Entity
 {
 	public int $id;
 
@@ -17,13 +20,13 @@ class AnimalEntity extends \ModulIS\Entity
 	public int $weight;
 
 	#[DateTimeDatatype]
-	public \Nette\Utils\DateTime $birth;
+	public DateTime $birth;
 
 	#[JsonDatatype]
 	public array $parameters;
 
 	#[DateTimeDatatype]
-	public ?string $death;
+	public ?string $death = null;
 
 	public bool $vaccinated;
 
@@ -32,5 +35,7 @@ class AnimalEntity extends \ModulIS\Entity
 	public float $price;
 
 	#[EnumDatatype]
-	public ?AnimalEnum $type;
+	public ?AnimalEnum $type = null;
+
+	public ?int $zoo_id = null;
 }

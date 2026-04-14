@@ -1,12 +1,15 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS;
 
+use Countable;
+use Iterator;
 use Nette\Database\Table\Selection;
 
-class EntityCollection implements \Iterator, \Countable
+
+class EntityCollection implements Iterator, Countable
 {
 	public const ASC = 'ASC';
 

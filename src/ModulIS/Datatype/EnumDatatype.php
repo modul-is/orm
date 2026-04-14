@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS\Datatype;
 
@@ -20,7 +20,7 @@ class EnumDatatype extends Datatype
 
 			if($value === null)
 			{
-				throw new InvalidArgumentException("Invalid value for column '" . $name . "' - Value '" . $value . "' is not part of enum '" . $type . "'");
+				throw new InvalidArgumentException('Invalid value for column "' . $name . '" - Value "' . $value . '" is not part of enum "' . $type . '"');
 			}
 		}
 

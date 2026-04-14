@@ -6,6 +6,8 @@ namespace ModulIS\Orm;
 
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
+use ModulIS\Exception\InvalidArgumentException;
+use Nette\Utils\DateTime;
 use Tester\Assert;
 
 class DatatypeCaseTest extends TestCase
@@ -25,8 +27,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->price = 1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'price' - 'float' expected, 'int' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "price" - "float" expected, "int" given.'
 		);
 	}
 
@@ -37,8 +39,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->name = 1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'name' - 'string' expected, 'int' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "name" - "string" expected, "int" given.'
 		);
 	}
 
@@ -49,8 +51,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->parameters = 1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'parameters' - 'array' expected, 'int' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "parameters" - "array" expected, "int" given.'
 		);
 	}
 
@@ -61,8 +63,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->vaccinated = 1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'vaccinated' - 'bool' expected, 'int' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "vaccinated" - "bool" expected, "int" given.'
 		);
 	}
 
@@ -73,8 +75,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->birth = 1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'birth' - Instance of '\Nette\Utils\DateTime' expected, 'int' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "birth" - Instance of "Nette\Utils\DateTime" expected, "int" given.'
 		);
 	}
 
@@ -85,8 +87,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->weight = 1.1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'weight' - 'int' expected, 'float' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "weight" - "int" expected, "float" given.'
 		);
 	}
 
@@ -106,8 +108,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->name = 1.1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'name' - 'string' expected, 'float' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "name" - "string" expected, "float" given.'
 		);
 	}
 
@@ -118,8 +120,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->parameters = 1.1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'parameters' - 'array' expected, 'float' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "parameters" - "array" expected, "float" given.'
 		);
 	}
 
@@ -130,8 +132,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->vaccinated = 1.1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'vaccinated' - 'bool' expected, 'float' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "vaccinated" - "bool" expected, "float" given.'
 		);
 	}
 
@@ -142,8 +144,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->birth = 1.1,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'birth' - Instance of '\Nette\Utils\DateTime' expected, 'float' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "birth" - Instance of "Nette\Utils\DateTime" expected, "float" given.'
 		);
 	}
 
@@ -154,8 +156,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->weight = '1',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'weight' - 'int' expected, 'string' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "weight" - "int" expected, "string" given.'
 		);
 	}
 
@@ -166,8 +168,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->price = '1',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'price' - 'float' expected, 'string' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "price" - "float" expected, "string" given.'
 		);
 	}
 
@@ -187,8 +189,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->parameters = '1',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'parameters' - 'array' expected, 'string' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "parameters" - "array" expected, "string" given.'
 		);
 	}
 
@@ -199,8 +201,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->vaccinated = '1',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'vaccinated' - 'bool' expected, 'string' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "vaccinated" - "bool" expected, "string" given.'
 		);
 	}
 
@@ -211,8 +213,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->weight = [],
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'weight' - 'int' expected, 'array' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "weight" - "int" expected, "array" given.'
 		);
 	}
 
@@ -223,8 +225,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->price = [],
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'price' - 'float' expected, 'array' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "price" - "float" expected, "array" given.'
 		);
 	}
 
@@ -235,8 +237,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->name = [],
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'name' - 'string' expected, 'array' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "name" - "string" expected, "array" given.'
 		);
 	}
 
@@ -256,8 +258,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->vaccinated = [],
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'vaccinated' - 'bool' expected, 'array' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "vaccinated" - "bool" expected, "array" given.'
 		);
 	}
 
@@ -268,8 +270,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->birth = [],
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'birth' - Instance of '\Nette\Utils\DateTime' expected, 'array' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "birth" - Instance of "Nette\Utils\DateTime" expected, "array" given.'
 		);
 	}
 
@@ -280,8 +282,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->weight = true,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'weight' - 'int' expected, 'bool' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "weight" - "int" expected, "bool" given.'
 		);
 	}
 
@@ -292,8 +294,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->price = true,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'price' - 'float' expected, 'bool' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "price" - "float" expected, "bool" given.'
 		);
 	}
 
@@ -304,8 +306,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->name = true,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'name' - 'string' expected, 'bool' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "name" - "string" expected, "bool" given.'
 		);
 	}
 
@@ -316,8 +318,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->parameters = true,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'parameters' - 'array' expected, 'bool' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "parameters" - "array" expected, "bool" given.'
 		);
 	}
 
@@ -337,8 +339,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->birth = true,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'birth' - Instance of '\Nette\Utils\DateTime' expected, 'bool' given."
+			InvalidArgumentException::class,
+			'Invalid type for column "birth" - Instance of "Nette\Utils\DateTime" expected, "bool" given.'
 		);
 	}
 
@@ -348,9 +350,9 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 
 		Assert::exception(
-			fn() => $animalEntity->weight = new \Nette\Utils\DateTime('2021-01-01'),
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'weight' - 'int' expected, 'Nette\Utils\DateTime' given."
+			fn() => $animalEntity->weight = new DateTime('2021-01-01'),
+			InvalidArgumentException::class,
+			'Invalid type for column "weight" - "int" expected, "Nette\Utils\DateTime" given.'
 		);
 	}
 
@@ -360,9 +362,9 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 
 		Assert::exception(
-			fn() => $animalEntity->price = new \Nette\Utils\DateTime('2021-01-01'),
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'price' - 'float' expected, 'Nette\Utils\DateTime' given."
+			fn() => $animalEntity->price = new DateTime('2021-01-01'),
+			InvalidArgumentException::class,
+			'Invalid type for column "price" - "float" expected, "Nette\Utils\DateTime" given.'
 		);
 	}
 
@@ -372,9 +374,9 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 
 		Assert::exception(
-			fn() => $animalEntity->name = new \Nette\Utils\DateTime('2021-01-01'),
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'name' - 'string' expected, 'Nette\Utils\DateTime' given."
+			fn() => $animalEntity->name = new DateTime('2021-01-01'),
+			InvalidArgumentException::class,
+			'Invalid type for column "name" - "string" expected, "Nette\Utils\DateTime" given.'
 		);
 	}
 
@@ -384,9 +386,9 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 
 		Assert::exception(
-			fn() => $animalEntity->parameters = new \Nette\Utils\DateTime('2021-01-01'),
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'parameters' - 'array' expected, 'Nette\Utils\DateTime' given."
+			fn() => $animalEntity->parameters = new DateTime('2021-01-01'),
+			InvalidArgumentException::class,
+			'Invalid type for column "parameters" - "array" expected, "Nette\Utils\DateTime" given.'
 		);
 	}
 
@@ -396,9 +398,9 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 
 		Assert::exception(
-			fn() => $animalEntity->vaccinated = new \Nette\Utils\DateTime('2021-01-01'),
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid type for column 'vaccinated' - 'bool' expected, 'Nette\Utils\DateTime' given."
+			fn() => $animalEntity->vaccinated = new DateTime('2021-01-01'),
+			InvalidArgumentException::class,
+			'Invalid type for column "vaccinated" - "bool" expected, "Nette\Utils\DateTime" given.'
 		);
 	}
 
@@ -406,9 +408,9 @@ class DatatypeCaseTest extends TestCase
 	public function testDatetimeToDatetime()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->birth = new \Nette\Utils\DateTime('2021-01-01');
+		$animalEntity->birth = new DateTime('2021-01-01');
 
-		Assert::same((new \Nette\Utils\DateTime('2021-01-01'))->format('Y-m-d'), $animalEntity->birth->format('Y-m-d'));
+		Assert::same((new DateTime('2021-01-01'))->format('Y-m-d'), $animalEntity->birth->format('Y-m-d'));
 	}
 
 
@@ -427,8 +429,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->parameters = null,
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Property 'ModulIS\Orm\AnimalEntity::\$parameters' cannot be null."
+			InvalidArgumentException::class,
+			'Property "ModulIS\Orm\AnimalEntity::$parameters" cannot be null.'
 		);
 	}
 
@@ -436,9 +438,9 @@ class DatatypeCaseTest extends TestCase
 	public function testEnumToEnum()
 	{
 		$animalEntity = new AnimalEntity;
-		$animalEntity->type = AnimalEnum::MAMMAL;
+		$animalEntity->type = AnimalEnum::Mammal;
 
-		Assert::same(AnimalEnum::MAMMAL, $animalEntity->type);
+		Assert::same(AnimalEnum::Mammal, $animalEntity->type);
 	}
 
 
@@ -447,7 +449,7 @@ class DatatypeCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->type = 'fish';
 
-		Assert::same(AnimalEnum::FISH, $animalEntity->type);
+		Assert::same(AnimalEnum::Fish, $animalEntity->type);
 	}
 
 
@@ -457,8 +459,8 @@ class DatatypeCaseTest extends TestCase
 
 		Assert::exception(
 			fn() => $animalEntity->type = '',
-			\ModulIS\Exception\InvalidArgumentException::class,
-			"Invalid value for column 'type' - Value '' is not part of enum 'ModulIS\Orm\AnimalEnum'"
+			InvalidArgumentException::class,
+			'Invalid value for column "type" - Value "" is not part of enum "ModulIS\Orm\AnimalEnum"'
 		);
 	}
 }
