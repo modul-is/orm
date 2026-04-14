@@ -2,7 +2,7 @@ database:
 	default:
 		dsn: 'mysql:host=127.0.0.1:3307;dbname=test'
 		user: root
-		password:
+		password: test
 		options:
 			lazy: yes
 			charset: utf8mb4
@@ -10,7 +10,7 @@ database:
 	withoutdriver:
 		dsn: 'mysql:host=127.0.0.1:3307;dbname=test'
 		user: root
-		password:
+		password: test
 		options:
 			lazy: yes
 			charset: utf8mb4
