@@ -25,9 +25,37 @@ class UuidDatatypeTest extends TestCase
 		Assert::type('string', $stateEntity->uuid);
 		Assert::match('~^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$~', $stateEntity->uuid);
 		
-		$stateRepository = $this->Container->getServiceType(StateRepository::class);
+		$stateRepository = $this->Container->getByType(StateRepository::class);
 
 		$stateRepository->save($stateEntity);
+	}
+
+
+	public function testUuidJoin()
+	{
+		$stateEntity = new StateEntity;
+		$stateEntity->name = 'Slovakia';
+		$stateEntity->short = 'SK';
+
+		$stateUuid = $stateEntity->uuid;
+
+		$stateRepository = $this->Container->getByType(StateRepository::class);
+		$stateRepository->save($stateEntity);
+
+		$zooEntity = new \ModulIS\Orm\ZooEntity;
+		$zooEntity->name = 'Bratislava Zoo';
+		$zooEntity->state_uuid = $stateUuid;
+
+		$this->Explorer->table('zoo')->insert($zooEntity->toArray(['id']));
+
+		$zooRow = $this->Explorer->table('zoo')->where('name', 'Bratislava Zoo')->fetch();
+		$zooEntity = new \ModulIS\Orm\ZooEntity($zooRow);
+
+		$stateEntity = $zooEntity->getState();
+
+		Assert::type(StateEntity::class, $stateEntity);
+		Assert::same($stateUuid, $stateEntity->uuid);
+		Assert::same('Slovakia', $stateEntity->name);
 	}
 }
 
