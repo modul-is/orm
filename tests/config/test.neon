@@ -1,19 +1,20 @@
 database:
 	default:
-		dsn: 'mysql:host=127.0.0.1;dbname=test'
+		dsn: 'mysql:host=127.0.0.1:3308;dbname=test'
 		user: root
-		password: test
+		password: beer
 		options:
 			lazy: yes
 			charset: utf8mb4
 			driverClass: ModulIS\MySqlDriver
 	withoutdriver:
-		dsn: 'mysql:host=127.0.0.1;dbname=test'
+		dsn: 'mysql:host=127.0.0.1:3308;dbname=test'
 		user: root
-		password: test
+		password: beer
 		options:
 			lazy: yes
 			charset: utf8mb4
 
 services:
 	- ModulIS\Orm\AnimalRepository
+	- ModulIS\Orm\StateRepository

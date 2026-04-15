@@ -14,4 +14,12 @@ class ZooEntity extends Entity
 	public string $name;
 
 	public ?string $motto;
+
+	public ?string $state_uuid;
+
+
+	public function getState(): StateEntity
+	{
+		return $this->record->ref(StateEntity::class, 'state_uuid');
+	}
 }
