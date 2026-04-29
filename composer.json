@@ -24,7 +24,7 @@
 		"nette/tester": "^2.5",
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^4.0",
-		"modul-is/coding-standard": "^4",
+		"modul-is/coding-standard": "^5",
 		"phpstan/phpstan": "^2"
 	},
 
@@ -36,7 +36,9 @@
 	"scripts":
 	{
 		"test": "vendor/bin/tester.bat -C tests/cases",
-		"phpstan": "phpstan analyse --level 5 src"
+		"phpstan": "phpstan analyse --level 5 src",
+		"code-cs": "php vendor/modul-is/coding-standard/ecs check src --preset php84",
+		"code-cs-fix": "php vendor/modul-is/coding-standard/ecs check src --preset php84 --fix"
 	},
 	"config": {
 		"allow-plugins": {

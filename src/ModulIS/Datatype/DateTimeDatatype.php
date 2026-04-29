@@ -1,10 +1,11 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS\Datatype;
 
 use Attribute;
+use ModulIS\Exception\InvalidArgumentException;
 use Nette\Utils\DateTime;
 
 
@@ -13,7 +14,7 @@ class DateTimeDatatype extends Datatype
 {
 	public static function input(string $name, string $type, $value): ?string
 	{
-		if($value instanceof \Nette\Utils\DateTime)
+		if($value instanceof DateTime)
 		{
 			$value = $value->__toString();
 		}
@@ -23,15 +24,18 @@ class DateTimeDatatype extends Datatype
 		}
 		elseif(!is_string($value))
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - Instance of '\\Nette\\Utils\\DateTime' expected, '" . get_debug_type($value) . "' given.");
+			throw new InvalidArgumentException('Invalid type for column "' . $name . '" - Instance of "Nette\Utils\DateTime" expected, "' . get_debug_type($value) . '" given.');
 		}
 
 		return $value;
 	}
 
 
+	/**
+	 * @throws \Exception
+	 */
 	public static function output(string $type, $value): ?DateTime
 	{
-		return $value === null ? null : new DateTime($value);
+		return $value === null ? null : DateTime::from($value);
 	}
 }

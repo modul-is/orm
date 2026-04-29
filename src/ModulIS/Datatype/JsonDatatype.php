@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS\Datatype;
 
@@ -20,7 +20,7 @@ class JsonDatatype extends Datatype
 		}
 		elseif($value !== null)
 		{
-			throw new InvalidArgumentException("Invalid type for column '{$name}' - 'array' expected, '" . get_debug_type($value) . "' given.");
+			throw new InvalidArgumentException('Invalid type for column "' . $name . '" - "array" expected, "' . get_debug_type($value) . '" given.');
 		}
 
 		return $value;

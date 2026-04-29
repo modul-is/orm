@@ -1,11 +1,17 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace ModulIS\Reflection;
 
-use ModulIS;
-use ModulIS\Exception;
+use ModulIS\Attribute\ReadonlyProperty;
+use ModulIS\Attribute\VirtualProperty;
+use ModulIS\Datatype\BooleanDatatype;
+use ModulIS\Datatype\Datatype;
+use ModulIS\Entity;
+use ModulIS\Exception\InvalidPropertyDefinitionException;
+use ModulIS\Exception\MissingAttributeException;
+
 
 class EntityType extends \ReflectionClass
 {
@@ -55,14 +61,14 @@ class EntityType extends \ReflectionClass
 
 				if(!$propertyType)
 				{
-					throw new Exception\InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
+					throw new InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 				}
 
 				$propertyTypeClean = str_replace(['?', '|', 'null'], '', (string) $propertyType);
 
 				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && !$property->getAttributes())
 				{
-					throw new \ModulIS\Exception\MissingAttributeException('Property "' . $property->getName() . '" of type "' . $propertyType . '" cannot be used without a datatype attribute');
+					throw new MissingAttributeException('Property "' . $property->getName() . '" of type "' . $propertyType . '" cannot be used without a datatype attribute');
 				}
 
 				$readonly = false;
@@ -73,19 +79,19 @@ class EntityType extends \ReflectionClass
 				 */
 				if($propertyType == 'bool')
 				{
-					$parser = new \ModulIS\Datatype\BooleanDatatype;
+					$parser = new BooleanDatatype;
 				}
 
 				foreach($property->getAttributes() as $attribute)
 				{
 					$attributeName = $attribute->getName();
 
-					if(in_array($attributeName, [\ModulIS\Attribute\ReadonlyProperty::class, \ModulIS\Attribute\VirtualProperty::class], true))
+					if(in_array($attributeName, [ReadonlyProperty::class, VirtualProperty::class], true))
 					{
 						$readonly = true;
 					}
 
-					if(is_subclass_of($attributeName, \ModulIS\Datatype\Datatype::class))
+					if(is_subclass_of($attributeName, Datatype::class))
 					{
 						$parser = new $attributeName;
 					}
@@ -114,7 +120,7 @@ class EntityType extends \ReflectionClass
 			$tree[] = $current;
 			$current = get_parent_class($current);
 		}
-		while($current !== false && $current !== ModulIS\Entity::class);
+		while($current !== false && $current !== Entity::class);
 
 		return array_reverse($tree);
 	}

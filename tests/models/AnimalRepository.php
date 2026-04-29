@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace ModulIS\Orm;
 
-class AnimalRepository extends \ModulIS\Repository
+use ModulIS\Repository;
+
+
+class AnimalRepository extends Repository
 {
 	protected string $table = 'animal';
 

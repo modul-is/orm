@@ -6,6 +6,9 @@ namespace ModulIS\Orm;
 
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
+use ModulIS\Entity;
+use ModulIS\EntityCollection;
+use Nette\Utils\DateTime;
 use Tester\Assert;
 
 class RepositoryCaseTest extends TestCase
@@ -18,13 +21,13 @@ class RepositoryCaseTest extends TestCase
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Gorilla';
 		$animalEntity->weight = 350;
-		$animalEntity->birth = new \Nette\Utils\DateTime('1998-10-01 12:00:00');
+		$animalEntity->birth = new DateTime('1998-10-01 12:00:00');
 		$animalEntity->parameters = ['color' => 'black', 'ears' => 1, 'eyes' => 2];
 
 		$animalEntity2 = new AnimalEntity;
 		$animalEntity2->name = 'Giraffe';
 		$animalEntity2->weight = 600;
-		$animalEntity2->birth = new \Nette\Utils\DateTime('1992-03-01 12:00:00');
+		$animalEntity2->birth = new DateTime('1992-03-01 12:00:00');
 		$animalEntity2->parameters = ['color' => 'yellow', 'ears' => 2, 'eyes' => 2];
 
 		$repository = $this->Container->getByType(AnimalRepository::class);
@@ -38,7 +41,7 @@ class RepositoryCaseTest extends TestCase
 
 		$collection = $repository->findBy([]);
 
-		Assert::true($collection instanceof \ModulIS\EntityCollection);
+		Assert::true($collection instanceof EntityCollection);
 		Assert::same(2, $collection->count());
 
 		/**
@@ -46,7 +49,7 @@ class RepositoryCaseTest extends TestCase
 		 */
 		$entity = $repository->getBy(['name' => 'Giraffe']);
 
-		Assert::true($entity instanceof \ModulIS\Entity);
+		Assert::true($entity instanceof Entity);
 		Assert::same('Giraffe', $entity->name);
 
 		/**

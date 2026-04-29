@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace ModulIS\Orm;
 
-class ZooEntity extends \ModulIS\Entity
+use ModulIS\Entity;
+
+
+class ZooEntity extends Entity
 {
 	public int $id;
 

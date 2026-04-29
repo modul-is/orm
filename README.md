@@ -28,23 +28,23 @@ Input | Entity | Nullable | Output |
 :----:|:------:|:--------:|:------:|
 int(1) | int | &check; &#124;&#124; &cross; | int(1) |
 int(0) | int | &check; &#124;&#124; &cross; | int(0) |
-string("0") | int | &check; &#124;&#124; &cross; | Exception |
+string('0') | int | &check; &#124;&#124; &cross; | Exception |
 float(1.0) | float | &check; &#124;&#124; &cross; | float(1.0) |
 float(0.0) | float | &check; &#124;&#124; &cross; | float(0.0) |
-string("0.0") | float | &check; &#124;&#124; &cross; | Exception |
-string("a") | string | &check; &#124;&#124; &cross; | string("a") |
-string("") | string | &check; &#124;&#124; &cross; | string("") |
-array(\["a" => "b"\]) | array | &check; &#124;&#124; &cross; | string("{"a":"b"}") |
-array(\[\]) | array | &check; &#124;&#124; &cross; | string("[]") |
-string("{"a":"b"}") | array | &check; &#124;&#124; &cross; | Exception |
-string("[]") | array | &check; &#124;&#124; &cross; | Exception |
+string('0.0') | float | &check; &#124;&#124; &cross; | Exception |
+string('a') | string | &check; &#124;&#124; &cross; | string('a') |
+string('') | string | &check; &#124;&#124; &cross; | string('') |
+array(\['a' => 'b'\]) | array | &check; &#124;&#124; &cross; | string('{'a':'b'}') |
+array(\[\]) | array | &check; &#124;&#124; &cross; | string('[]') |
+string('{'a':'b'}') | array | &check; &#124;&#124; &cross; | Exception |
+string('[]') | array | &check; &#124;&#124; &cross; | Exception |
 bool(false) | bool | &check; &#124;&#124; &cross; | bool(false) |
-string("false") | bool | &check; &#124;&#124; &cross; | Exception |
-DateTime("2021-01-01 12:34:56") | DateTime | &check; &#124;&#124; &cross; | string("2021-01-01 12:34:56") |
-string("2021-01-01 12:34:56") | DateTime | &check; &#124;&#124; &cross; | Exception |
+string('false') | bool | &check; &#124;&#124; &cross; | Exception |
+DateTime('2021-01-01 12:34:56') | DateTime | &check; &#124;&#124; &cross; | string('2021-01-01 12:34:56') |
+string('2021-01-01 12:34:56') | DateTime | &check; &#124;&#124; &cross; | Exception |
 int(0) | float &#124;&#124; string &#124;&#124; array &#124;&#124; bool &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
 float(0.0) | int &#124;&#124; string &#124;&#124; array &#124;&#124; bool &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
-string("") | int &#124;&#124; float &#124;&#124; array &#124;&#124; bool &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
+string('') | int &#124;&#124; float &#124;&#124; array &#124;&#124; bool &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
 array(\[\]) | int &#124;&#124; float &#124;&#124; string &#124;&#124; bool &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
 bool(false) | int &#124;&#124; float &#124;&#124; string &#124;&#124; array &#124;&#124; DateTime | &check; &#124;&#124; &cross; | Exception |
 null | int &#124;&#124; float &#124;&#124; string &#124;&#124; array &#124;&#124; bool &#124;&#124; DateTime | &check; | null |
@@ -66,7 +66,7 @@ class File extends \ModulIS\Datatype\Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException("Invalid type for column '{$name}' - Instance of '\SplFileInfo' expected, '" . get_debug_type($value) . "' given.");
+			throw new \ModulIS\Exception\InvalidArgumentException('Invalid type for column '{$name}' - Instance of '\SplFileInfo' expected, ' . get_debug_type($value) . ' given.');
 		}
 
 		return $value;
