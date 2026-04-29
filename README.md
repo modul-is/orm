@@ -66,7 +66,7 @@ class File extends \ModulIS\Datatype\Datatype
 		}
 		else
 		{
-			throw new \ModulIS\Exception\InvalidArgumentException('Invalid type for column '{$name}' - Instance of '\SplFileInfo' expected, '' . get_debug_type($value) . '' given.');
+			throw new \ModulIS\Exception\InvalidArgumentException('Invalid type for column '{$name}' - Instance of '\SplFileInfo' expected, ' . get_debug_type($value) . ' given.');
 		}
 
 		return $value;
