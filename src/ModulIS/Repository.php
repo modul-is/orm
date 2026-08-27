@@ -8,14 +8,19 @@ use ModulIS\Exception\InvalidStateException;
 use Nette\Database\Explorer;
 use Nette\Database\IRow;
 use Nette\Database\ResultSet;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 use Nette\Utils\ArrayHash;
 
 
+/**
+ * @template TEntity of Entity
+ */
 abstract class Repository
 {
 	protected string $table;
 
+	/** @var class-string<TEntity> */
 	protected string $entity;
 
 
@@ -40,6 +45,11 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @param string|list<string>|null $value
+	 * @param array<int|string, mixed> $criteria
+	 * @return array<int|string, mixed>
+	 */
 	public function fetchPairs(?string $key = null, string|array|null $value = null, array $criteria = [], ?string $order = null, string $separator = ' '): array
 	{
 		if(is_array($value))
@@ -63,6 +73,9 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @return TEntity|null
+	 */
 	public function getByID(int|string $id)
 	{
 		$selection = $this->getTable()->wherePrimary($id);
@@ -70,6 +83,10 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @param array<int|string, mixed> $criteria
+	 * @return TEntity|null
+	 */
 	public function getBy(array $criteria)
 	{
 		$selection = $this->getTable()->where($criteria);
@@ -77,6 +94,10 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @param array<int|string, mixed> $criteria
+	 * @return EntityCollection<TEntity>
+	 */
 	public function findBy(array $criteria): EntityCollection
 	{
 		$selection = $this->getTable()->where($criteria);
@@ -84,6 +105,9 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @return EntityCollection<TEntity>
+	 */
 	public function findAll(): EntityCollection
 	{
 		return $this->findBy([]);
@@ -92,6 +116,7 @@ abstract class Repository
 
 	/**
 	 * Save single instance from database
+	 * @param TEntity $entity
 	 */
 	public function save(Entity $entity): bool
 	{
@@ -102,6 +127,7 @@ abstract class Repository
 	/**
 	 * Save collection by transaction
 	 * @note Array or Arrash hash must have entity inside
+	 * @param array<TEntity>|EntityCollection<TEntity>|ArrayHash<TEntity> $collection
 	 */
 	public function saveCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{
@@ -110,16 +136,22 @@ abstract class Repository
 			return null;
 		}
 
-		return $this->transaction(function() use ($collection)
+		$this->transaction(function() use ($collection): void
 		{
 			foreach($collection as $entity)
 			{
 				$this->persist($entity);
 			}
 		});
+
+		return null;
 	}
 
 
+	/**
+	 * @param Selection<ActiveRow> $selection
+	 * @return TEntity|null
+	 */
 	protected function createEntityFromSelection(Selection $selection): ?Entity
 	{
 		$row = $selection->fetch();
@@ -135,12 +167,19 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @param Selection<ActiveRow> $selection
+	 * @return EntityCollection<TEntity>
+	 */
 	protected function createCollection(Selection $selection): EntityCollection
 	{
 		return new EntityCollection($selection, $this->entity);
 	}
 
 
+	/**
+	 * @param TEntity $entity
+	 */
 	public function persist(Entity $entity): bool
 	{
 		$this->checkEntity($entity);
@@ -168,15 +207,21 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @param TEntity $entity
+	 */
 	public function delete(Entity $entity): bool
 	{
 		$this->checkEntity($entity);
-		$record = $entity->toRecord();
+		$row = $entity->toRecord()->getRow();
 
-		return $record->hasRow() ? $record->getRow()->delete() > 0 : true;
+		return $row === null ? true : $row->delete() > 0;
 	}
 
 
+	/**
+	 * @return Selection<ActiveRow>
+	 */
 	public function getTable(?string $table = null): Selection
 	{
 		return $this->database->table($table ?? $this->table);
@@ -194,6 +239,11 @@ abstract class Repository
 	}
 
 
+	/**
+	 * @template TResult
+	 * @param \Closure(): TResult $callback
+	 * @return TResult
+	 */
 	final protected function transaction(\Closure $callback): mixed
 	{
 		return $this->database->getConnection()->transaction($callback);
@@ -202,13 +252,17 @@ abstract class Repository
 
 	/**
 	 * Return ResultSet by custom SQL
+	 * @param literal-string $sql
 	 */
-	public function query(string $sql, ...$params): ResultSet
+	public function query(string $sql, mixed ...$params): ResultSet
 	{
 		return $this->database->query($sql, ...$params);
 	}
 
 
+	/**
+	 * @param array<TEntity>|EntityCollection<TEntity>|ArrayHash<TEntity> $collection
+	 */
 	private function isCollectionEmpty(array|EntityCollection|ArrayHash $collection): bool
 	{
 		return (!is_array($collection) && $collection->count() === 0) || !$collection;
@@ -217,6 +271,7 @@ abstract class Repository
 
 	/**
 	 * Delete collection by transaction
+	 * @param array<TEntity>|EntityCollection<TEntity>|ArrayHash<TEntity> $collection
 	 */
 	public function deleteCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{
@@ -225,13 +280,15 @@ abstract class Repository
 			return null;
 		}
 
-		return $this->transaction(function() use ($collection)
+		$this->transaction(function() use ($collection): void
 		{
 			foreach($collection as $entity)
 			{
 				$this->delete($entity);
 			}
 		});
+
+		return null;
 	}
 
 
@@ -246,6 +303,7 @@ abstract class Repository
 
 	/**
 	 * @deprecated
+	 * @param array<TEntity>|EntityCollection<TEntity>|ArrayHash<TEntity> $collection
 	 */
 	public function removeCollection(array|EntityCollection|ArrayHash $collection): mixed
 	{

@@ -14,6 +14,7 @@ abstract class Entity
 {
 	protected Record $record;
 
+	/** @var array<class-string<self>, Reflection\EntityType> */
 	private static array $reflections = [];
 
 
@@ -55,7 +56,7 @@ abstract class Entity
 	}
 
 
-	public function __set(string $name, $value): void
+	public function __set(string $name, mixed $value): void
 	{
 		$ref = static::getReflection();
 		$prop = $ref->getEntityProperty($name);
@@ -101,12 +102,19 @@ abstract class Entity
 	}
 
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function getModifiedArray(): array
 	{
 		return $this->record->getModified();
 	}
 
 
+	/**
+	 * @param list<string> $excludedProperties
+	 * @return array<string, mixed>
+	 */
 	public function toArray(array $excludedProperties = []): array
 	{
 		$ref = static::getReflection();
@@ -142,6 +150,7 @@ abstract class Entity
 
 	/**
 	 * Fill entity from array or ArrayHash
+	 * @param array<string, mixed>|ArrayHash<mixed> $values
 	 */
 	public function fillFromArray(array|ArrayHash $values): void
 	{
@@ -170,7 +179,7 @@ abstract class Entity
 			/**
 			 * Convert strings to int
 			 */
-			if($property->getType() == 'int' && !empty($values[$name]))
+			if($property->getType() === 'int' && is_numeric($values[$name]))
 			{
 				$this->$name = intval($values[$name]);
 			}

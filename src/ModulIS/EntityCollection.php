@@ -6,22 +6,33 @@ namespace ModulIS;
 
 use Countable;
 use Iterator;
+use Nette\Database\Table\ActiveRow;
 use Nette\Database\Table\Selection;
 
 
+/**
+ * @template TEntity of Entity
+ * @implements Iterator<int, TEntity>
+ */
 class EntityCollection implements Iterator, Countable
 {
 	public const ASC = 'ASC';
 
 	public const DESC = 'DESC';
 
+	/** @var list<TEntity>|null */
 	protected ?array $data;
 
+	/** @var int<0, max> */
 	private int $count;
 
-	private array $keys;
+	private int $position = 0;
 
 
+	/**
+	 * @param Selection<ActiveRow> $selection
+	 * @param class-string<TEntity> $entity
+	 */
 	public function __construct
 	(
 		protected Selection $selection,
@@ -31,6 +42,9 @@ class EntityCollection implements Iterator, Countable
 	}
 
 
+	/**
+	 * @phpstan-assert !null $this->data
+	 */
 	private function loadData(): void
 	{
 		if(!isset($this->data))
@@ -47,9 +61,14 @@ class EntityCollection implements Iterator, Countable
 	}
 
 
+	/**
+	 * @return list<TEntity>
+	 */
 	public function toArray(): array
 	{
-		return iterator_to_array($this);
+		$this->loadData();
+
+		return $this->data;
 	}
 
 
@@ -66,6 +85,9 @@ class EntityCollection implements Iterator, Countable
 	 *	'second' => EntityCollection::DESC,
 	 * ]; // ORDER BY [first], [second] DESC
 	 * </code>
+	 *
+	 * @param string|array<string, string|null> $column
+	 * @return $this
 	 */
 	public function orderBy(string|array $column, ?string $order = null): self
 	{
@@ -86,6 +108,9 @@ class EntityCollection implements Iterator, Countable
 	}
 
 
+	/**
+	 * @return $this
+	 */
 	public function limit(?int $limit, ?int $offset = null): self
 	{
 		$this->selection->limit($limit, $offset);
@@ -97,6 +122,7 @@ class EntityCollection implements Iterator, Countable
 	private function invalidate(): void
 	{
 		$this->data = null;
+		$this->position = 0;
 	}
 
 
@@ -105,33 +131,43 @@ class EntityCollection implements Iterator, Countable
 	public function rewind(): void
 	{
 		$this->loadData();
-		$this->keys = array_keys($this->data);
-		reset($this->keys);
+		$this->position = 0;
 	}
 
 
+	/**
+	 * @return TEntity
+	 */
 	public function current(): Entity
 	{
-		$key = current($this->keys);
-		return $key === false ? false : $this->data[$key];
+		$this->loadData();
+
+		if(!isset($this->data[$this->position]))
+		{
+			throw new Exception\InvalidStateException('There is no entity at position ' . $this->position . '.');
+		}
+
+		return $this->data[$this->position];
 	}
 
 
-	public function key(): mixed
+	public function key(): int
 	{
-		return current($this->keys);
+		return $this->position;
 	}
 
 
 	public function next(): void
 	{
-		next($this->keys);
+		$this->position++;
 	}
 
 
 	public function valid(): bool
 	{
-		return current($this->keys) !== false;
+		$this->loadData();
+
+		return isset($this->data[$this->position]);
 	}
 
 
@@ -142,7 +178,7 @@ class EntityCollection implements Iterator, Countable
 	{
 		if($column !== null)
 		{
-			return $this->selection->count($column);
+			return $this->countRows($column);
 		}
 
 		if(isset($this->data))
@@ -152,9 +188,18 @@ class EntityCollection implements Iterator, Countable
 
 		if(!isset($this->count))
 		{
-			$this->count = $this->selection->count('*');
+			$this->count = $this->countRows('*');
 		}
 
 		return $this->count;
+	}
+
+
+	/**
+	 * @return int<0, max>
+	 */
+	private function countRows(string $column): int
+	{
+		return max(0, $this->selection->count($column));
 	}
 }

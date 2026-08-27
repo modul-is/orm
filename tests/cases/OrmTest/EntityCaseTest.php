@@ -7,6 +7,7 @@ namespace ModulIS\Orm;
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
 use ModulIS\Entity;
+use Nette\Database\Explorer;
 use Nette\Utils\DateTime;
 use Tester\Assert;
 
@@ -15,7 +16,7 @@ class EntityCaseTest extends TestCase
 	/**
 	 * Set entity property to null
 	 */
-	public function testEntitySetNull()
+	public function testEntitySetNull(): void
 	{
 		$zooEntity = new ZooEntity;
 		$zooEntity->name = 'Zoo Pilsen';
@@ -28,7 +29,7 @@ class EntityCaseTest extends TestCase
 	/**
 	 * Entity to Array
 	 */
-	public function testEntityToArray()
+	public function testEntityToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
@@ -43,11 +44,13 @@ class EntityCaseTest extends TestCase
 
 		$array = $animalEntity->toArray(['id']);
 
-		Assert::true(is_array($array));
+		Assert::same('Kangaroo', $array['name']);
+		Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $array['parameters']);
+		Assert::false(array_key_exists('id', $array));
 	}
 
 
-	public function testEntityToArrayEdgeCase()
+	public function testEntityToArrayEdgeCase(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = '';
@@ -69,7 +72,7 @@ class EntityCaseTest extends TestCase
 	}
 
 
-	public function testEntityToArrayNullProperty()
+	public function testEntityToArrayNullProperty(): void
 	{
 		$zooEntity = new ZooEntity;
 		$zooEntity->name = 'Lion';
@@ -83,7 +86,7 @@ class EntityCaseTest extends TestCase
 	/**
 	 * Entity filled from Array
 	 */
-	public function testEntityFromArray()
+	public function testEntityFromArray(): void
 	{
 		$array = [
 			'name' => 'Kangaroo',
@@ -123,7 +126,7 @@ class EntityCaseTest extends TestCase
 
 
 
-	public function testEntitySaveToDatabaseDriver()
+	public function testEntitySaveToDatabaseDriver(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
@@ -150,12 +153,7 @@ class EntityCaseTest extends TestCase
 		Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $loadedEntity->parameters);
 
 		/**
-		 * TEST: save & load \Nette\Utils\DateTime
-		 */
-		Assert::true($loadedEntity->birth instanceof DateTime);
-
-		/**
-		 * TEST: check right type of date
+		 * TEST: save & load \Nette\Utils\DateTime with the right value
 		 */
 		Assert::same($loadedEntity->birth->format('Y'), '2015');
 		Assert::same($loadedEntity->birth->format('m-d'), '01-01');
@@ -163,7 +161,7 @@ class EntityCaseTest extends TestCase
 	}
 
 
-	public function testEntitySaveToDatabaseWithoutDriver()
+	public function testEntitySaveToDatabaseWithoutDriver(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Kangaroo';
@@ -175,6 +173,9 @@ class EntityCaseTest extends TestCase
 		$animalEntity->height = 50;
 
 		$databaseWithoutDriver = $this->Container->getByName('database.withoutdriver.context');
+
+		Assert::true($databaseWithoutDriver instanceof Explorer);
+
 		$repository = new AnimalRepository($databaseWithoutDriver);
 
 		$repository->save($animalEntity);
@@ -192,12 +193,7 @@ class EntityCaseTest extends TestCase
 		Assert::same(['color' => 'brown', 'ears' => 2, 'eyes' => 1], $loadedEntity->parameters);
 
 		/**
-		 * TEST: save & load \Nette\Utils\DateTime
-		 */
-		Assert::true($loadedEntity->birth instanceof DateTime);
-
-		/**
-		 * TEST: check right type of date
+		 * TEST: save & load \Nette\Utils\DateTime with the right value
 		 */
 		Assert::same($loadedEntity->birth->format('Y'), '2015');
 		Assert::same($loadedEntity->birth->format('m-d'), '01-01');
@@ -208,7 +204,7 @@ class EntityCaseTest extends TestCase
 	/**
 	 * Isset empty property
 	 */
-	public function testIssetEmptyProperty()
+	public function testIssetEmptyProperty(): void
 	{
 		$animalEntity = new AnimalEntity;
 

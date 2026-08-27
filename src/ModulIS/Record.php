@@ -12,8 +12,10 @@ use Nette\Database\Table\GroupedSelection;
 
 class Record
 {
+	/** @var array<string, mixed> */
 	private array $values = [];
 
+	/** @var array<string, mixed> */
 	private array $modified = [];
 
 
@@ -38,6 +40,9 @@ class Record
 	}
 
 
+	/**
+	 * @phpstan-assert-if-true !null $this->row
+	 */
 	public function hasRow(): bool
 	{
 		return $this->row !== null;
@@ -65,6 +70,9 @@ class Record
 	}
 
 
+	/**
+	 * @return GroupedSelection<ActiveRow>
+	 */
 	public function related(string $key, ?string $throughColumn = null): GroupedSelection
 	{
 		$this->checkRow();
@@ -72,6 +80,9 @@ class Record
 	}
 
 
+	/**
+	 * @return array<string, mixed>
+	 */
 	public function getModified(): array
 	{
 		return $this->modified;
@@ -117,7 +128,7 @@ class Record
 	}
 
 
-	public function __set(string $name, $value): void
+	public function __set(string $name, mixed $value): void
 	{
 		$this->modified[$name] = $value;
 	}
@@ -135,6 +146,9 @@ class Record
 	}
 
 
+	/**
+	 * @phpstan-assert !null $this->row
+	 */
 	private function checkRow(): void
 	{
 		if(!$this->hasRow())

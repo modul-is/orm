@@ -14,7 +14,7 @@ class CollectionCaseTest extends TestCase
 	/**
 	 * Save collection to database
 	 */
-	public function testSaveCollection()
+	public function testSaveCollection(): void
 	{
 		$list = [];
 

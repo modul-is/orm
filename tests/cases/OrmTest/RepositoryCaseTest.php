@@ -7,7 +7,6 @@ namespace ModulIS\Orm;
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
 use ModulIS\Entity;
-use ModulIS\EntityCollection;
 use Nette\Utils\DateTime;
 use Tester\Assert;
 
@@ -16,7 +15,7 @@ class RepositoryCaseTest extends TestCase
 	/**
 	 * Save entity to database
 	 */
-	public function testSaveEntity()
+	public function testSaveEntity(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Gorilla';
@@ -41,7 +40,6 @@ class RepositoryCaseTest extends TestCase
 
 		$collection = $repository->findBy([]);
 
-		Assert::true($collection instanceof EntityCollection);
 		Assert::same(2, $collection->count());
 
 		/**
@@ -59,9 +57,9 @@ class RepositoryCaseTest extends TestCase
 
 		$repository->save($entity);
 
-		/* @var $loadedEntity AnimalEntity */
 		$loadedEntity = $repository->getBy(['id' => $entity->id]);
 
+		Assert::true($loadedEntity instanceof Entity);
 		Assert::same(800, $loadedEntity->weight);
 
 		/**

@@ -28,7 +28,23 @@ class EntityProperty
 
 	public function getValue(Entity $entity): mixed
 	{
-		$value = $entity->toRecord()->{$this->getName()};
+		$record = $entity->toRecord();
+
+		/**
+		 * Generated properties (UUID, ...) are materialized on the first read
+		 * so that the very same value is returned again and gets persisted
+		 */
+		if($this->parser && !isset($record->{$this->getName()}))
+		{
+			$default = $this->parser::generateDefault($this->getType());
+
+			if($default !== null)
+			{
+				$record->{$this->getName()} = $default;
+			}
+		}
+
+		$value = $record->{$this->getName()};
 
 		if($this->parser)
 		{
@@ -41,7 +57,7 @@ class EntityProperty
 	}
 
 
-	public function setValue(Entity $entity, $value): void
+	public function setValue(Entity $entity, mixed $value): void
 	{
 		if($this->isReadonly())
 		{
@@ -60,7 +76,7 @@ class EntityProperty
 	}
 
 
-	public function checkType($value): void
+	public function checkType(mixed $value): void
 	{
 		$class = $this->getType();
 
@@ -74,14 +90,12 @@ class EntityProperty
 		}
 		elseif(!$this->parser instanceof Datatype && !$this->isOfNativeType())
 		{
-			$valueType = gettype($value);
-
 			if(!$value instanceof $class)
 			{
-				throw new InvalidArgumentException('Instance of ' . $class . ' expected, ' . ($valueType === 'object' ? $value::class : $valueType) . '" given.');
+				throw new InvalidArgumentException('Instance of ' . $class . ' expected, ' . get_debug_type($value) . '" given.');
 			}
 		}
-		elseif($this->isOfNativeType() && !call_user_func('is_' . $this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
+		elseif($this->isOfNativeType() && !self::isValueOfType($this->getType(), $value) && self::getConvertedType($this->getType()) !== get_debug_type($value))
 		{
 			throw new InvalidArgumentException('Invalid type for column "' . $this->getName() . '" - "' . $this->getType() . '" expected, "' . get_debug_type($value) . '" given.');
 		}
@@ -109,6 +123,20 @@ class EntityProperty
 	public function getParser(): ?Datatype
 	{
 		return $this->parser;
+	}
+
+
+	private static function isValueOfType(string $type, mixed $value): bool
+	{
+		return match($type)
+		{
+			'int' => is_int($value),
+			'float', 'double' => is_float($value),
+			'bool' => is_bool($value),
+			'string' => is_string($value),
+			'array' => is_array($value),
+			default => false
+		};
 	}
 
 

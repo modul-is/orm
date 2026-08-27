@@ -15,7 +15,7 @@ use Tester\Assert;
 
 class UuidDatatypeTest extends TestCase
 {
-	public function testUuidGeneration()
+	public function testUuidGeneration(): void
 	{
 		$stateEntity = new StateEntity;
 
@@ -31,7 +31,7 @@ class UuidDatatypeTest extends TestCase
 	}
 
 
-	public function testUuidJoin()
+	public function testUuidJoin(): void
 	{
 		$stateEntity = new StateEntity;
 		$stateEntity->name = 'Slovakia';
@@ -53,7 +53,7 @@ class UuidDatatypeTest extends TestCase
 
 		$stateEntity = $zooEntity->getState();
 
-		Assert::type(StateEntity::class, $stateEntity);
+		Assert::true($stateEntity instanceof StateEntity);
 		Assert::same($stateUuid, $stateEntity->uuid);
 		Assert::same('Slovakia', $stateEntity->name);
 	}

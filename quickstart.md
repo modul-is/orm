@@ -78,6 +78,10 @@ class AnimalEntity extends Entity
 
 Then we create a repository for each entity.
 
+`Repository` is generic over its entity. Declaring `@extends Repository<YourEntity>` is enough - static analysis
+then knows that `getByID()`/`getBy()` return `?YourEntity` and that `findAll()`/`findBy()` return
+`EntityCollection<YourEntity>`, so there is no need to override the methods just to narrow their return type.
+
 __ZooRepository__
 ```
 namespace Example\Repository;
@@ -85,23 +89,14 @@ namespace Example\Repository;
 use ModulIS\Repository;
 
 
+/**
+ * @extends Repository<ZooEntity>
+ */
 class ZooRepository extends Repository
 {
 	protected string $table = 'zoo';
 
 	protected string $entity = ZooEntity::class;
-
-
-	public function getBy(array $criteria): ?ZooEntity
-	{
-		return parent::getBy($criteria);
-	}
-
-
-	public function getByID(int|string $id): ?ZooEntity
-	{
-		return parent::getByID($id);
-	}
 }
 ```
 
@@ -112,23 +107,14 @@ namespace Example\Repository;
 use ModulIS\Repository;
 
 
+/**
+ * @extends Repository<AnimalEntity>
+ */
 class AnimalRepository extends Repository
 {
 	protected string $table = 'animal';
 
 	protected string $entity = AnimalEntity::class;
-
-
-	public function getBy(array $criteria): ?AnimalEntity
-	{
-		return parent::getBy($criteria);
-	}
-
-
-	public function getByID(int|string $id): ?AnimalEntity
-	{
-		return parent::getByID($id);
-	}
 }
 ```
 

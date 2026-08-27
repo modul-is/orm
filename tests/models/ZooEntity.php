@@ -18,8 +18,10 @@ class ZooEntity extends Entity
 	public ?string $state_uuid;
 
 
-	public function getState(): StateEntity
+	public function getState(): ?StateEntity
 	{
-		return $this->record->ref(StateEntity::class, 'state_uuid');
+		$record = $this->record->ref('state', 'state_uuid');
+
+		return $record === null ? null : new StateEntity($record);
 	}
 }

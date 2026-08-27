@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Uuid;
 #[Attribute]
 class UuidDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): string
+	public static function input(string $name, string $type, mixed $value): string
 	{
 		if($value === null)
 		{
@@ -26,9 +26,25 @@ class UuidDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): string
+	public static function output(string $type, mixed $value): string
 	{
-		return $value === null ? self::generateUuid() : (string) $value;
+		if($value === null)
+		{
+			return self::generateUuid();
+		}
+
+		if(!is_string($value))
+		{
+			throw new InvalidArgumentException('Invalid value of type "' . get_debug_type($value) . '" for "' . $type . '" - "string" expected.');
+		}
+
+		return $value;
+	}
+
+
+	public static function generateDefault(string $type): string
+	{
+		return self::generateUuid();
 	}
 
 

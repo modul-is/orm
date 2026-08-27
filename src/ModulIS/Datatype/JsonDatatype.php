@@ -12,7 +12,7 @@ use Nette\Utils\Json;
 #[Attribute]
 class JsonDatatype extends Datatype
 {
-	public static function input(?string $name, string $type, $value): ?string
+	public static function input(?string $name, string $type, mixed $value): ?string
 	{
 		if(is_array($value))
 		{
@@ -27,8 +27,23 @@ class JsonDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): ?array
+	/**
+	 * @return array<mixed>|null
+	 */
+	public static function output(string $type, mixed $value): ?array
 	{
-		return $value === null ? $value : Json::decode($value, true);
+		if($value === null)
+		{
+			return null;
+		}
+
+		if(!is_string($value))
+		{
+			throw new InvalidArgumentException('Invalid value of type "' . get_debug_type($value) . '" for "' . $type . '" - "string" expected.');
+		}
+
+		$decoded = Json::decode($value, forceArrays: true);
+
+		return is_array($decoded) ? $decoded : [$decoded];
 	}
 }
