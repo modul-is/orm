@@ -167,7 +167,7 @@ abstract class Entity
 			 * Set NULL for nullable properties without value
 			 * Skip if property not set and is not nullable
 			 */
-			if(!isset($values[$name]) && $property->isNullable() && empty($values[$name]))
+			if(!isset($values[$name]) && $property->isNullable())
 			{
 				$values[$name] = null;
 			}

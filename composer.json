@@ -26,7 +26,10 @@
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^4.0",
 		"modul-is/coding-standard": "^5",
-		"phpstan/phpstan": "^2"
+		"phpstan/phpstan": "^2",
+		"phpstan/extension-installer": "^1.4",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"phpstan/phpstan-nette": "^2.0"
 	},
 
 	"autoload":
@@ -43,7 +46,8 @@
 	},
 	"config": {
 		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
 		}
 	}
 }

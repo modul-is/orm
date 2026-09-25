@@ -66,7 +66,7 @@ class EntityType extends \ReflectionClass
 
 				$propertyType = $property->getType();
 
-				if(!$propertyType)
+				if($propertyType === null)
 				{
 					throw new InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 				}
@@ -78,7 +78,7 @@ class EntityType extends \ReflectionClass
 
 				$propertyTypeClean = str_replace(['?', '|', 'null'], '', (string) $propertyType);
 
-				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && !$property->getAttributes())
+				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && $property->getAttributes() === [])
 				{
 					throw new MissingAttributeException('Property "' . $property->getName() . '" of type "' . $propertyType . '" cannot be used without a datatype attribute');
 				}
@@ -89,7 +89,7 @@ class EntityType extends \ReflectionClass
 				/**
 				 * Basic parser
 				 */
-				if($propertyType == 'bool')
+				if((string) $propertyType === 'bool')
 				{
 					$parser = new BooleanDatatype;
 				}

@@ -100,7 +100,7 @@ class EntityCollection implements Iterator, Countable
 		}
 		else
 		{
-			$this->selection->order($column . ($order ? ' ' . $order : ''));
+			$this->selection->order($column . ($order !== null && $order !== '' ? ' ' . $order : ''));
 		}
 
 		$this->invalidate();
@@ -109,6 +109,8 @@ class EntityCollection implements Iterator, Countable
 
 
 	/**
+	 * @param int<0, max>|null $limit
+	 * @param int<0, max>|null $offset
 	 * @return $this
 	 */
 	public function limit(?int $limit, ?int $offset = null): self

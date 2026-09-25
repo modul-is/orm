@@ -34,7 +34,7 @@ class EntityProperty
 		 * Generated properties (UUID, ...) are materialized on the first read
 		 * so that the very same value is returned again and gets persisted
 		 */
-		if($this->parser && !isset($record->{$this->getName()}))
+		if($this->parser !== null && !isset($record->{$this->getName()}))
 		{
 			$default = $this->parser::generateDefault($this->getType());
 
@@ -46,7 +46,7 @@ class EntityProperty
 
 		$value = $record->{$this->getName()};
 
-		if($this->parser)
+		if($this->parser !== null)
 		{
 			$value = $this->parser::output($this->getType(), $value);
 		}
@@ -65,7 +65,7 @@ class EntityProperty
 			throw new MemberAccessException('Cannot write to a read-only property "' . $ref->getName() . '::' . $this->getName() . '"');
 		}
 
-		if($this->parser)
+		if($this->parser !== null)
 		{
 			$value = $this->parser::input($this->getName(), $this->getType(), $value);
 		}

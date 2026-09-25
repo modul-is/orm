@@ -10,6 +10,10 @@ parameters:
 		analyse:
 			- tests/temp/*
 
+	strictRules:
+		# entities read and write their columns through variable property access by design
+		noVariableVariables: false
+
 	stubFiles:
 		- tests/phpstan/Assert.stub
 

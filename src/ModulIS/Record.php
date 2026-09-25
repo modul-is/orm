@@ -142,7 +142,7 @@ class Record
 
 	private function isPersisted(): bool
 	{
-		return $this->hasRow() && !count($this->modified);
+		return $this->hasRow() && $this->modified === [];
 	}
 
 

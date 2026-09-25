@@ -29,14 +29,14 @@ abstract class Repository
 		protected Explorer $database
 	)
 	{
-		if(!$this->table)
+		if(!isset($this->table) || $this->table === '')
 		{
 			$ref = new \ReflectionClass($this);
 
 			throw new InvalidStateException('Table name not set. Use class property ' . $ref->getName() . '::$table');
 		}
 
-		if(!$this->entity)
+		if(!isset($this->entity))
 		{
 			$ref = new \ReflectionClass($this);
 
@@ -62,9 +62,9 @@ abstract class Repository
 			$valueColumn = $value;
 		}
 
-		$table = $this->getTable()->select($this->table . '.' . $key . ($key && $valueColumn ? ',' : null) . $valueColumn)->where($criteria);
+		$table = $this->getTable()->select($this->table . '.' . $key . ($key !== null && $key !== '' && $valueColumn !== null && $valueColumn !== '' ? ',' : null) . $valueColumn)->where($criteria);
 
-		if($order)
+		if($order !== null && $order !== '')
 		{
 			$table->order($order);
 		}
@@ -265,7 +265,7 @@ abstract class Repository
 	 */
 	private function isCollectionEmpty(array|EntityCollection|ArrayHash $collection): bool
 	{
-		return (!is_array($collection) && $collection->count() === 0) || !$collection;
+		return is_array($collection) ? $collection === [] : $collection->count() === 0;
 	}
 
 
