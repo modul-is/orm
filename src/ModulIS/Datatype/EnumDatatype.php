@@ -12,29 +12,47 @@ use ModulIS\Exception\InvalidArgumentException;
 #[Attribute]
 class EnumDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): mixed
+	public static function input(string $name, string $type, mixed $value): mixed
 	{
 		if(is_string($value) || is_int($value))
 		{
-			$value = $type::tryFrom($value);
+			self::checkEnum($type);
 
-			if($value === null)
+			$enum = $type::tryFrom($value);
+
+			if($enum === null)
 			{
 				throw new InvalidArgumentException('Invalid value for column "' . $name . '" - Value "' . $value . '" is not part of enum "' . $type . '"');
 			}
+
+			$value = $enum;
 		}
 
 		return $value;
 	}
 
 
-	public static function output(string $type, $value): ?BackedEnum
+	public static function output(string $type, mixed $value): ?BackedEnum
 	{
 		if(is_string($value) || is_int($value))
 		{
-			$value = $type::tryFrom($value);
+			self::checkEnum($type);
+
+			return $type::tryFrom($value);
 		}
 
-		return $value;
+		return $value instanceof BackedEnum ? $value : null;
+	}
+
+
+	/**
+	 * @phpstan-assert class-string<BackedEnum> $type
+	 */
+	private static function checkEnum(string $type): void
+	{
+		if(!is_subclass_of($type, BackedEnum::class))
+		{
+			throw new InvalidArgumentException('Type "' . $type . '" is not a backed enum.');
+		}
 	}
 }

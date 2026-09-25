@@ -22,7 +22,7 @@ abstract class TestCase extends TesterTestCase
 	}
 
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$basicSql = join(DIRECTORY_SEPARATOR, [__DIR__, 'sql', 'basic.sql']);
 
@@ -32,9 +32,14 @@ abstract class TestCase extends TesterTestCase
 		}
 
 		$reflection = new \ReflectionObject($this);
+		$fileName = $reflection->getFileName();
 
-		$parentDirectory = substr($reflection->getFileName(), 0, strrpos($reflection->getFileName(), DIRECTORY_SEPARATOR));
-		$filePath = $parentDirectory . '/sql/' . Strings::firstLower($reflection->getShortName()) . '.sql';
+		if($fileName === false)
+		{
+			return;
+		}
+
+		$filePath = dirname($fileName) . '/sql/' . Strings::firstLower($reflection->getShortName()) . '.sql';
 
 		if(file_exists($filePath))
 		{

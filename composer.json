@@ -15,7 +15,8 @@
 		"php": "^8.4",
 		"nette/utils": "^4.0",
 		"nette/database": "^3.0 || ^4.0",
-		"nette/bootstrap": "^3.0"
+		"nette/bootstrap": "^3.0",
+		"symfony/uid": "^8.0"
 	},
 
 	"require-dev":
@@ -25,7 +26,10 @@
 		"nette/caching": "^3.0",
 		"nette/robot-loader": "^4.0",
 		"modul-is/coding-standard": "^5",
-		"phpstan/phpstan": "^2"
+		"phpstan/phpstan": "^2",
+		"phpstan/extension-installer": "^1.4",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"phpstan/phpstan-nette": "^2.0"
 	},
 
 	"autoload":
@@ -36,13 +40,14 @@
 	"scripts":
 	{
 		"test": "vendor/bin/tester.bat -C tests/cases",
-		"phpstan": "phpstan analyse --level 5 src",
+		"phpstan": "phpstan analyse",
 		"code-cs": "php vendor/modul-is/coding-standard/ecs check src --preset php84",
 		"code-cs-fix": "php vendor/modul-is/coding-standard/ecs check src --preset php84 --fix"
 	},
 	"config": {
 		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
 		}
 	}
 }

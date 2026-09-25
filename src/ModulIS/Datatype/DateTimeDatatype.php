@@ -12,7 +12,7 @@ use Nette\Utils\DateTime;
 #[Attribute]
 class DateTimeDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): ?string
+	public static function input(string $name, string $type, mixed $value): ?string
 	{
 		if($value instanceof DateTime)
 		{
@@ -34,8 +34,18 @@ class DateTimeDatatype extends Datatype
 	/**
 	 * @throws \Exception
 	 */
-	public static function output(string $type, $value): ?DateTime
+	public static function output(string $type, mixed $value): ?DateTime
 	{
-		return $value === null ? null : DateTime::from($value);
+		if($value === null)
+		{
+			return null;
+		}
+
+		if(!$value instanceof \DateTimeInterface && !is_int($value) && !is_string($value))
+		{
+			throw new InvalidArgumentException('Invalid value of type "' . get_debug_type($value) . '" for "' . $type . '" - cannot be converted to a date.');
+		}
+
+		return DateTime::from($value);
 	}
 }

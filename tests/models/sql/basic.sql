@@ -10,10 +10,21 @@ CREATE TABLE IF NOT EXISTS `zoo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(60) NOT NULL,
   `motto` varchar(150) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `state_uuid` char(36) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `zoo_state_uuid` FOREIGN KEY (`state_uuid`) REFERENCES `state` (`uuid`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_czech_ci;
 
 TRUNCATE `zoo`;
+
+CREATE TABLE IF NOT EXISTS `state` (
+  `uuid` CHAR(36) NOT NULL DEFAULT (UUID()),
+  `name` VARCHAR(120) NOT NULL,
+  `short` CHAR(2) NOT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_czech_ci;
+
+TRUNCATE `state`;
 
 CREATE TABLE IF NOT EXISTS `animal` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

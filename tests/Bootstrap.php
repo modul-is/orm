@@ -22,7 +22,7 @@ if(!is_dir($tempDir))
 $cache = new Cache(new FileStorage($tempDir));
 $cache->clean([$cache::All => true]);
 
-$debug = false;
+$debug = (bool) getenv('TESTS_DEBUG');
 
 $configurator = new Configurator;
 $configurator->setDebugMode($debug);

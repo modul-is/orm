@@ -12,7 +12,7 @@ use Tester\Assert;
 
 class DatatypeCaseTest extends TestCase
 {
-	public function testIntToInt()
+	public function testIntToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->weight = 1;
@@ -21,7 +21,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testIntToFloat()
+	public function testIntToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -33,7 +33,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testIntToString()
+	public function testIntToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -45,7 +45,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testIntToArray()
+	public function testIntToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -57,7 +57,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testIntToBool()
+	public function testIntToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -69,7 +69,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testIntToDatetime()
+	public function testIntToDatetime(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -81,7 +81,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToInt()
+	public function testFloatToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -93,7 +93,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToFloat()
+	public function testFloatToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->price = 1.1;
@@ -102,7 +102,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToString()
+	public function testFloatToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -114,7 +114,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToArray()
+	public function testFloatToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -126,7 +126,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToBool()
+	public function testFloatToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -138,7 +138,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testFloatToDatetime()
+	public function testFloatToDatetime(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -150,7 +150,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToInt()
+	public function testStringToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -162,7 +162,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToFloat()
+	public function testStringToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -174,7 +174,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToString()
+	public function testStringToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = '1';
@@ -183,7 +183,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToArray()
+	public function testStringToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -195,7 +195,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToBool()
+	public function testStringToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -207,7 +207,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToInt()
+	public function testArrayToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -219,7 +219,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToFloat()
+	public function testArrayToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -231,7 +231,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToString()
+	public function testArrayToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -243,7 +243,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToArray()
+	public function testArrayToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->parameters = [];
@@ -252,7 +252,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToBool()
+	public function testArrayToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -264,7 +264,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testArrayToDatetime()
+	public function testArrayToDatetime(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -276,7 +276,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToInt()
+	public function testBoolToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -288,7 +288,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToFloat()
+	public function testBoolToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -300,7 +300,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToString()
+	public function testBoolToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -312,7 +312,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToArray()
+	public function testBoolToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -324,7 +324,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToBool()
+	public function testBoolToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->vaccinated = true;
@@ -333,7 +333,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testBoolToDatetime()
+	public function testBoolToDatetime(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -345,7 +345,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToInt()
+	public function testDatetimeToInt(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -357,7 +357,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToFloat()
+	public function testDatetimeToFloat(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -369,7 +369,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToString()
+	public function testDatetimeToString(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -381,7 +381,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToArray()
+	public function testDatetimeToArray(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -393,7 +393,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToBool()
+	public function testDatetimeToBool(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -405,7 +405,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testDatetimeToDatetime()
+	public function testDatetimeToDatetime(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->birth = new DateTime('2021-01-01');
@@ -414,7 +414,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testNullToNullable()
+	public function testNullToNullable(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->death = null;
@@ -423,7 +423,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testNullToNotNullable()
+	public function testNullToNotNullable(): void
 	{
 		$animalEntity = new AnimalEntity;
 
@@ -435,7 +435,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testEnumToEnum()
+	public function testEnumToEnum(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->type = AnimalEnum::Mammal;
@@ -444,7 +444,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testStringToEnum()
+	public function testStringToEnum(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->type = 'fish';
@@ -453,7 +453,7 @@ class DatatypeCaseTest extends TestCase
 	}
 
 
-	public function testWrongStringToEnum()
+	public function testWrongStringToEnum(): void
 	{
 		$animalEntity = new AnimalEntity;
 

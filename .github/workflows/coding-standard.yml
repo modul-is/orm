@@ -21,7 +21,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Validate composer.json and composer.lock
       run: composer validate
@@ -42,9 +42,9 @@ jobs:
     - name: Run Nette Tester
       run: vendor/bin/tester -C tests/cases
 
-    - name: Run PHP Stan lvl 5
-      run: vendor/bin/phpstan analyse --level 5 src
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyse
 
     - name: Run Coding Standard
       continue-on-error: true
-      run: vendor/modul-is/coding-standard/ecs check src --preset php82
+      run: vendor/modul-is/coding-standard/ecs check src --preset php84
