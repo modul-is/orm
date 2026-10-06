@@ -95,6 +95,29 @@ abstract class Repository
 
 
 	/**
+	 * @return TEntity
+	 * @throws Exception\EntityNotFoundException
+	 */
+	public function getByIDOrFail(int|string $id): Entity
+	{
+		return $this->getByID($id)
+			?? throw new Exception\EntityNotFoundException('Entity "' . $this->entity . '" with ID "' . $id . '" not found in table "' . $this->table . '".');
+	}
+
+
+	/**
+	 * @param array<int|string, mixed> $criteria
+	 * @return TEntity
+	 * @throws Exception\EntityNotFoundException
+	 */
+	public function getByOrFail(array $criteria): Entity
+	{
+		return $this->getBy($criteria)
+			?? throw new Exception\EntityNotFoundException('Entity "' . $this->entity . '" matching given criteria not found in table "' . $this->table . '".');
+	}
+
+
+	/**
 	 * @param array<int|string, mixed> $criteria
 	 * @return EntityCollection<TEntity>
 	 */

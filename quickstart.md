@@ -210,6 +210,12 @@ We have many options for reading from the database, depending on usage.
 $this->ZooRepository->getByID(1);
 $this->AnimalRepository->getBy(['name' => 'Kangaroo']);
 ```
+Both return `null` when nothing is found. If the entity must exist, use the `OrFail` variants - they return
+non-nullable entity and throw `ModulIS\Exception\EntityNotFoundException` otherwise.
+```
+$this->ZooRepository->getByIDOrFail(1);
+$this->AnimalRepository->getByOrFail(['name' => 'Kangaroo']);
+```
 2. Get a collection - to iterate over it and get multiple entities
 ```
 $this->ZooRepository->findBy(['zoo_id' => 1]);
