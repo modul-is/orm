@@ -7,7 +7,7 @@ namespace ModulIS\Orm;
 $testerContainer = require __DIR__ . '/../../Bootstrap.php';
 
 use ModulIS\Entity;
-use ModulIS\EntityCollection;
+use ModulIS\Exception\EntityNotFoundException;
 use Nette\Utils\DateTime;
 use Tester\Assert;
 
@@ -16,7 +16,7 @@ class RepositoryCaseTest extends TestCase
 	/**
 	 * Save entity to database
 	 */
-	public function testSaveEntity()
+	public function testSaveEntity(): void
 	{
 		$animalEntity = new AnimalEntity;
 		$animalEntity->name = 'Gorilla';
@@ -41,7 +41,6 @@ class RepositoryCaseTest extends TestCase
 
 		$collection = $repository->findBy([]);
 
-		Assert::true($collection instanceof EntityCollection);
 		Assert::same(2, $collection->count());
 
 		/**
@@ -59,9 +58,9 @@ class RepositoryCaseTest extends TestCase
 
 		$repository->save($entity);
 
-		/* @var $loadedEntity AnimalEntity */
 		$loadedEntity = $repository->getBy(['id' => $entity->id]);
 
+		Assert::true($loadedEntity instanceof Entity);
 		Assert::same(800, $loadedEntity->weight);
 
 		/**
@@ -101,6 +100,22 @@ class RepositoryCaseTest extends TestCase
 		$deletedByIdEntity = $repository->getByID(1);
 
 		Assert::null($deletedByIdEntity);
+
+		/**
+		 * TEST: OrFail variants
+		 */
+		Assert::exception(fn() => $repository->getByIDOrFail(1), EntityNotFoundException::class);
+		Assert::exception(fn() => $repository->getByOrFail(['name' => 'Gorilla']), EntityNotFoundException::class);
+
+		$animalEntity3 = new AnimalEntity;
+		$animalEntity3->name = 'Zebra';
+		$animalEntity3->weight = 300;
+		$animalEntity3->birth = new DateTime('2001-05-01 12:00:00');
+		$animalEntity3->parameters = [];
+		$repository->save($animalEntity3);
+
+		Assert::same('Zebra', $repository->getByIDOrFail($animalEntity3->id)->name);
+		Assert::same($animalEntity3->id, $repository->getByOrFail(['name' => 'Zebra'])->id);
 	}
 }
 

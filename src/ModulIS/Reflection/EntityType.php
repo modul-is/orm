@@ -13,11 +13,18 @@ use ModulIS\Exception\InvalidPropertyDefinitionException;
 use ModulIS\Exception\MissingAttributeException;
 
 
+/**
+ * @extends \ReflectionClass<Entity>
+ */
 class EntityType extends \ReflectionClass
 {
+	/** @var array<string, EntityProperty> */
 	private array $properties = [];
 
 
+	/**
+	 * @return array<string, EntityProperty>
+	 */
 	public function getEntityProperties(): array
 	{
 		$this->loadEntityProperties();
@@ -59,14 +66,19 @@ class EntityType extends \ReflectionClass
 
 				$propertyType = $property->getType();
 
-				if(!$propertyType)
+				if($propertyType === null)
 				{
 					throw new InvalidPropertyDefinitionException('Missing type of property "' . $property->getName() . '"');
 				}
 
+				if(!$propertyType instanceof \ReflectionNamedType)
+				{
+					throw new InvalidPropertyDefinitionException('Union and intersection types are not supported - property "' . $property->getName() . '"');
+				}
+
 				$propertyTypeClean = str_replace(['?', '|', 'null'], '', (string) $propertyType);
 
-				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && !$property->getAttributes())
+				if(!in_array($propertyTypeClean, ['int', 'string', 'bool', 'float'], true) && $property->getAttributes() === [])
 				{
 					throw new MissingAttributeException('Property "' . $property->getName() . '" of type "' . $propertyType . '" cannot be used without a datatype attribute');
 				}
@@ -77,7 +89,7 @@ class EntityType extends \ReflectionClass
 				/**
 				 * Basic parser
 				 */
-				if($propertyType == 'bool')
+				if((string) $propertyType === 'bool')
 				{
 					$parser = new BooleanDatatype;
 				}
@@ -110,17 +122,20 @@ class EntityType extends \ReflectionClass
 	}
 
 
+	/**
+	 * @return list<class-string<Entity>>
+	 */
 	private function getClassTree(): array
 	{
 		$tree = [];
 		$current = $this->getName();
 
-		do
+		while($current !== null)
 		{
 			$tree[] = $current;
-			$current = get_parent_class($current);
+			$parent = get_parent_class($current);
+			$current = $parent !== false && is_subclass_of($parent, Entity::class) ? $parent : null;
 		}
-		while($current !== false && $current !== Entity::class);
 
 		return array_reverse($tree);
 	}

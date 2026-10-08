@@ -10,7 +10,7 @@ use Attribute;
 #[Attribute]
 class BooleanDatatype extends Datatype
 {
-	public static function input(string $name, string $type, $value): int
+	public static function input(string $name, string $type, mixed $value): int
 	{
 		if(is_bool($value))
 		{
@@ -23,7 +23,7 @@ class BooleanDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, $value): bool
+	public static function output(string $type, mixed $value): bool
 	{
 		return (bool) $value;
 	}

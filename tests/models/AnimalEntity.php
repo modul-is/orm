@@ -22,6 +22,7 @@ class AnimalEntity extends Entity
 	#[DateTimeDatatype]
 	public DateTime $birth;
 
+	/** @var array<string, mixed> */
 	#[JsonDatatype]
 	public array $parameters;
 

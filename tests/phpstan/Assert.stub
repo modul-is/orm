@@ -1,0 +1,40 @@
+<?php
+
+namespace Tester;
+
+
+class Assert
+{
+	/**
+	 * @phpstan-assert true $actual
+	 */
+	public static function true(mixed $actual, ?string $description = null): void
+	{
+	}
+
+
+	/**
+	 * @phpstan-assert false $actual
+	 */
+	public static function false(mixed $actual, ?string $description = null): void
+	{
+	}
+
+
+	/**
+	 * @phpstan-assert null $actual
+	 */
+	public static function null(mixed $actual, ?string $description = null): void
+	{
+	}
+
+
+	/**
+	 * @phpstan-assert !null $actual
+	 */
+	public static function notNull(mixed $actual, ?string $description = null): void
+	{
+	}
+
+
+}

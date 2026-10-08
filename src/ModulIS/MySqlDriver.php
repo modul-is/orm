@@ -31,7 +31,7 @@ class MySqlDriver extends NetteMySqlDriver
 				{
 					$types[$meta['name']] = IStructure::FIELD_TIME_INTERVAL;
 				}
-				elseif($type == IStructure::FIELD_DATE || $type == IStructure::FIELD_DATETIME)
+				elseif($type === IStructure::FIELD_DATE || $type === IStructure::FIELD_DATETIME)
 				{
 					$types[$meta['name']] = IStructure::FIELD_TEXT;
 				}

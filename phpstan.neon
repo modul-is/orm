@@ -1,1 +1,26 @@
 parameters:
+	level: 8
+
+	paths:
+		- src
+		- tests
+
+	# generated DI container of the test suite
+	excludePaths:
+		analyse:
+			- tests/temp/*
+
+	strictRules:
+		# entities read and write their columns through variable property access by design
+		noVariableVariables: false
+
+	stubFiles:
+		- tests/phpstan/Assert.stub
+
+	ignoreErrors:
+		# DatatypeCaseTest deliberately assigns values of a wrong type to verify that the entity rejects them at runtime
+		-
+			identifier: assign.propertyType
+			path: tests/cases/OrmTest/DatatypeCaseTest.php
+
+	tmpDir: %currentWorkingDirectory%/temp/phpstan
