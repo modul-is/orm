@@ -2,3 +2,4 @@
 /.idea
 /vendor
 /temp
+/tests/config/local.neon

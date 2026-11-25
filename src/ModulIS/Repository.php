@@ -215,6 +215,15 @@ abstract class Repository
 				return $record->update();
 			}
 
+			/**
+			 * Generated values (UUID primary key, ...) must be part of the INSERT
+			 * even when nobody has read them yet
+			 */
+			foreach($entity::getReflection()->getEntityProperties() as $property)
+			{
+				$property->generateValue($entity);
+			}
+
 			$inserted = $this->getTable()
 				->insert($record->getModified());
 

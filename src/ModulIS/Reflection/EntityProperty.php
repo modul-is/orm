@@ -28,23 +28,9 @@ class EntityProperty
 
 	public function getValue(Entity $entity): mixed
 	{
-		$record = $entity->toRecord();
+		$this->generateValue($entity);
 
-		/**
-		 * Generated properties (UUID, ...) are materialized on the first read
-		 * so that the very same value is returned again and gets persisted
-		 */
-		if($this->parser !== null && !isset($record->{$this->getName()}))
-		{
-			$default = $this->parser::generateDefault($this->getType());
-
-			if($default !== null)
-			{
-				$record->{$this->getName()} = $default;
-			}
-		}
-
-		$value = $record->{$this->getName()};
+		$value = $entity->toRecord()->{$this->getName()};
 
 		if($this->parser !== null)
 		{
@@ -54,6 +40,30 @@ class EntityProperty
 		$this->checkType($value);
 
 		return $value;
+	}
+
+
+	/**
+	 * Generated properties (UUID, ...) get their value on the first read or before the INSERT,
+	 * so that the very same value is returned again and gets persisted
+	 *
+	 * Only non-nullable properties are generated - a nullable one (foreign key) stays NULL
+	 */
+	public function generateValue(Entity $entity): void
+	{
+		$record = $entity->toRecord();
+
+		if($this->parser === null || $this->nullable || isset($record->{$this->getName()}))
+		{
+			return;
+		}
+
+		$default = $this->parser::generateDefault($this->getType());
+
+		if($default !== null)
+		{
+			$record->{$this->getName()} = $default;
+		}
 	}
 
 

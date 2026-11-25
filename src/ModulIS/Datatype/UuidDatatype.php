@@ -8,16 +8,16 @@ use Attribute;
 use ModulIS\Exception\InvalidArgumentException;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * UUIDv7 - a new value is generated only for a non-nullable property (primary key) without value,
+ * a nullable property (foreign key) keeps NULL
+ */
 #[Attribute]
 class UuidDatatype extends Datatype
 {
-	public static function input(string $name, string $type, mixed $value): string
+	public static function input(string $name, string $type, mixed $value): ?string
 	{
-		if($value === null)
-		{
-			return self::generateUuid();
-		}
-		elseif(!is_string($value))
+		if($value !== null && !is_string($value))
 		{
 			throw new InvalidArgumentException('Invalid type for column "' . $name . '" - "string" expected, "' . get_debug_type($value) . '" given.');
 		}
@@ -26,14 +26,9 @@ class UuidDatatype extends Datatype
 	}
 
 
-	public static function output(string $type, mixed $value): string
+	public static function output(string $type, mixed $value): ?string
 	{
-		if($value === null)
-		{
-			return self::generateUuid();
-		}
-
-		if(!is_string($value))
+		if($value !== null && !is_string($value))
 		{
 			throw new InvalidArgumentException('Invalid value of type "' . get_debug_type($value) . '" for "' . $type . '" - "string" expected.');
 		}
@@ -43,12 +38,6 @@ class UuidDatatype extends Datatype
 
 
 	public static function generateDefault(string $type): string
-	{
-		return self::generateUuid();
-	}
-
-
-	private static function generateUuid(): string
 	{
 		return Uuid::v7()->toRfc4122();
 	}

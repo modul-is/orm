@@ -42,6 +42,16 @@ $configurator->createRobotLoader()
 
 $configurator->addConfig(join(DIRECTORY_SEPARATOR, [__DIR__, 'config', 'test.neon']));
 
+/**
+ * Local database connection (not in git), overrides test.neon
+ */
+$localConfig = join(DIRECTORY_SEPARATOR, [__DIR__, 'config', 'local.neon']);
+
+if(file_exists($localConfig))
+{
+	$configurator->addConfig($localConfig);
+}
+
 Environment::setup();
 Environment::lock('core', $tempDir);
 
